@@ -50,13 +50,14 @@ const MainContent = ({
              menuItems.find(item => item.submenu?.some(sub => sub.id === activeSection))?.submenu?.find(sub => sub.id === activeSection)?.label}
           </h2>
         </div>
-        {(activeSection === 'orders' || activeSection === 'drivers' || activeSection === 'vehicles' || activeSection === 'customers') && (
+{(activeSection === 'orders' || activeSection === 'drivers' || activeSection === 'vehicles' || activeSection === 'customers' || activeSection === 'contract-application') && (
           <button 
             onClick={() => {
               if (activeSection === 'orders') setIsOrderModalOpen(true);
               if (activeSection === 'drivers') setIsDriverModalOpen(true);
               if (activeSection === 'vehicles') setIsVehicleModalOpen(true);
               if (activeSection === 'customers') setIsCustomerModalOpen(true);
+              if (activeSection === 'contract-application') console.log('Добавить договор');
             }}
             className="bg-primary hover:bg-primary/90 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
           >
