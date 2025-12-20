@@ -60,10 +60,16 @@ const Index = () => {
       </aside>
 
       <main className="flex-1 overflow-auto flex flex-col bg-white">
-        <header className="bg-white border-b border-gray-200 px-8 py-4">
+        <header className="bg-white border-b border-gray-200 px-8 py-4 flex items-center justify-between">
           <h2 className="text-xl font-bold text-gray-900">
             {menuItems.find(item => item.id === activeSection)?.label}
           </h2>
+          {activeSection === 'orders' && (
+            <button className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors">
+              <Icon name="Plus" size={20} />
+              <span className="font-medium">Добавить</span>
+            </button>
+          )}
         </header>
         <div className="flex-1 flex items-center justify-center bg-white">
           <div className="text-center">
