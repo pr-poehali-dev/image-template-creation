@@ -18,6 +18,7 @@ interface MainContentProps {
   setIsDriverModalOpen: (open: boolean) => void;
   setIsVehicleModalOpen: (open: boolean) => void;
   setIsCustomerModalOpen: (open: boolean) => void;
+  setIsOrderModalOpen: (open: boolean) => void;
 }
 
 const MainContent = ({
@@ -26,7 +27,8 @@ const MainContent = ({
   setIsMobileMenuOpen,
   setIsDriverModalOpen,
   setIsVehicleModalOpen,
-  setIsCustomerModalOpen
+  setIsCustomerModalOpen,
+  setIsOrderModalOpen
 }: MainContentProps) => {
   return (
     <main className="flex-1 overflow-auto flex flex-col bg-white w-full">
@@ -46,6 +48,7 @@ const MainContent = ({
         {(activeSection === 'orders' || activeSection === 'drivers' || activeSection === 'vehicles' || activeSection === 'customers') && (
           <button 
             onClick={() => {
+              if (activeSection === 'orders') setIsOrderModalOpen(true);
               if (activeSection === 'drivers') setIsDriverModalOpen(true);
               if (activeSection === 'vehicles') setIsVehicleModalOpen(true);
               if (activeSection === 'customers') setIsCustomerModalOpen(true);

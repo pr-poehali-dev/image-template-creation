@@ -40,6 +40,7 @@ const Index = () => {
   const [bankAccounts, setBankAccounts] = useState<Array<{id: number, bankName: string, accountNumber: string, bik: string, corrAccount: string}>>([]);
   const [isReferenceOpen, setIsReferenceOpen] = useState(false);
   const [isDocumentsOpen, setIsDocumentsOpen] = useState(false);
+  const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
   
   const isSubmenuActive = (item: any) => {
     return item.submenu?.some((sub: any) => sub.id === activeSection);
@@ -92,18 +93,21 @@ const Index = () => {
         setIsDriverModalOpen={setIsDriverModalOpen}
         setIsVehicleModalOpen={setIsVehicleModalOpen}
         setIsCustomerModalOpen={setIsCustomerModalOpen}
+        setIsOrderModalOpen={setIsOrderModalOpen}
       />
 
       <Modals
         isDriverModalOpen={isDriverModalOpen}
         isVehicleModalOpen={isVehicleModalOpen}
         isCustomerModalOpen={isCustomerModalOpen}
+        isOrderModalOpen={isOrderModalOpen}
         sameAddress={sameAddress}
         deliveryAddresses={deliveryAddresses}
         bankAccounts={bankAccounts}
         setIsDriverModalOpen={setIsDriverModalOpen}
         setIsVehicleModalOpen={setIsVehicleModalOpen}
         setIsCustomerModalOpen={setIsCustomerModalOpen}
+        setIsOrderModalOpen={setIsOrderModalOpen}
         setSameAddress={setSameAddress}
         setDeliveryAddresses={setDeliveryAddresses}
         setBankAccounts={setBankAccounts}
