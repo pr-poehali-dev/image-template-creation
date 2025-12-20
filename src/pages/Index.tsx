@@ -25,8 +25,8 @@ const Index = () => {
   const [isVehicleModalOpen, setIsVehicleModalOpen] = useState(false);
   const [isCustomerModalOpen, setIsCustomerModalOpen] = useState(false);
   const [sameAddress, setSameAddress] = useState(false);
-  const [deliveryAddresses, setDeliveryAddresses] = useState([{ id: 1, name: '', address: '', contact: '', phone: '', isMain: false }]);
-  const [bankAccounts, setBankAccounts] = useState([{ id: 1, bankName: '', accountNumber: '', bik: '', corrAccount: '' }]);
+  const [deliveryAddresses, setDeliveryAddresses] = useState<Array<{id: number, name: string, address: string, contact: string, phone: string, isMain: boolean}>>([]);
+  const [bankAccounts, setBankAccounts] = useState<Array<{id: number, bankName: string, accountNumber: string, bik: string, corrAccount: string}>>([]);
   
   const isSubmenuActive = (item: any) => {
     return item.submenu?.some((sub: any) => sub.id === activeSection);
@@ -38,9 +38,7 @@ const Index = () => {
   };
 
   const removeDeliveryAddress = (id: number) => {
-    if (deliveryAddresses.length > 1) {
-      setDeliveryAddresses(deliveryAddresses.filter(a => a.id !== id));
-    }
+    setDeliveryAddresses(deliveryAddresses.filter(a => a.id !== id));
   };
 
   const addBankAccount = () => {
@@ -49,9 +47,7 @@ const Index = () => {
   };
 
   const removeBankAccount = (id: number) => {
-    if (bankAccounts.length > 1) {
-      setBankAccounts(bankAccounts.filter(a => a.id !== id));
-    }
+    setBankAccounts(bankAccounts.filter(a => a.id !== id));
   };
   
   const [isReferenceOpen, setIsReferenceOpen] = useState(false);
@@ -867,21 +863,16 @@ const Index = () => {
 
                   {deliveryAddresses.map((address, index) => (
                     <div key={address.id} className="border border-gray-200 rounded-lg p-4 mb-4 relative">
-                      {deliveryAddresses.length > 1 && (
-                        <button
-                          onClick={() => removeDeliveryAddress(address.id)}
-                          className="absolute top-2 right-2 p-1 hover:bg-gray-100 rounded transition-colors"
-                          title="Удалить адрес"
-                        >
-                          <Icon name="X" size={16} className="text-gray-500" />
-                        </button>
-                      )}
+                      <button
+                        onClick={() => removeDeliveryAddress(address.id)}
+                        className="absolute top-2 right-2 p-1 hover:bg-gray-100 rounded transition-colors"
+                        title="Удалить адрес"
+                      >
+                        <Icon name="X" size={16} className="text-gray-500" />
+                      </button>
                       
-                      <div className="flex items-center justify-between mb-3">
+                      <div className="mb-3">
                         <span className="text-xs text-gray-500">Адрес {index + 1}</span>
-                        {index === 0 && (
-                          <span className="px-2 py-1 bg-primary text-white text-xs rounded-full">Основной</span>
-                        )}
                       </div>
 
                       <div className="grid grid-cols-2 gap-4">
@@ -929,18 +920,6 @@ const Index = () => {
                           />
                         </div>
                       </div>
-
-                      {index === 0 && (
-                        <div className="mt-4">
-                          <label className="flex items-center gap-2 cursor-pointer">
-                            <input
-                              type="checkbox"
-                              className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-2 focus:ring-primary"
-                            />
-                            <span className="text-sm text-gray-700">Сделать основным адресом</span>
-                          </label>
-                        </div>
-                      )}
                     </div>
                   ))}
                 </div>
@@ -962,15 +941,13 @@ const Index = () => {
 
                   {bankAccounts.map((account, index) => (
                     <div key={account.id} className="border border-gray-200 rounded-lg p-4 mb-4 relative">
-                      {bankAccounts.length > 1 && (
-                        <button
-                          onClick={() => removeBankAccount(account.id)}
-                          className="absolute top-2 right-2 p-1 hover:bg-gray-100 rounded transition-colors"
-                          title="Удалить счет"
-                        >
-                          <Icon name="X" size={16} className="text-gray-500" />
-                        </button>
-                      )}
+                      <button
+                        onClick={() => removeBankAccount(account.id)}
+                        className="absolute top-2 right-2 p-1 hover:bg-gray-100 rounded transition-colors"
+                        title="Удалить счет"
+                      >
+                        <Icon name="X" size={16} className="text-gray-500" />
+                      </button>
 
                       <div className="mb-3">
                         <span className="text-xs text-gray-500">Счет {index + 1}</span>
@@ -1030,8 +1007,8 @@ const Index = () => {
                   onClick={() => {
                     setIsCustomerModalOpen(false);
                     setSameAddress(false);
-                    setDeliveryAddresses([{ id: 1, name: '', address: '', contact: '', phone: '', isMain: false }]);
-                    setBankAccounts([{ id: 1, bankName: '', accountNumber: '', bik: '', corrAccount: '' }]);
+                    setDeliveryAddresses([]);
+                    setBankAccounts([]);
                   }}
                   className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
                 >
