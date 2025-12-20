@@ -19,6 +19,11 @@ interface Route {
   to: string;
   intermediatePoints: string[];
   customsItems: Customs[];
+  selectedCar: string;
+  driver: string;
+  driverPhone: string;
+  additionalDriverPhone: string;
+  routeNote: string;
 }
 
 const OrderModal = ({ isOpen, onClose }: OrderModalProps) => {
@@ -30,16 +35,23 @@ const OrderModal = ({ isOpen, onClose }: OrderModalProps) => {
   const [note, setNote] = useState('');
   const [files, setFiles] = useState<File[]>([]);
   const [routes, setRoutes] = useState<Route[]>([]);
-  const [selectedCar, setSelectedCar] = useState('');
-  const [driver, setDriver] = useState('');
-  const [driverPhone, setDriverPhone] = useState('');
-  const [additionalDriverPhone, setAdditionalDriverPhone] = useState('');
-  const [routeNote, setRouteNote] = useState('');
 
   if (!isOpen) return null;
 
   const addRoute = () => {
-    setRoutes([...routes, { id: Date.now().toString(), loadingDate: '', from: '', to: '', intermediatePoints: [], customsItems: [] }]);
+    setRoutes([...routes, { 
+      id: Date.now().toString(), 
+      loadingDate: '', 
+      from: '', 
+      to: '', 
+      intermediatePoints: [], 
+      customsItems: [],
+      selectedCar: '',
+      driver: '',
+      driverPhone: '',
+      additionalDriverPhone: '',
+      routeNote: ''
+    }]);
   };
 
   const removeRoute = (id: string) => {
@@ -358,77 +370,87 @@ const OrderModal = ({ isOpen, onClose }: OrderModalProps) => {
                           </div>
                         )}
                       </div>
+
+                      <div className="mt-4 border-t border-gray-300 pt-4">
+                        <h4 className="text-md font-semibold text-gray-900 mb-4">Информация о транспорте</h4>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                              Автомобиль <span className="text-red-600">*</span>
+                            </label>
+                            <select
+                              value={route.selectedCar}
+                              onChange={(e) => setRoutes(routes.map(r => 
+                                r.id === route.id ? { ...r, selectedCar: e.target.value } : r
+                              ))}
+                              className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                            >
+                              <option value="">Выберите автомобиль</option>
+                              <option value="car1">Автомобиль 1</option>
+                              <option value="car2">Автомобиль 2</option>
+                            </select>
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                              Водитель <span className="text-red-600">*</span>
+                            </label>
+                            <input
+                              type="text"
+                              placeholder="Автоматически"
+                              value={route.driver}
+                              onChange={(e) => setRoutes(routes.map(r => 
+                                r.id === route.id ? { ...r, driver: e.target.value } : r
+                              ))}
+                              className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Телефон водителя</label>
+                            <input
+                              type="tel"
+                              placeholder="Автоматически"
+                              value={route.driverPhone}
+                              onChange={(e) => setRoutes(routes.map(r => 
+                                r.id === route.id ? { ...r, driverPhone: e.target.value } : r
+                              ))}
+                              className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Доп. телефон водителя</label>
+                            <input
+                              type="tel"
+                              placeholder="Автоматически"
+                              value={route.additionalDriverPhone}
+                              onChange={(e) => setRoutes(routes.map(r => 
+                                r.id === route.id ? { ...r, additionalDriverPhone: e.target.value } : r
+                              ))}
+                              className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="mt-4">
+                          <label className="block text-sm font-medium text-gray-700 mb-2">Примечание к маршруту</label>
+                          <textarea
+                            placeholder="Дополнительная информация о маршруте..."
+                            value={route.routeNote}
+                            onChange={(e) => setRoutes(routes.map(r => 
+                              r.id === route.id ? { ...r, routeNote: e.target.value } : r
+                            ))}
+                            rows={3}
+                            className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
+                          />
+                        </div>
+                      </div>
                     </div>
                   ))}
                 </div>
               )}
-            </div>
-
-            <div className="border border-gray-200 rounded-lg p-4 space-y-4 bg-gray-50">
-              <h3 className="text-lg font-semibold text-gray-900">Информация о транспорте</h3>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Автомобиль <span className="text-red-600">*</span>
-                  </label>
-                  <select
-                    value={selectedCar}
-                    onChange={(e) => setSelectedCar(e.target.value)}
-                    className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  >
-                    <option value="">Выберите автомобиль</option>
-                    <option value="car1">Автомобиль 1</option>
-                    <option value="car2">Автомобиль 2</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Водитель <span className="text-red-600">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Автоматически"
-                    value={driver}
-                    onChange={(e) => setDriver(e.target.value)}
-                    className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Телефон водителя</label>
-                  <input
-                    type="tel"
-                    placeholder="Автоматически"
-                    value={driverPhone}
-                    onChange={(e) => setDriverPhone(e.target.value)}
-                    className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Доп. телефон водителя</label>
-                  <input
-                    type="tel"
-                    placeholder="Автоматически"
-                    value={additionalDriverPhone}
-                    onChange={(e) => setAdditionalDriverPhone(e.target.value)}
-                    className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Примечание к маршруту</label>
-                <textarea
-                  placeholder="Дополнительная информация о маршруте..."
-                  value={routeNote}
-                  onChange={(e) => setRouteNote(e.target.value)}
-                  rows={3}
-                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
-                />
-              </div>
             </div>
           </div>
         </div>
