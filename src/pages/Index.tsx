@@ -21,6 +21,11 @@ const menuItems = [
 const Index = () => {
   const [activeSection, setActiveSection] = useState('orders');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  
+  const isSubmenuActive = (item: any) => {
+    return item.submenu?.some((sub: any) => sub.id === activeSection);
+  };
+  
   const [isReferenceOpen, setIsReferenceOpen] = useState(false);
 
   return (
@@ -56,15 +61,17 @@ const Index = () => {
                 <div>
                   <button
                     onClick={() => setIsReferenceOpen(!isReferenceOpen)}
-                    className="w-full flex items-center justify-between gap-3 px-4 py-3 rounded-lg text-left transition-all text-sidebar-foreground hover:bg-sidebar-accent"
+                    className={`w-full flex items-center justify-between gap-3 px-4 py-3 rounded-lg text-left transition-all ${
+                      isSubmenuActive(item) ? 'bg-sidebar-accent' : ''
+                    } text-sidebar-foreground hover:bg-sidebar-accent`}
                   >
                     <div className="flex items-center gap-3">
                       <Icon name={item.icon} size={20} />
                       <span className="font-medium">{item.label}</span>
                     </div>
-                    <Icon name={isReferenceOpen ? "ChevronDown" : "ChevronRight"} size={16} />
+                    <Icon name={isReferenceOpen || isSubmenuActive(item) ? "ChevronDown" : "ChevronRight"} size={16} />
                   </button>
-                  {isReferenceOpen && (
+                  {(isReferenceOpen || isSubmenuActive(item)) && (
                     <div className="ml-4 mt-1 space-y-1">
                       {item.submenu.map((subItem) => (
                         <button
