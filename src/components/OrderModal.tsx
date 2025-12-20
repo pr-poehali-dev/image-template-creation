@@ -43,6 +43,17 @@ const OrderModal = ({ isOpen, onClose }: OrderModalProps) => {
   const [note, setNote] = useState('');
   const [files, setFiles] = useState<File[]>([]);
   const [routes, setRoutes] = useState<Route[]>([]);
+  const [carInputFocus, setCarInputFocus] = useState<{[key: string]: boolean}>({});
+
+  const carsList = [
+    'Mercedes-Benz Actros 1845',
+    'Volvo FH16 750',
+    'Scania R500',
+    'MAN TGX 18.480',
+    'DAF XF 105.460',
+    'Iveco Stralis 450',
+    'Renault Magnum 520'
+  ];
 
   if (!isOpen) return null;
 
@@ -451,21 +462,46 @@ const OrderModal = ({ isOpen, onClose }: OrderModalProps) => {
                         <h4 className="text-md font-semibold text-gray-900 mb-4">Информация о транспорте</h4>
                         
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <div>
+                          <div className="relative">
                             <label className="block text-sm font-medium text-gray-700 mb-2">
                               Автомобиль <span className="text-red-600">*</span>
                             </label>
-                            <select
+                            <input
+                              type="text"
+                              placeholder="Введите марку или модель"
                               value={route.selectedCar}
                               onChange={(e) => setRoutes(routes.map(r => 
                                 r.id === route.id ? { ...r, selectedCar: e.target.value } : r
                               ))}
+                              onFocus={() => setCarInputFocus({...carInputFocus, [route.id]: true})}
+                              onBlur={() => setTimeout(() => setCarInputFocus({...carInputFocus, [route.id]: false}), 200)}
                               className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                            >
-                              <option value="">Выберите автомобиль</option>
-                              <option value="car1">Автомобиль 1</option>
-                              <option value="car2">Автомобиль 2</option>
-                            </select>
+                            />
+                            {carInputFocus[route.id] && route.selectedCar && (
+                              <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                                {carsList
+                                  .filter(car => car.toLowerCase().includes(route.selectedCar.toLowerCase()))
+                                  .map((car, idx) => (
+                                    <div
+                                      key={idx}
+                                      onClick={() => {
+                                        setRoutes(routes.map(r => 
+                                          r.id === route.id ? { ...r, selectedCar: car } : r
+                                        ));
+                                        setCarInputFocus({...carInputFocus, [route.id]: false});
+                                      }}
+                                      className="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                                    >
+                                      {car}
+                                    </div>
+                                  ))}
+                                {carsList.filter(car => car.toLowerCase().includes(route.selectedCar.toLowerCase())).length === 0 && (
+                                  <div className="px-3 py-2 text-sm text-gray-500 italic">
+                                    Ничего не найдено
+                                  </div>
+                                )}
+                              </div>
+                            )}
                           </div>
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
