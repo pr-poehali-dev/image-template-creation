@@ -90,14 +90,75 @@ const Index = () => {
             </button>
           )}
         </header>
-        <div className="flex-1 flex items-center justify-center bg-white px-4">
-          <div className="text-center">
-            <div className="w-20 h-20 sm:w-24 sm:h-24 bg-muted rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
-              <Icon name="Construction" size={40} className="text-muted-foreground sm:w-12 sm:h-12" />
+        <div className="flex-1 bg-white px-4 sm:px-6 lg:px-8 py-6">
+          {activeSection === 'orders' ? (
+            <div className="space-y-4">
+              <div className="relative">
+                <Icon name="Search" size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Поиск заказа..."
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                />
+              </div>
+
+              <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-gray-50 border-b border-gray-200">
+                      <tr>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">№ заказа</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">Дата заказа</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">Инвойс / Трак</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">Гос номер</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">Время в пути</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">Статус</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">Фито</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200">
+                      {[
+                        { number: '001', date: '20.12.2024', invoice: 'INV-12453', gosNumber: 'А123БВ77', time: '2ч 30м', status: 'В пути', fito: 'Да' },
+                        { number: '002', date: '20.12.2024', invoice: 'INV-12452', gosNumber: 'В456ГД77', time: '1ч 45м', status: 'Доставлен', fito: 'Нет' },
+                        { number: '003', date: '19.12.2024', invoice: 'INV-12451', gosNumber: 'С789ЕЖ77', time: '3ч 15м', status: 'В пути', fito: 'Да' },
+                        { number: '004', date: '19.12.2024', invoice: 'INV-12450', gosNumber: 'Д012ЗИ77', time: '4ч 00м', status: 'Ожидание', fito: 'Нет' },
+                      ].map((order, index) => (
+                        <tr key={index} className="hover:bg-gray-50 transition-colors">
+                          <td className="px-4 py-3 text-sm text-gray-900">{order.number}</td>
+                          <td className="px-4 py-3 text-sm text-gray-900">{order.date}</td>
+                          <td className="px-4 py-3 text-sm text-gray-900">{order.invoice}</td>
+                          <td className="px-4 py-3 text-sm text-gray-900">{order.gosNumber}</td>
+                          <td className="px-4 py-3 text-sm text-gray-900">{order.time}</td>
+                          <td className="px-4 py-3">
+                            <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
+                              order.status === 'Доставлен' 
+                                ? 'bg-green-100 text-green-700' 
+                                : order.status === 'В пути'
+                                ? 'bg-blue-100 text-blue-700'
+                                : 'bg-yellow-100 text-yellow-700'
+                            }`}>
+                              {order.status}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3 text-sm text-gray-900">{order.fito}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
-            <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-2">Страница в разработке</h3>
-            <p className="text-sm sm:text-base text-muted-foreground">Раздел "{menuItems.find(item => item.id === activeSection)?.label}" скоро будет доступен</p>
-          </div>
+          ) : (
+            <div className="flex items-center justify-center h-full">
+              <div className="text-center">
+                <div className="w-20 h-20 sm:w-24 sm:h-24 bg-muted rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                  <Icon name="Construction" size={40} className="text-muted-foreground sm:w-12 sm:h-12" />
+                </div>
+                <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-2">Страница в разработке</h3>
+                <p className="text-sm sm:text-base text-muted-foreground">Раздел "{menuItems.find(item => item.id === activeSection)?.label}" скоро будет доступен</p>
+              </div>
+            </div>
+          )}
         </div>
       </main>
     </div>
