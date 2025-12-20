@@ -23,6 +23,8 @@ const Index = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDriverModalOpen, setIsDriverModalOpen] = useState(false);
   const [isVehicleModalOpen, setIsVehicleModalOpen] = useState(false);
+  const [isCustomerModalOpen, setIsCustomerModalOpen] = useState(false);
+  const [sameAddress, setSameAddress] = useState(false);
   
   const isSubmenuActive = (item: any) => {
     return item.submenu?.some((sub: any) => sub.id === activeSection);
@@ -142,6 +144,7 @@ const Index = () => {
               onClick={() => {
                 if (activeSection === 'drivers') setIsDriverModalOpen(true);
                 if (activeSection === 'vehicles') setIsVehicleModalOpen(true);
+                if (activeSection === 'customers') setIsCustomerModalOpen(true);
               }}
               className="bg-primary hover:bg-primary/90 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
             >
@@ -696,6 +699,129 @@ const Index = () => {
               <div className="flex items-center justify-end gap-3 mt-6 pt-6 border-t border-gray-200">
                 <button
                   onClick={() => setIsVehicleModalOpen(false)}
+                  className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+                >
+                  Отмена
+                </button>
+                <button className="px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg transition-colors font-medium">
+                  Создать
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isCustomerModalOpen && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+              <h3 className="text-xl font-bold text-gray-900">Создать</h3>
+              <button 
+                onClick={() => setIsCustomerModalOpen(false)}
+                className="p-1 hover:bg-gray-100 rounded transition-colors"
+              >
+                <Icon name="X" size={20} className="text-gray-600" />
+              </button>
+            </div>
+            
+            <div className="p-6">
+              <div className="space-y-4">
+                <div className="border-b border-gray-200 pb-4">
+                  <div className="flex items-center gap-2 mb-4">
+                    <Icon name="FileText" size={18} className="text-gray-600" />
+                    <span className="text-sm font-medium text-gray-600">Реквизиты компании</span>
+                  </div>
+                  
+                  <div className="grid grid-cols-3 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-900 mb-2">
+                        ИНН
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="1234567890"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-900 mb-2">
+                        КПП
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="123456789"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-900 mb-2">
+                        ОГРН/ОГРНИП
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="1234567890123"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="mt-4">
+                    <label className="block text-sm font-medium text-gray-900 mb-2">
+                      Юридический адрес
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="123456, г. Москва, ул. Примерная, д. 1"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    />
+                  </div>
+
+                  <div className="mt-4">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={sameAddress}
+                        onChange={(e) => setSameAddress(e.target.checked)}
+                        className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-2 focus:ring-primary"
+                      />
+                      <span className="text-sm text-gray-700">Почтовый адрес совпадает с юридическим</span>
+                    </label>
+                  </div>
+
+                  <div className="mt-4">
+                    <label className="block text-sm font-medium text-gray-900 mb-2">
+                      Почтовый адрес
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="123456, г. Москва, ул. Примерная, д. 1"
+                      disabled={sameAddress}
+                      className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent ${
+                        sameAddress ? 'bg-gray-50 text-gray-500' : ''
+                      }`}
+                    />
+                  </div>
+
+                  <div className="mt-4">
+                    <label className="block text-sm font-medium text-gray-900 mb-2">
+                      ФИО руководителя
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Иванов Иван Иванович"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-end gap-3 mt-6 pt-6 border-t border-gray-200">
+                <button
+                  onClick={() => {
+                    setIsCustomerModalOpen(false);
+                    setSameAddress(false);
+                  }}
                   className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
                 >
                   Отмена
