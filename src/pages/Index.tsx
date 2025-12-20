@@ -848,84 +848,6 @@ const Index = () => {
 
                 <div className="border-t border-gray-200 pt-4">
                   <div className="flex items-center justify-between mb-4">
-                    <div>
-                      <h4 className="text-base font-medium text-gray-900">Адреса доставки</h4>
-                      <p className="text-sm text-gray-500">Добавьте один или несколько адресов</p>
-                    </div>
-                    <button
-                      onClick={addDeliveryAddress}
-                      className="flex items-center gap-2 px-3 py-2 text-primary hover:bg-primary/10 rounded-lg transition-colors"
-                    >
-                      <Icon name="Plus" size={18} />
-                      <span className="text-sm font-medium">Добавить адрес</span>
-                    </button>
-                  </div>
-
-                  {deliveryAddresses.map((address, index) => (
-                    <div key={address.id} className="border border-gray-200 rounded-lg p-4 mb-4 relative">
-                      <button
-                        onClick={() => removeDeliveryAddress(address.id)}
-                        className="absolute top-2 right-2 p-1 hover:bg-gray-100 rounded transition-colors"
-                        title="Удалить адрес"
-                      >
-                        <Icon name="X" size={16} className="text-gray-500" />
-                      </button>
-                      
-                      <div className="mb-3">
-                        <span className="text-xs text-gray-500">Адрес {index + 1}</span>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-sm font-medium text-gray-900 mb-2">
-                            Название адреса <span className="text-red-500">*</span>
-                          </label>
-                          <input
-                            type="text"
-                            placeholder="Склад №1"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-900 mb-2">
-                            Адрес <span className="text-red-500">*</span>
-                          </label>
-                          <input
-                            type="text"
-                            placeholder="г. Москва, ул. Складская, 10"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-4 mt-4">
-                        <div>
-                          <label className="block text-sm font-medium text-gray-900 mb-2">
-                            Контактное лицо
-                          </label>
-                          <input
-                            type="text"
-                            placeholder="Петров П.П."
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-900 mb-2">
-                            Телефон
-                          </label>
-                          <input
-                            type="tel"
-                            placeholder="+7 (999) 123-45-67"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="border-t border-gray-200 pt-4">
-                  <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-2">
                       <Icon name="Landmark" size={18} className="text-gray-600" />
                       <span className="text-sm font-medium text-gray-600">Банковские реквизиты</span>
@@ -993,6 +915,84 @@ const Index = () => {
                           <input
                             type="text"
                             placeholder="30101810000000000225"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="border-t border-gray-200 pt-4">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2">
+                      <Icon name="MapPin" size={18} className="text-gray-600" />
+                      <span className="text-sm font-medium text-gray-600">Адрес доставки</span>
+                    </div>
+                    <button
+                      onClick={addDeliveryAddress}
+                      className="flex items-center gap-2 px-3 py-2 text-primary hover:bg-primary/10 rounded-lg transition-colors"
+                    >
+                      <Icon name="Plus" size={18} />
+                      <span className="text-sm font-medium">Добавить адрес</span>
+                    </button>
+                  </div>
+
+                  {deliveryAddresses.map((address, index) => (
+                    <div key={address.id} className="border border-gray-200 rounded-lg p-4 mb-4 relative">
+                      <button
+                        onClick={() => removeDeliveryAddress(address.id)}
+                        className="absolute top-2 right-2 p-1 hover:bg-gray-100 rounded transition-colors"
+                        title="Удалить адрес"
+                      >
+                        <Icon name="X" size={16} className="text-gray-500" />
+                      </button>
+                      
+                      <div className="mb-3">
+                        <span className="text-xs text-gray-500">Адрес {index + 1}</span>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-900 mb-2">
+                            Название адреса <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="Склад №1"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-900 mb-2">
+                            Адрес <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="г. Москва, ул. Складская, 10"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4 mt-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-900 mb-2">
+                            Контактное лицо
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="Петров П.П."
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-900 mb-2">
+                            Телефон
+                          </label>
+                          <input
+                            type="tel"
+                            placeholder="+7 (999) 123-45-67"
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                           />
                         </div>
