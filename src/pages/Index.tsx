@@ -114,7 +114,6 @@ const Index = () => {
                         <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">Время в пути</th>
                         <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">Статус</th>
                         <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">Фито</th>
-                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">Статус</th>
                         <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">Действия</th>
                       </tr>
                     </thead>
@@ -143,7 +142,6 @@ const Index = () => {
                             </span>
                           </td>
                           <td className="px-4 py-3 text-sm text-gray-900">{order.fito}</td>
-                          <td className="px-4 py-3 text-sm text-gray-700">{order.orderStatus}</td>
                           <td className="px-4 py-3">
                             <div className="flex items-center gap-2">
                               <button className="p-1 hover:bg-gray-100 rounded transition-colors" title="Просмотр">
