@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Icon from './ui/icon';
 import ConfirmDialog from './ConfirmDialog';
 import ModalFooter from './ModalFooter';
+import DateInput from './DateInput';
 
 interface OrderModalProps {
   isOpen: boolean;
@@ -194,18 +195,13 @@ const OrderModal = ({ isOpen, onClose }: OrderModalProps) => {
                       />
                     </div>
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Дата заказа <span className="text-red-600">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="ДД-ММ-ГГГГ"
-                      value={orderDate}
-                      onChange={(e) => setOrderDate(e.target.value)}
-                      className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                    />
-                  </div>
+                  <DateInput
+                    value={orderDate}
+                    onChange={setOrderDate}
+                    label="Дата заказа"
+                    maxDate="today"
+                    required
+                  />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -312,20 +308,15 @@ const OrderModal = ({ isOpen, onClose }: OrderModalProps) => {
                         </button>
                       </div>
 
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Дата погрузки <span className="text-red-600">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          placeholder="ДД-ММ-ГГГГ"
-                          value={route.loadingDate}
-                          onChange={(e) => setRoutes(routes.map(r => 
-                            r.id === route.id ? { ...r, loadingDate: e.target.value } : r
-                          ))}
-                          className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                        />
-                      </div>
+                      <DateInput
+                        value={route.loadingDate}
+                        onChange={(val) => setRoutes(routes.map(r => 
+                          r.id === route.id ? { ...r, loadingDate: val } : r
+                        ))}
+                        label="Дата погрузки"
+                        maxDate="none"
+                        required
+                      />
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
