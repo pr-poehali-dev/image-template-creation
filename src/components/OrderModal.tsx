@@ -12,12 +12,18 @@ interface Customs {
   customsPlace: string;
 }
 
+interface IntermediatePoint {
+  id: string;
+  type: 'loading' | 'unloading';
+  city: string;
+}
+
 interface Route {
   id: string;
   loadingDate: string;
   from: string;
   to: string;
-  intermediatePoints: string[];
+  intermediatePoints: IntermediatePoint[];
   customsItems: Customs[];
   selectedCar: string;
   driver: string;
@@ -63,7 +69,15 @@ const OrderModal = ({ isOpen, onClose }: OrderModalProps) => {
   const addIntermediatePoint = (routeId: string) => {
     setRoutes(routes.map(r => 
       r.id === routeId 
-        ? { ...r, intermediatePoints: [...r.intermediatePoints, ''] }
+        ? { ...r, intermediatePoints: [...r.intermediatePoints, { id: Date.now().toString(), type: 'loading', city: '' }] }
+        : r
+    ));
+  };
+
+  const removeIntermediatePoint = (routeId: string, pointId: string) => {
+    setRoutes(routes.map(r => 
+      r.id === routeId 
+        ? { ...r, intermediatePoints: r.intermediatePoints.filter(p => p.id !== pointId) }
         : r
     ));
   };
@@ -324,13 +338,42 @@ const OrderModal = ({ isOpen, onClose }: OrderModalProps) => {
                           </p>
                         ) : (
                           <div className="space-y-2">
-                            {route.intermediatePoints.map((_, idx) => (
-                              <input
-                                key={idx}
-                                type="text"
-                                placeholder="Город"
-                                className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                              />
+                            {route.intermediatePoints.map((point) => (
+                              <div key={point.id} className="flex gap-2">
+                                <select
+                                  value={point.type}
+                                  onChange={(e) => setRoutes(routes.map(r => 
+                                    r.id === route.id 
+                                      ? { ...r, intermediatePoints: r.intermediatePoints.map(p => 
+                                          p.id === point.id ? { ...p, type: e.target.value as 'loading' | 'unloading' } : p
+                                        )}
+                                      : r
+                                  ))}
+                                  className="w-40 px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                                >
+                                  <option value="loading">Погрузка</option>
+                                  <option value="unloading">Разгрузка</option>
+                                </select>
+                                <input
+                                  type="text"
+                                  placeholder="Город"
+                                  value={point.city}
+                                  onChange={(e) => setRoutes(routes.map(r => 
+                                    r.id === route.id 
+                                      ? { ...r, intermediatePoints: r.intermediatePoints.map(p => 
+                                          p.id === point.id ? { ...p, city: e.target.value } : p
+                                        )}
+                                      : r
+                                  ))}
+                                  className="flex-1 px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                                />
+                                <button
+                                  onClick={() => removeIntermediatePoint(route.id, point.id)}
+                                  className="text-red-600 hover:text-red-700 transition-colors px-2"
+                                >
+                                  <Icon name="Trash2" size={18} />
+                                </button>
+                              </div>
                             ))}
                           </div>
                         )}
