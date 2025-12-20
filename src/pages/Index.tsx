@@ -30,6 +30,17 @@ const Index = () => {
           </div>
         </div>
 
+        <div className="p-4 border-b border-sidebar-border">
+          <div className="flex items-center gap-3 px-4 py-3">
+            <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center">
+              <Icon name="User" size={16} className="text-muted-foreground" />
+            </div>
+            <div className="flex-1">
+              <p className="text-sm font-medium text-sidebar-foreground">Администратор</p>
+            </div>
+          </div>
+        </div>
+
         <nav className="flex-1 p-4 space-y-1">
           {menuItems.map((item) => (
             <button
@@ -46,17 +57,6 @@ const Index = () => {
             </button>
           ))}
         </nav>
-
-        <div className="p-4 border-t border-sidebar-border">
-          <div className="flex items-center gap-3 px-4 py-3">
-            <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center">
-              <Icon name="User" size={16} className="text-muted-foreground" />
-            </div>
-            <div className="flex-1">
-              <p className="text-sm font-medium text-sidebar-foreground">Администратор</p>
-            </div>
-          </div>
-        </div>
       </aside>
 
       <main className="flex-1 overflow-auto flex flex-col">
