@@ -249,7 +249,7 @@ export default function ContractsTable({ onBack }: ContractsTableProps) {
             </tr>
             <tr>
               <td colspan="3" class="text-red">${contractData.driverName}</td>
-              <td colspan="3" class="text-red">${contractData.driverLicense} ${contractData.driverPhone}</td>
+              <td colspan="3" class="text-red">${contractData.driverLicense}</td>
             </tr>
             <tr>
               <td style="width: 10%;">паспорт</td>
