@@ -679,6 +679,18 @@ const Index = () => {
                     <option value="tk3">ТК Транзит</option>
                   </select>
                 </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-900 mb-2">
+                    Водитель <span className="text-red-500">*</span>
+                  </label>
+                  <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white">
+                    <option value="">Выберите водителя</option>
+                    <option value="driver1">Иванов Иван Иванович</option>
+                    <option value="driver2">Петров Петр Петрович</option>
+                    <option value="driver3">Сидоров Сидор Сидорович</option>
+                  </select>
+                </div>
               </div>
 
               <div className="flex items-center justify-end gap-3 mt-6 pt-6 border-t border-gray-200">
