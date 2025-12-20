@@ -3,10 +3,16 @@ import Icon from '@/components/ui/icon';
 
 const menuItems = [
   { id: 'orders', label: 'Заказы', icon: 'ClipboardList' },
-  { id: 'carrier', label: 'Перевозчик', icon: 'Building2' },
-  { id: 'drivers', label: 'Водители', icon: 'Users' },
-  { id: 'vehicles', label: 'Автомобили', icon: 'Truck' },
-  { id: 'customers', label: 'Заказчики', icon: 'Contact' },
+  { 
+    id: 'reference', 
+    label: 'Справочник', 
+    icon: 'Book',
+    submenu: [
+      { id: 'drivers', label: 'Водители', icon: 'Users' },
+      { id: 'vehicles', label: 'Автомобили', icon: 'Truck' },
+      { id: 'customers', label: 'Заказчики', icon: 'Contact' },
+    ]
+  },
   { id: 'documents', label: 'Документы', icon: 'FileText' },
   { id: 'overview', label: 'Обзор', icon: 'Activity' },
   { id: 'settings', label: 'Настройки', icon: 'Settings' },
@@ -15,6 +21,7 @@ const menuItems = [
 const Index = () => {
   const [activeSection, setActiveSection] = useState('orders');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isReferenceOpen, setIsReferenceOpen] = useState(false);
 
   return (
     <div className="flex h-screen bg-background">
@@ -44,21 +51,58 @@ const Index = () => {
 
         <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
           {menuItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => {
-                setActiveSection(item.id);
-                setIsMobileMenuOpen(false);
-              }}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all ${
-                activeSection === item.id
-                  ? 'bg-primary text-white'
-                  : 'text-sidebar-foreground hover:bg-sidebar-accent'
-              }`}
-            >
-              <Icon name={item.icon} size={20} />
-              <span className="font-medium">{item.label}</span>
-            </button>
+            <div key={item.id}>
+              {item.submenu ? (
+                <div>
+                  <button
+                    onClick={() => setIsReferenceOpen(!isReferenceOpen)}
+                    className="w-full flex items-center justify-between gap-3 px-4 py-3 rounded-lg text-left transition-all text-sidebar-foreground hover:bg-sidebar-accent"
+                  >
+                    <div className="flex items-center gap-3">
+                      <Icon name={item.icon} size={20} />
+                      <span className="font-medium">{item.label}</span>
+                    </div>
+                    <Icon name={isReferenceOpen ? "ChevronDown" : "ChevronRight"} size={16} />
+                  </button>
+                  {isReferenceOpen && (
+                    <div className="ml-4 mt-1 space-y-1">
+                      {item.submenu.map((subItem) => (
+                        <button
+                          key={subItem.id}
+                          onClick={() => {
+                            setActiveSection(subItem.id);
+                            setIsMobileMenuOpen(false);
+                          }}
+                          className={`w-full flex items-center gap-3 px-4 py-2 rounded-lg text-left transition-all ${
+                            activeSection === subItem.id
+                              ? 'bg-primary text-white'
+                              : 'text-sidebar-foreground hover:bg-sidebar-accent'
+                          }`}
+                        >
+                          <Icon name={subItem.icon} size={18} />
+                          <span className="font-medium text-sm">{subItem.label}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <button
+                  onClick={() => {
+                    setActiveSection(item.id);
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all ${
+                    activeSection === item.id
+                      ? 'bg-primary text-white'
+                      : 'text-sidebar-foreground hover:bg-sidebar-accent'
+                  }`}
+                >
+                  <Icon name={item.icon} size={20} />
+                  <span className="font-medium">{item.label}</span>
+                </button>
+              )}
+            </div>
           ))}
         </nav>
       </aside>
@@ -80,7 +124,8 @@ const Index = () => {
               <Icon name="Menu" size={24} className="text-gray-900" />
             </button>
             <h2 className="text-lg sm:text-xl font-bold text-gray-900">
-              {menuItems.find(item => item.id === activeSection)?.label}
+              {menuItems.find(item => item.id === activeSection)?.label || 
+               menuItems.find(item => item.submenu?.some(sub => sub.id === activeSection))?.submenu?.find(sub => sub.id === activeSection)?.label}
             </h2>
           </div>
           {activeSection === 'orders' && (
@@ -169,7 +214,8 @@ const Index = () => {
                   <Icon name="Construction" size={40} className="text-muted-foreground sm:w-12 sm:h-12" />
                 </div>
                 <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-2">Страница в разработке</h3>
-                <p className="text-sm sm:text-base text-muted-foreground">Раздел "{menuItems.find(item => item.id === activeSection)?.label}" скоро будет доступен</p>
+                <p className="text-sm sm:text-base text-muted-foreground">Раздел "{menuItems.find(item => item.id === activeSection)?.label || 
+                  menuItems.find(item => item.submenu?.some(sub => sub.id === activeSection))?.submenu?.find(sub => sub.id === activeSection)?.label}" скоро будет доступен</p>
               </div>
             </div>
           )}
