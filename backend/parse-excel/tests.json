@@ -1,0 +1,11 @@
+[
+  {
+    "name": "Parse Excel Contract Template",
+    "request": {
+      "method": "GET"
+    },
+    "expected": {
+      "statusCode": 200
+    }
+  }
+]
