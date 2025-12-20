@@ -139,11 +139,19 @@ export default function ContractsTable({ onBack }: ContractsTableProps) {
               border-collapse: collapse; 
               margin-bottom: 6px;
               font-size: 11px;
+              border: 1px solid black;
             }
             td { 
-              border: 1px solid black; 
+              border-left: 1px solid black;
+              border-bottom: 1px solid black; 
               padding: 3px 6px;
               vertical-align: top;
+            }
+            td:first-child {
+              border-left: none;
+            }
+            tr:last-child td {
+              border-bottom: none;
             }
             .bg-gray { background-color: #e5e7eb; }
             .font-bold { font-weight: bold; }
