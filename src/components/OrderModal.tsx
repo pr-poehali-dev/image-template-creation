@@ -6,18 +6,19 @@ interface OrderModalProps {
   onClose: () => void;
 }
 
+interface Customs {
+  id: string;
+  cargoType: string;
+  customsPlace: string;
+}
+
 interface Route {
   id: string;
   loadingDate: string;
   from: string;
   to: string;
   intermediatePoints: string[];
-}
-
-interface Customs {
-  id: string;
-  cargoType: string;
-  customsPlace: string;
+  customsItems: Customs[];
 }
 
 const OrderModal = ({ isOpen, onClose }: OrderModalProps) => {
@@ -29,7 +30,6 @@ const OrderModal = ({ isOpen, onClose }: OrderModalProps) => {
   const [note, setNote] = useState('');
   const [files, setFiles] = useState<File[]>([]);
   const [routes, setRoutes] = useState<Route[]>([]);
-  const [customsItems, setCustomsItems] = useState<Customs[]>([]);
   const [selectedCar, setSelectedCar] = useState('');
   const [driver, setDriver] = useState('');
   const [driverPhone, setDriverPhone] = useState('');
@@ -39,7 +39,7 @@ const OrderModal = ({ isOpen, onClose }: OrderModalProps) => {
   if (!isOpen) return null;
 
   const addRoute = () => {
-    setRoutes([...routes, { id: Date.now().toString(), loadingDate: '', from: '', to: '', intermediatePoints: [] }]);
+    setRoutes([...routes, { id: Date.now().toString(), loadingDate: '', from: '', to: '', intermediatePoints: [], customsItems: [] }]);
   };
 
   const removeRoute = (id: string) => {
@@ -54,12 +54,20 @@ const OrderModal = ({ isOpen, onClose }: OrderModalProps) => {
     ));
   };
 
-  const addCustoms = () => {
-    setCustomsItems([...customsItems, { id: Date.now().toString(), cargoType: '', customsPlace: '' }]);
+  const addCustomsToRoute = (routeId: string) => {
+    setRoutes(routes.map(r => 
+      r.id === routeId 
+        ? { ...r, customsItems: [...r.customsItems, { id: Date.now().toString(), cargoType: '', customsPlace: '' }] }
+        : r
+    ));
   };
 
-  const removeCustoms = (id: string) => {
-    setCustomsItems(customsItems.filter(c => c.id !== id));
+  const removeCustomsFromRoute = (routeId: string, customsId: string) => {
+    setRoutes(routes.map(r => 
+      r.id === routeId 
+        ? { ...r, customsItems: r.customsItems.filter(c => c.id !== customsId) }
+        : r
+    ));
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -282,55 +290,73 @@ const OrderModal = ({ isOpen, onClose }: OrderModalProps) => {
                           </div>
                         )}
                       </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
 
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <label className="text-sm font-medium text-gray-700">Таможня</label>
-                <button
-                  onClick={addCustoms}
-                  className="text-primary hover:text-primary/80 flex items-center gap-1 text-sm font-medium"
-                >
-                  <Icon name="Plus" size={16} />
-                  Добавить
-                </button>
-              </div>
-              {customsItems.length === 0 ? (
-                <p className="text-sm text-gray-500 italic">
-                  Таможня не добавлена
-                </p>
-              ) : (
-                <div className="space-y-4">
-                  {customsItems.map((item) => (
-                    <div key={item.id} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
-                      <div className="flex items-center justify-between mb-4">
-                        <h4 className="font-semibold text-gray-900">Таможня</h4>
-                        <button
-                          onClick={() => removeCustoms(item.id)}
-                          className="text-red-600 hover:text-red-700 transition-colors"
-                        >
-                          <Icon name="Trash2" size={20} />
-                        </button>
-                      </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Тип груза</label>
-                          <input
-                            type="text"
-                            className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                          />
+                      <div>
+                        <div className="flex items-center justify-between mb-2">
+                          <label className="text-sm font-medium text-gray-700">Таможня</label>
+                          <button
+                            onClick={() => addCustomsToRoute(route.id)}
+                            className="text-primary hover:text-primary/80 flex items-center gap-1 text-sm"
+                          >
+                            <Icon name="Plus" size={16} />
+                            Добавить
+                          </button>
                         </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Место таможни</label>
-                          <input
-                            type="text"
-                            className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                          />
-                        </div>
+                        {route.customsItems.length === 0 ? (
+                          <p className="text-sm text-gray-500 italic">
+                            Таможня не добавлена
+                          </p>
+                        ) : (
+                          <div className="space-y-3">
+                            {route.customsItems.map((customs) => (
+                              <div key={customs.id} className="border border-gray-300 rounded-lg p-3 bg-white">
+                                <div className="flex items-center justify-between mb-3">
+                                  <h5 className="text-sm font-semibold text-gray-900">Таможня</h5>
+                                  <button
+                                    onClick={() => removeCustomsFromRoute(route.id, customs.id)}
+                                    className="text-red-600 hover:text-red-700 transition-colors"
+                                  >
+                                    <Icon name="Trash2" size={18} />
+                                  </button>
+                                </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                  <div>
+                                    <label className="block text-xs font-medium text-gray-700 mb-1">Тип груза</label>
+                                    <input
+                                      type="text"
+                                      placeholder="Лук"
+                                      value={customs.cargoType}
+                                      onChange={(e) => setRoutes(routes.map(r => 
+                                        r.id === route.id 
+                                          ? { ...r, customsItems: r.customsItems.map(c => 
+                                              c.id === customs.id ? { ...c, cargoType: e.target.value } : c
+                                            )}
+                                          : r
+                                      ))}
+                                      className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+                                    />
+                                  </div>
+                                  <div>
+                                    <label className="block text-xs font-medium text-gray-700 mb-1">Место таможни</label>
+                                    <input
+                                      type="text"
+                                      placeholder="Москва"
+                                      value={customs.customsPlace}
+                                      onChange={(e) => setRoutes(routes.map(r => 
+                                        r.id === route.id 
+                                          ? { ...r, customsItems: r.customsItems.map(c => 
+                                              c.id === customs.id ? { ...c, customsPlace: e.target.value } : c
+                                            )}
+                                          : r
+                                      ))}
+                                      className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     </div>
                   ))}
