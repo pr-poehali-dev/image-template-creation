@@ -1,4 +1,6 @@
 import Icon from '@/components/ui/icon';
+import ReferenceDashboard from './ReferenceDashboard';
+import DocumentsDashboard from './DocumentsDashboard';
 
 interface MenuItem {
   id: string;
@@ -14,6 +16,7 @@ interface MenuItem {
 interface MainContentProps {
   menuItems: MenuItem[];
   activeSection: string;
+  setActiveSection: (section: string) => void;
   setIsMobileMenuOpen: (open: boolean) => void;
   setIsDriverModalOpen: (open: boolean) => void;
   setIsVehicleModalOpen: (open: boolean) => void;
@@ -24,6 +27,7 @@ interface MainContentProps {
 const MainContent = ({
   menuItems,
   activeSection,
+  setActiveSection,
   setIsMobileMenuOpen,
   setIsDriverModalOpen,
   setIsVehicleModalOpen,
@@ -60,8 +64,13 @@ const MainContent = ({
           </button>
         )}
       </header>
-      <div className="flex-1 bg-white px-4 sm:px-6 lg:px-8 py-6">
-        {activeSection === 'orders' ? (
+      <div className="flex-1 bg-white">
+        {activeSection === 'reference' ? (
+          <ReferenceDashboard onNavigate={setActiveSection} />
+        ) : activeSection === 'documents' ? (
+          <DocumentsDashboard onNavigate={setActiveSection} />
+        ) : activeSection === 'orders' ? (
+          <div className="px-4 sm:px-6 lg:px-8 py-6">
           <div className="space-y-4">
             <div className="relative">
               <Icon name="Search" size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -132,7 +141,9 @@ const MainContent = ({
               </div>
             </div>
           </div>
+          </div>
         ) : activeSection === 'drivers' ? (
+          <div className="px-4 sm:px-6 lg:px-8 py-6">
           <div className="space-y-4">
             <div className="relative">
               <Icon name="Search" size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -184,7 +195,9 @@ const MainContent = ({
               </div>
             </div>
           </div>
+          </div>
         ) : activeSection === 'vehicles' ? (
+          <div className="px-4 sm:px-6 lg:px-8 py-6">
           <div className="space-y-4">
             <div className="relative">
               <Icon name="Search" size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -238,7 +251,9 @@ const MainContent = ({
               </div>
             </div>
           </div>
+          </div>
         ) : activeSection === 'customers' ? (
+          <div className="px-4 sm:px-6 lg:px-8 py-6">
           <div className="space-y-4">
             <div className="relative">
               <Icon name="Search" size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -298,7 +313,9 @@ const MainContent = ({
               </div>
             </div>
           </div>
+          </div>
         ) : (
+          <div className="px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-center h-full">
             <div className="text-center">
               <div className="w-20 h-20 sm:w-24 sm:h-24 bg-muted rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
@@ -308,6 +325,7 @@ const MainContent = ({
               <p className="text-sm sm:text-base text-muted-foreground">Раздел "{menuItems.find(item => item.id === activeSection)?.label || 
                 menuItems.find(item => item.submenu?.some(sub => sub.id === activeSection))?.submenu?.find(sub => sub.id === activeSection)?.label}" скоро будет доступен</p>
             </div>
+          </div>
           </div>
         )}
       </div>

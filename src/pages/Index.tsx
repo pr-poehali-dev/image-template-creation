@@ -89,6 +89,7 @@ const Index = () => {
       <MainContent
         menuItems={menuItems}
         activeSection={activeSection}
+        setActiveSection={setActiveSection}
         setIsMobileMenuOpen={setIsMobileMenuOpen}
         setIsDriverModalOpen={setIsDriverModalOpen}
         setIsVehicleModalOpen={setIsVehicleModalOpen}
