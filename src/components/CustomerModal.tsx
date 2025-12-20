@@ -189,21 +189,12 @@ const CustomerModal = ({
             </div>
 
             <div className="border-t border-gray-200 pt-4">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <Icon name="Landmark" size={18} className="text-gray-600" />
-                  <span className="text-sm font-medium text-gray-600">Банковские реквизиты</span>
-                </div>
-                <button
-                  onClick={addBankAccount}
-                  className="flex items-center gap-2 px-3 py-2 text-primary hover:bg-primary/10 rounded-lg transition-colors"
-                >
-                  <Icon name="Plus" size={18} />
-                  <span className="text-sm font-medium">Добавить счет</span>
-                </button>
+              <div className="flex items-center gap-2 mb-4">
+                <Icon name="Landmark" size={18} className="text-gray-600" />
+                <span className="text-sm font-medium text-gray-600">Банковские реквизиты</span>
               </div>
 
-              {bankAccounts.map((account, index) => (
+              {bankAccounts.length > 0 && bankAccounts.map((account, index) => (
                 <div key={account.id} className="border border-gray-200 rounded-lg p-4 mb-4 relative">
                   <button
                     onClick={() => removeBankAccount(account.id)}
@@ -263,24 +254,23 @@ const CustomerModal = ({
                   </div>
                 </div>
               ))}
+
+              <button
+                onClick={addBankAccount}
+                className="w-full py-3 border-2 border-dashed border-gray-300 rounded-lg text-primary hover:border-primary hover:bg-primary/5 flex items-center justify-center gap-2 font-medium transition-colors"
+              >
+                <Icon name="Plus" size={20} />
+                Добавить счет
+              </button>
             </div>
 
             <div className="border-t border-gray-200 pt-4">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <Icon name="MapPin" size={18} className="text-gray-600" />
-                  <span className="text-sm font-medium text-gray-600">Адрес доставки</span>
-                </div>
-                <button
-                  onClick={addDeliveryAddress}
-                  className="flex items-center gap-2 px-3 py-2 text-primary hover:bg-primary/10 rounded-lg transition-colors"
-                >
-                  <Icon name="Plus" size={18} />
-                  <span className="text-sm font-medium">Добавить адрес</span>
-                </button>
+              <div className="flex items-center gap-2 mb-4">
+                <Icon name="MapPin" size={18} className="text-gray-600" />
+                <span className="text-sm font-medium text-gray-600">Адрес доставки</span>
               </div>
 
-              {deliveryAddresses.map((address, index) => (
+              {deliveryAddresses.length > 0 && deliveryAddresses.map((address, index) => (
                 <div key={address.id} className="border border-gray-200 rounded-lg p-4 mb-4 relative">
                   <button
                     onClick={() => removeDeliveryAddress(address.id)}
@@ -341,6 +331,14 @@ const CustomerModal = ({
                   </div>
                 </div>
               ))}
+
+              <button
+                onClick={addDeliveryAddress}
+                className="w-full py-3 border-2 border-dashed border-gray-300 rounded-lg text-primary hover:border-primary hover:bg-primary/5 flex items-center justify-center gap-2 font-medium transition-colors"
+              >
+                <Icon name="Plus" size={20} />
+                Добавить адрес
+              </button>
             </div>
           </div>
 
