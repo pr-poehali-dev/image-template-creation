@@ -256,22 +256,10 @@ const OrderModal = ({ isOpen, onClose }: OrderModalProps) => {
             </div>
 
             <div>
-              <div className="flex items-center justify-between mb-4">
-                <label className="text-sm font-medium text-gray-700">Маршруты</label>
-                <button
-                  onClick={addRoute}
-                  className="text-primary hover:text-primary/80 flex items-center gap-1 text-sm font-medium"
-                >
-                  <Icon name="Plus" size={16} />
-                  Добавить
-                </button>
-              </div>
-              {routes.length === 0 ? (
-                <p className="text-sm text-gray-500 italic">
-                  Маршруты не добавлены
-                </p>
-              ) : (
-                <div className="space-y-4">
+              <label className="block text-sm font-medium text-gray-700 mb-4">Маршруты</label>
+              
+              {routes.length > 0 && (
+                <div className="space-y-4 mb-4">
                   {routes.map((route, index) => (
                     <div key={route.id} className="border border-gray-200 rounded-lg p-4 space-y-4 bg-gray-50">
                       <div className="flex items-center justify-between">
@@ -563,6 +551,14 @@ const OrderModal = ({ isOpen, onClose }: OrderModalProps) => {
                   ))}
                 </div>
               )}
+
+              <button
+                onClick={addRoute}
+                className="w-full py-3 border-2 border-dashed border-gray-300 rounded-lg text-primary hover:border-primary hover:bg-primary/5 flex items-center justify-center gap-2 font-medium transition-colors"
+              >
+                <Icon name="Plus" size={20} />
+                Добавить маршрут
+              </button>
             </div>
           </div>
         </div>
