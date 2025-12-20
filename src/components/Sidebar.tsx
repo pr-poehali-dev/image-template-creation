@@ -16,9 +16,11 @@ interface SidebarProps {
   activeSection: string;
   isMobileMenuOpen: boolean;
   isReferenceOpen: boolean;
+  isDocumentsOpen: boolean;
   setActiveSection: (section: string) => void;
   setIsMobileMenuOpen: (open: boolean) => void;
   setIsReferenceOpen: (open: boolean) => void;
+  setIsDocumentsOpen: (open: boolean) => void;
   isSubmenuActive: (item: MenuItem) => boolean;
 }
 
@@ -27,9 +29,11 @@ const Sidebar = ({
   activeSection,
   isMobileMenuOpen,
   isReferenceOpen,
+  isDocumentsOpen,
   setActiveSection,
   setIsMobileMenuOpen,
   setIsReferenceOpen,
+  setIsDocumentsOpen,
   isSubmenuActive
 }: SidebarProps) => {
   return (
@@ -63,7 +67,13 @@ const Sidebar = ({
             {item.submenu ? (
               <div>
                 <button
-                  onClick={() => setIsReferenceOpen(!isReferenceOpen)}
+                  onClick={() => {
+                    if (item.id === 'reference') {
+                      setIsReferenceOpen(!isReferenceOpen);
+                    } else if (item.id === 'documents') {
+                      setIsDocumentsOpen(!isDocumentsOpen);
+                    }
+                  }}
                   className={`w-full flex items-center justify-between gap-3 px-4 py-3 rounded-lg text-left transition-all ${
                     isSubmenuActive(item) ? 'bg-sidebar-accent' : ''
                   } text-sidebar-foreground hover:bg-sidebar-accent`}
@@ -72,9 +82,9 @@ const Sidebar = ({
                     <Icon name={item.icon} size={20} />
                     <span className="font-medium">{item.label}</span>
                   </div>
-                  <Icon name={isReferenceOpen || isSubmenuActive(item) ? "ChevronDown" : "ChevronRight"} size={16} />
+                  <Icon name={(item.id === 'reference' && (isReferenceOpen || isSubmenuActive(item))) || (item.id === 'documents' && (isDocumentsOpen || isSubmenuActive(item))) ? "ChevronDown" : "ChevronRight"} size={16} />
                 </button>
-                {(isReferenceOpen || isSubmenuActive(item)) && (
+                {((item.id === 'reference' && (isReferenceOpen || isSubmenuActive(item))) || (item.id === 'documents' && (isDocumentsOpen || isSubmenuActive(item)))) && (
                   <div className="ml-4 mt-1 space-y-1">
                     {item.submenu.map((subItem) => (
                       <button

@@ -15,7 +15,16 @@ const menuItems = [
       { id: 'customers', label: 'Контрагенты', icon: 'Contact' },
     ]
   },
-  { id: 'documents', label: 'Документы', icon: 'FileText' },
+  { 
+    id: 'documents', 
+    label: 'Документы', 
+    icon: 'FileText',
+    submenu: [
+      { id: 'contract-application', label: 'Договор-Заявка', icon: 'FileSignature' },
+      { id: 'ttn', label: 'ТТН', icon: 'FileCheck' },
+      { id: 'upd', label: 'УПД', icon: 'FileBarChart' },
+    ]
+  },
   { id: 'overview', label: 'Обзор', icon: 'Activity' },
   { id: 'settings', label: 'Настройки', icon: 'Settings' },
 ];
@@ -30,6 +39,7 @@ const Index = () => {
   const [deliveryAddresses, setDeliveryAddresses] = useState<Array<{id: number, name: string, address: string, contact: string, phone: string, isMain: boolean}>>([]);
   const [bankAccounts, setBankAccounts] = useState<Array<{id: number, bankName: string, accountNumber: string, bik: string, corrAccount: string}>>([]);
   const [isReferenceOpen, setIsReferenceOpen] = useState(false);
+  const [isDocumentsOpen, setIsDocumentsOpen] = useState(false);
   
   const isSubmenuActive = (item: any) => {
     return item.submenu?.some((sub: any) => sub.id === activeSection);
@@ -60,9 +70,11 @@ const Index = () => {
         activeSection={activeSection}
         isMobileMenuOpen={isMobileMenuOpen}
         isReferenceOpen={isReferenceOpen}
+        isDocumentsOpen={isDocumentsOpen}
         setActiveSection={setActiveSection}
         setIsMobileMenuOpen={setIsMobileMenuOpen}
         setIsReferenceOpen={setIsReferenceOpen}
+        setIsDocumentsOpen={setIsDocumentsOpen}
         isSubmenuActive={isSubmenuActive}
       />
 
