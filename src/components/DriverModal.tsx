@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Icon from '@/components/ui/icon';
 import ConfirmDialog from './ConfirmDialog';
+import ModalFooter from './ModalFooter';
 
 interface DriverModalProps {
   isOpen: boolean;
@@ -16,6 +17,11 @@ const DriverModal = ({ isOpen, onClose }: DriverModalProps) => {
 
   const confirmCancel = () => {
     setShowCancelConfirm(false);
+    onClose();
+  };
+
+  const handleSave = () => {
+    console.log('Сохранение водителя');
     onClose();
   };
 
@@ -207,17 +213,7 @@ const DriverModal = ({ isOpen, onClose }: DriverModalProps) => {
             </div>
           </div>
 
-          <div className="flex items-center justify-end gap-3 mt-6 pt-6 border-t border-gray-200">
-            <button
-              onClick={handleCancel}
-              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
-            >
-              Отмена
-            </button>
-            <button className="px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg transition-colors font-medium">
-              Создать
-            </button>
-          </div>
+          <ModalFooter onCancel={handleCancel} onSave={handleSave} />
         </div>
         </div>
       </div>

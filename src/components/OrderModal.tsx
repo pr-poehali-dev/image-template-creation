@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Icon from './ui/icon';
 import ConfirmDialog from './ConfirmDialog';
+import ModalFooter from './ModalFooter';
 
 interface OrderModalProps {
   isOpen: boolean;
@@ -123,6 +124,11 @@ const OrderModal = ({ isOpen, onClose }: OrderModalProps) => {
 
   const confirmCancel = () => {
     setShowCancelConfirm(false);
+    onClose();
+  };
+
+  const handleSave = () => {
+    console.log('Сохранение заказа');
     onClose();
   };
 
@@ -600,23 +606,7 @@ const OrderModal = ({ isOpen, onClose }: OrderModalProps) => {
           </div>
         </div>
 
-        <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-200 bg-gray-50">
-          <button
-            onClick={handleCancel}
-            className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 font-medium text-gray-700 transition-colors"
-          >
-            Отмена
-          </button>
-          <button
-            onClick={() => {
-              console.log('Сохранение заказа');
-              onClose();
-            }}
-            className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 font-medium transition-colors"
-          >
-            Сохранить заказ
-          </button>
-        </div>
+        <ModalFooter onCancel={handleCancel} onSave={handleSave} />
         </div>
       </div>
     </>
