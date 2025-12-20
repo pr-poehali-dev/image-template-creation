@@ -104,7 +104,7 @@ export default function ContractsTable({ onBack }: ContractsTableProps) {
       paymentTerms: 'без НДС',
       paymentMethod: '5-7 б/д',
       driverName: 'Шильков Алексей Леонидович',
-      driverLicense: 'ВУ 9940 381012 89120266424',
+      driverLicenseAndPhone: 'ВУ 9940 381012 89120266424',
       driverPassport: '9421 № 975426 выдан 03.02.2022г, МВД по Удмуртской Республике код подразделения 180-010',
       vehicleNumber: 'Вольво H777AP/18',
       vehicleTrailer: 'прицеп АО0714/18',
@@ -248,7 +248,7 @@ export default function ContractsTable({ onBack }: ContractsTableProps) {
             </tr>
             <tr>
               <td colspan="3" class="text-red">${contractData.driverName}</td>
-              <td colspan="3" class="text-red">${contractData.driverLicense}</td>
+              <td colspan="3" class="text-red">${contractData.driverLicenseAndPhone}</td>
             </tr>
             <tr>
               <td style="width: 10%;">паспорт</td>
