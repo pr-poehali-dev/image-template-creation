@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import Icon from '@/components/ui/icon';
+import ConfirmDialog from './ConfirmDialog';
 
 interface VehicleModalProps {
   isOpen: boolean;
@@ -6,10 +8,32 @@ interface VehicleModalProps {
 }
 
 const VehicleModal = ({ isOpen, onClose }: VehicleModalProps) => {
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+
+  const handleCancel = () => {
+    setShowCancelConfirm(true);
+  };
+
+  const confirmCancel = () => {
+    setShowCancelConfirm(false);
+    onClose();
+  };
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+    <>
+      <ConfirmDialog
+        isOpen={showCancelConfirm}
+        title="Отменить заполнение?"
+        message="Все введенные данные будут потеряны. Вы уверены?"
+        confirmText="Да, отменить"
+        cancelText="Продолжить заполнение"
+        onConfirm={confirmCancel}
+        onCancel={() => setShowCancelConfirm(false)}
+      />
+      
+      <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
           <h3 className="text-xl font-bold text-gray-900">Создать</h3>
@@ -109,7 +133,7 @@ const VehicleModal = ({ isOpen, onClose }: VehicleModalProps) => {
 
           <div className="flex items-center justify-end gap-3 mt-6 pt-6 border-t border-gray-200">
             <button
-              onClick={onClose}
+              onClick={handleCancel}
               className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
             >
               Отмена
@@ -120,7 +144,7 @@ const VehicleModal = ({ isOpen, onClose }: VehicleModalProps) => {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

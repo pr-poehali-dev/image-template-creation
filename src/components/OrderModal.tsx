@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Icon from './ui/icon';
+import ConfirmDialog from './ConfirmDialog';
 
 interface OrderModalProps {
   isOpen: boolean;
@@ -44,6 +45,7 @@ const OrderModal = ({ isOpen, onClose }: OrderModalProps) => {
   const [files, setFiles] = useState<File[]>([]);
   const [routes, setRoutes] = useState<Route[]>([]);
   const [carInputFocus, setCarInputFocus] = useState<{[key: string]: boolean}>({});
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
 
   const carsList = [
     'Mercedes-Benz Actros 1845',
@@ -115,8 +117,28 @@ const OrderModal = ({ isOpen, onClose }: OrderModalProps) => {
     }
   };
 
+  const handleCancel = () => {
+    setShowCancelConfirm(true);
+  };
+
+  const confirmCancel = () => {
+    setShowCancelConfirm(false);
+    onClose();
+  };
+
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+    <>
+      <ConfirmDialog
+        isOpen={showCancelConfirm}
+        title="Отменить заполнение?"
+        message="Все введенные данные будут потеряны. Вы уверены?"
+        confirmText="Да, отменить"
+        cancelText="Продолжить заполнение"
+        onConfirm={confirmCancel}
+        onCancel={() => setShowCancelConfirm(false)}
+      />
+      
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-lg w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col shadow-lg">
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <h2 className="text-2xl font-bold text-gray-900">Управление заказами</h2>
@@ -580,7 +602,7 @@ const OrderModal = ({ isOpen, onClose }: OrderModalProps) => {
 
         <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-200 bg-gray-50">
           <button
-            onClick={onClose}
+            onClick={handleCancel}
             className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 font-medium text-gray-700 transition-colors"
           >
             Отмена
@@ -596,7 +618,7 @@ const OrderModal = ({ isOpen, onClose }: OrderModalProps) => {
           </button>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
