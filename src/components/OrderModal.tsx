@@ -130,138 +130,150 @@ const OrderModal = ({ isOpen, onClose }: OrderModalProps) => {
 
         <div className="flex-1 overflow-y-auto p-6">
           <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="flex gap-2">
-                <div className="w-32">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Зона <span className="text-red-600">*</span>
-                  </label>
-                  <select
-                    value={orderZone}
-                    onChange={(e) => setOrderZone(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  >
-                    <option value="EU">EU</option>
-                    <option value="RU">RU</option>
-                    <option value="CH">CH</option>
-                  </select>
+            <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+              <div className="flex items-center gap-2 mb-4">
+                <Icon name="FileText" size={20} className="text-gray-600" />
+                <h3 className="text-lg font-semibold text-gray-900">Характеристика заказа</h3>
+              </div>
+
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="flex gap-2">
+                    <div className="w-32">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Зона <span className="text-red-600">*</span>
+                      </label>
+                      <select
+                        value={orderZone}
+                        onChange={(e) => setOrderZone(e.target.value)}
+                        className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      >
+                        <option value="EU">EU</option>
+                        <option value="RU">RU</option>
+                        <option value="CH">CH</option>
+                      </select>
+                    </div>
+                    <div className="flex-1">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        № заказа <span className="text-red-600">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="001"
+                        value={orderNumber}
+                        onChange={(e) => setOrderNumber(e.target.value)}
+                        className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Дата заказа <span className="text-red-600">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="ДД-ММ-ГГГГ"
+                      value={orderDate}
+                      onChange={(e) => setOrderDate(e.target.value)}
+                      className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    />
+                  </div>
                 </div>
-                <div className="flex-1">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    № заказа <span className="text-red-600">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="001"
-                    value={orderNumber}
-                    onChange={(e) => setOrderNumber(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Инвойс <span className="text-red-600">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="INV-12345"
+                      value={invoice}
+                      onChange={(e) => setInvoice(e.target.value)}
+                      className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Трак <span className="text-red-600">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="TRK-67890"
+                      value={track}
+                      onChange={(e) => setTrack(e.target.value)}
+                      className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Характер груза <span className="text-red-600">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Лук, Нобилис"
+                      value={cargoType}
+                      onChange={(e) => setCargoType(e.target.value)}
+                      className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Вес груза (кг) <span className="text-red-600">*</span>
+                    </label>
+                    <input
+                      type="number"
+                      placeholder="20000"
+                      value={cargoWeight}
+                      onChange={(e) => setCargoWeight(e.target.value)}
+                      className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Примечание</label>
+                  <textarea
+                    placeholder="Дополнительная информация о заказе..."
+                    value={note}
+                    onChange={(e) => setNote(e.target.value)}
+                    rows={1}
+                    className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-y min-h-[42px]"
                   />
                 </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Дата заказа <span className="text-red-600">*</span>
-                </label>
-                <input
-                  type="text"
-                  placeholder="ДД-ММ-ГГГГ"
-                  value={orderDate}
-                  onChange={(e) => setOrderDate(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                />
-              </div>
-            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Инвойс <span className="text-red-600">*</span>
-                </label>
-                <input
-                  type="text"
-                  placeholder="INV-12345"
-                  value={invoice}
-                  onChange={(e) => setInvoice(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Трак <span className="text-red-600">*</span>
-                </label>
-                <input
-                  type="text"
-                  placeholder="TRK-67890"
-                  value={track}
-                  onChange={(e) => setTrack(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Характер груза <span className="text-red-600">*</span>
-                </label>
-                <input
-                  type="text"
-                  placeholder="Лук, Нобилис"
-                  value={cargoType}
-                  onChange={(e) => setCargoType(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Вес груза (кг) <span className="text-red-600">*</span>
-                </label>
-                <input
-                  type="number"
-                  placeholder="20000"
-                  value={cargoWeight}
-                  onChange={(e) => setCargoWeight(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Примечание</label>
-              <textarea
-                placeholder="Дополнительная информация о заказе..."
-                value={note}
-                onChange={(e) => setNote(e.target.value)}
-                rows={1}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-y min-h-[42px]"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Прикрепить файлы (накладные, заявки)
-              </label>
-              <input
-                type="file"
-                multiple
-                onChange={handleFileChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-primary file:text-white file:cursor-pointer hover:file:bg-primary/90"
-              />
-              {files.length > 0 && (
-                <div className="mt-2 text-sm text-gray-600">
-                  Выбрано файлов: {files.length}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Прикрепить файлы (накладные, заявки)
+                  </label>
+                  <input
+                    type="file"
+                    multiple
+                    onChange={handleFileChange}
+                    className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-primary file:text-white file:cursor-pointer hover:file:bg-primary/90"
+                  />
+                  {files.length > 0 && (
+                    <div className="mt-2 text-sm text-gray-600">
+                      Выбрано файлов: {files.length}
+                    </div>
+                  )}
                 </div>
-              )}
+              </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-4">Маршруты</label>
+            <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+              <div className="flex items-center gap-2 mb-4">
+                <Icon name="Route" size={20} className="text-gray-600" />
+                <h3 className="text-lg font-semibold text-gray-900">Маршруты</h3>
+              </div>
               
               {routes.length > 0 && (
                 <div className="space-y-4 mb-4">
                   {routes.map((route, index) => (
-                    <div key={route.id} className="border border-gray-200 rounded-lg p-4 space-y-4 bg-gray-50">
+                    <div key={route.id} className="border border-gray-200 rounded-lg p-4 space-y-4 bg-white">
                       <div className="flex items-center justify-between">
                         <h3 className="text-lg font-semibold text-gray-900">Маршрут {index + 1}</h3>
                         <button
@@ -378,9 +390,12 @@ const OrderModal = ({ isOpen, onClose }: OrderModalProps) => {
                         )}
                       </div>
 
-                      <div>
+                      <div className="border-t border-gray-300 pt-4 mt-4">
                         <div className="flex items-center justify-between mb-2">
-                          <label className="text-sm font-medium text-gray-700">Таможня</label>
+                          <div className="flex items-center gap-2">
+                            <Icon name="Shield" size={18} className="text-gray-600" />
+                            <label className="text-sm font-medium text-gray-700">Таможня</label>
+                          </div>
                           <button
                             onClick={() => addCustomsToRoute(route.id)}
                             className="text-primary hover:text-primary/80 flex items-center gap-1 text-sm"
