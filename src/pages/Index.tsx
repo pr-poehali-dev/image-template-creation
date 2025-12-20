@@ -17,26 +17,26 @@ const Index = () => {
 
   return (
     <div className="flex h-screen bg-background">
-      <aside className="w-64 bg-white border-r border-gray-200 flex flex-col">
-        <div className="px-4 py-3 border-b border-gray-200">
+      <aside className="w-64 bg-sidebar border-r border-sidebar-border flex flex-col">
+        <div className="px-4 py-3 border-b border-sidebar-border">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center flex-shrink-0">
               <Icon name="Truck" size={16} className="text-white" />
             </div>
             <div className="min-w-0">
-              <h1 className="text-sm font-bold text-gray-900 truncate">TransHub</h1>
-              <p className="text-xs text-gray-500 truncate">Управление грузоперевозками</p>
+              <h1 className="text-sm font-bold text-sidebar-foreground truncate">TransHub</h1>
+              <p className="text-xs text-muted-foreground truncate">Управление грузоперевозками</p>
             </div>
           </div>
         </div>
 
-        <div className="px-4 py-3 border-b border-gray-200">
+        <div className="px-4 py-3 border-b border-sidebar-border">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
-              <Icon name="User" size={16} className="text-gray-600" />
+            <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center flex-shrink-0">
+              <Icon name="User" size={16} className="text-muted-foreground" />
             </div>
             <div className="min-w-0">
-              <p className="text-sm font-medium text-gray-900 truncate">Администратор</p>
+              <p className="text-sm font-medium text-sidebar-foreground truncate">Администратор</p>
             </div>
           </div>
         </div>
@@ -49,7 +49,7 @@ const Index = () => {
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all ${
                 activeSection === item.id
                   ? 'bg-primary text-white'
-                  : 'text-gray-700 hover:bg-gray-100'
+                  : 'text-sidebar-foreground hover:bg-sidebar-accent'
               }`}
             >
               <Icon name={item.icon} size={20} />
