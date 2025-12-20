@@ -27,9 +27,11 @@ interface Route {
 }
 
 const OrderModal = ({ isOpen, onClose }: OrderModalProps) => {
+  const [orderZone, setOrderZone] = useState('EU');
   const [orderNumber, setOrderNumber] = useState('');
   const [orderDate, setOrderDate] = useState('');
-  const [invoiceTrack, setInvoiceTrack] = useState('');
+  const [invoice, setInvoice] = useState('');
+  const [track, setTrack] = useState('');
   const [cargoType, setCargoType] = useState('');
   const [cargoWeight, setCargoWeight] = useState('');
   const [note, setNote] = useState('');
@@ -103,18 +105,34 @@ const OrderModal = ({ isOpen, onClose }: OrderModalProps) => {
 
         <div className="flex-1 overflow-y-auto p-6">
           <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  № заказа <span className="text-red-600">*</span>
-                </label>
-                <input
-                  type="text"
-                  placeholder="001"
-                  value={orderNumber}
-                  onChange={(e) => setOrderNumber(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="flex gap-2">
+                <div className="w-32">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Зона <span className="text-red-600">*</span>
+                  </label>
+                  <select
+                    value={orderZone}
+                    onChange={(e) => setOrderZone(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  >
+                    <option value="EU">EU</option>
+                    <option value="RU">RU</option>
+                    <option value="CH">CH</option>
+                  </select>
+                </div>
+                <div className="flex-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    № заказа <span className="text-red-600">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="001"
+                    value={orderNumber}
+                    onChange={(e) => setOrderNumber(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  />
+                </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -128,15 +146,30 @@ const OrderModal = ({ isOpen, onClose }: OrderModalProps) => {
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                 />
               </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Инвойс / Трак <span className="text-red-600">*</span>
+                  Инвойс <span className="text-red-600">*</span>
                 </label>
                 <input
                   type="text"
                   placeholder="INV-12345"
-                  value={invoiceTrack}
-                  onChange={(e) => setInvoiceTrack(e.target.value)}
+                  value={invoice}
+                  onChange={(e) => setInvoice(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Трак <span className="text-red-600">*</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="TRK-67890"
+                  value={track}
+                  onChange={(e) => setTrack(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                 />
               </div>
@@ -175,8 +208,8 @@ const OrderModal = ({ isOpen, onClose }: OrderModalProps) => {
                 placeholder="Дополнительная информация о заказе..."
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
-                rows={4}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
+                rows={1}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-y min-h-[42px]"
               />
             </div>
 
