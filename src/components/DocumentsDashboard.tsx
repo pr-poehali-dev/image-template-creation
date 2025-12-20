@@ -1,10 +1,26 @@
+import { useState } from 'react';
 import Icon from './ui/icon';
+import DocumentPreviewModal from './DocumentPreviewModal';
+import TTNTemplate from './templates/TTNTemplate';
 
 interface DocumentsDashboardProps {
   onNavigate: (section: string) => void;
 }
 
 export default function DocumentsDashboard({ onNavigate }: DocumentsDashboardProps) {
+  const [showTTNPreview, setShowTTNPreview] = useState(false);
+
+  const ttnExampleData = {
+    orderNumber: 'EU-001',
+    orderDate: '20-12-2024',
+    from: 'ООО "Поставщик", г. Москва, ул. Примерная, д. 1',
+    to: 'ООО "Получатель", г. Санкт-Петербург, ул. Невская, д. 10',
+    cargoType: 'Лук репчатый свежий',
+    cargoWeight: '20000',
+    driver: 'Иванов Иван Иванович',
+    vehicle: 'Mercedes-Benz Actros 1845, А123ВС777',
+    invoice: 'INV-2024-12345',
+  };
   const cards = [
     {
       id: 'contract-application',
@@ -43,7 +59,13 @@ export default function DocumentsDashboard({ onNavigate }: DocumentsDashboardPro
         {cards.map((card) => (
           <button
             key={card.id}
-            onClick={() => onNavigate(card.id)}
+            onClick={() => {
+              if (card.id === 'ttn') {
+                setShowTTNPreview(true);
+              } else {
+                onNavigate(card.id);
+              }
+            }}
             className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-all hover:border-primary group text-left"
           >
             <div className="flex items-start justify-between mb-4">
@@ -59,6 +81,15 @@ export default function DocumentsDashboard({ onNavigate }: DocumentsDashboardPro
           </button>
         ))}
       </div>
+
+      <DocumentPreviewModal
+        isOpen={showTTNPreview}
+        onClose={() => setShowTTNPreview(false)}
+        documentTitle="Товарно-транспортная накладная"
+        documentType="ttn"
+      >
+        <TTNTemplate data={ttnExampleData} />
+      </DocumentPreviewModal>
 
       <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="bg-green-50 border border-green-200 rounded-xl p-6">
