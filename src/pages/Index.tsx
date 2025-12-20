@@ -137,7 +137,7 @@ const Index = () => {
                menuItems.find(item => item.submenu?.some(sub => sub.id === activeSection))?.submenu?.find(sub => sub.id === activeSection)?.label}
             </h2>
           </div>
-          {(activeSection === 'orders' || activeSection === 'drivers' || activeSection === 'vehicles' || activeSection === 'counterparties') && (
+          {(activeSection === 'orders' || activeSection === 'drivers' || activeSection === 'vehicles' || activeSection === 'customers') && (
             <button 
               onClick={() => {
                 if (activeSection === 'drivers') setIsDriverModalOpen(true);
@@ -328,7 +328,7 @@ const Index = () => {
                 </div>
               </div>
             </div>
-          ) : activeSection === 'counterparties' ? (
+          ) : activeSection === 'customers' ? (
             <div className="space-y-4">
               <div className="relative">
                 <Icon name="Search" size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
