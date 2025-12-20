@@ -83,34 +83,29 @@ export default function ContractsTable({ onBack }: ContractsTableProps) {
 
   const handleDownloadPDF = (contract: Contract) => {
     const contractData = {
-      number: contract.number,
-      date: contract.date,
+      number: '2012ФМ-1',
+      date: '20 декабря 2025 г.',
       customer: 'ООО «ФЛАУЭР МАСТЕР»',
-      customerDetails: 'ИНН 7723449594 КПП 772201001',
       carrier: 'ИП СЕМИОНОВ ИГОРЬ ГЕННАДЬЕВИЧ',
-      carrierDetails: 'ОГРНИП 317619600018, ИНН 560993629160',
-      vehicleType: 'тип кузова',
       vehicleBody: 'рефрижератор',
       tons: '20',
       cubicMeters: '82',
       specialConditions: 't режим',
       additionalConditions: '+ 2 град',
-      cargoDescription: 'Лук, Нобилис',
+      additionalConditions2: 'доп. условия',
+      cargoDescription: 'Луковицы',
       loadingAddress: 'Московская область, городской округ Люберцы, деревня Островцы, ул. Школьная 27',
       loadingDate: '20.12.25',
-      loadingTimeFrom: '',
-      loadingTimeTo: '',
       loadingContact: 'Константин зав складом 89104355433, Артем 89035532883',
       unloadingAddress: 'г. Ижевск, Завьяловский район, д. Шабердино',
       unloadingDate: '22.12.25',
-      unloadingTimeFrom: '',
-      unloadingTimeTo: '',
       unloadingContact: 'Денис 89120120277',
       price: '150 000',
       paymentTerms: 'без НДС',
       paymentMethod: '5-7 б/д',
       driverName: 'Шильков Алексей Леонидович',
-      driverLicense: 'ВУ 9940 381012 89120266424',
+      driverLicense: 'ВУ 9940 381012',
+      driverPhone: '89120266424',
       driverPassport: '9421 № 975426 выдан 03.02.2022г, МВД по Удмуртской Республике код подразделения 180-010',
       vehicleNumber: 'Вольво H777AP/18',
       vehicleTrailer: 'прицеп АО0714/18',
@@ -126,242 +121,203 @@ export default function ContractsTable({ onBack }: ContractsTableProps) {
           <meta charset="utf-8">
           <title>Договор-заявка ${contractData.number}</title>
           <style>
-            @page { size: A4; margin: 10mm; }
+            @page { size: A4; margin: 12mm; }
             body { 
               font-family: Arial, sans-serif; 
               font-size: 11px; 
-              line-height: 1.3; 
+              line-height: 1.2; 
               padding: 0;
               margin: 0;
             }
             table { 
               width: 100%; 
               border-collapse: collapse; 
-              margin-bottom: 6px;
-              font-size: 11px;
+              margin-bottom: 0;
               border: 1px solid black;
             }
             td { 
-              border-left: 1px solid black;
-              border-bottom: 1px solid black; 
-              padding: 3px 6px;
+              border: 1px solid black;
+              padding: 2px 4px;
               vertical-align: top;
             }
-            td:first-child {
-              border-left: none;
-            }
-            tr:last-child td {
-              border-bottom: none;
-            }
-            .bg-gray { background-color: #e5e7eb; }
-            .font-bold { font-weight: bold; }
             .text-red { color: #dc2626; }
-            .text-center { text-align: center; }
-            .text-xs { font-size: 9px; line-height: 1.3; }
-            .text-tiny { font-size: 8px; line-height: 1.2; }
-            .mb-1 { margin-bottom: 4px; }
-            .mb-2 { margin-bottom: 6px; }
-            .mb-3 { margin-bottom: 8px; }
-            .mb-4 { margin-bottom: 12px; }
-            .mt-4 { margin-top: 12px; }
-            .grid-2 { 
-              display: grid; 
-              grid-template-columns: 1fr 1fr; 
-              gap: 24px;
-              margin-top: 16px;
-            }
-            p { margin: 0 0 4px 0; }
-            .signature-line {
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-              border-bottom: 1px solid black;
-              padding-top: 32px;
-              margin-bottom: 2px;
-            }
+            .text-xs { font-size: 9px; line-height: 1.25; }
+            .text-tiny { font-size: 7px; line-height: 1.2; }
+            p { margin: 0; padding: 0; }
           </style>
         </head>
         <body>
-          <!-- Header -->
-          <div style="margin-bottom: 6px; display: flex; justify-content: space-between; align-items: start;">
-            <div><span class="font-bold">Договор-заявка №</span> <span class="text-red font-bold">${contractData.number}</span></div>
-            <div style="text-align: right;"><span class="font-bold">от</span> <span class="text-red font-bold">${contractData.date}</span></div>
-          </div>
-
-          <!-- Title -->
-          <div style="text-align: center; font-weight: bold; margin-bottom: 6px;">на перевозку грузов автомобильным транспортом</div>
-
-          <!-- Customer and Carrier -->
           <table>
             <tr>
-              <td class="bg-gray font-bold" style="width: 15%;">Заказчик:</td>
-              <td class="text-red" style="width: 35%;">${contractData.customer}</td>
-              <td class="bg-gray font-bold" style="width: 15%;">Перевозчик:</td>
-              <td class="text-red" style="width: 35%;">${contractData.carrier}</td>
+              <td colspan="3" style="padding: 4px;"><b>Договор-заявка №</b> <span class="text-red"><b>${contractData.number}</b></span></td>
+              <td colspan="3" style="text-align: right; padding: 4px;"><b>от</b> <span class="text-red"><b>${contractData.date}</b></span></td>
             </tr>
           </table>
 
-          <!-- Vehicle Type -->
           <table>
             <tr>
-              <td class="bg-gray font-bold" style="width: 18%;">Требуемый тип ТС:</td>
-              <td style="width: 15%;">тип кузова</td>
-              <td class="text-red" style="width: 20%;">${contractData.vehicleBody}</td>
-              <td class="text-red text-center" style="width: 8%;">${contractData.tons}</td>
-              <td class="text-center" style="width: 5%;">т.</td>
-              <td class="text-red text-center" style="width: 8%;">${contractData.cubicMeters}</td>
-              <td class="text-center" style="width: 6%;">м3</td>
+              <td colspan="6" style="text-align: center; padding: 3px;"><b>на перевозку грузов автомобильным транспортом</b></td>
+            </tr>
+          </table>
+
+          <table>
+            <tr>
+              <td style="width: 12%;"><b>Заказчик:</b></td>
+              <td style="width: 38%;" class="text-red">${contractData.customer}</td>
+              <td style="width: 12%;"><b>Перевозчик:</b></td>
+              <td style="width: 38%;" colspan="3" class="text-red">${contractData.carrier}</td>
+            </tr>
+          </table>
+
+          <table>
+            <tr>
+              <td style="width: 18%;"><b>Требуемый тип ТС:</b></td>
+              <td style="width: 12%;">тип кузова</td>
+              <td style="width: 20%;" class="text-red">${contractData.vehicleBody}</td>
+              <td style="width: 8%; text-align: center;" class="text-red">${contractData.tons}</td>
+              <td style="width: 4%; text-align: center;">т.</td>
+              <td style="width: 8%; text-align: center;" class="text-red">${contractData.cubicMeters}</td>
+              <td style="width: 5%; text-align: center;">м3</td>
             </tr>
             <tr>
-              <td class="bg-gray font-bold">Особые условия:</td>
+              <td><b>Особые условия:</b></td>
               <td>${contractData.specialConditions}</td>
-              <td class="text-red" colspan="2">${contractData.additionalConditions}</td>
-              <td colspan="3">водителю быть на связи</td>
+              <td class="text-red">${contractData.additionalConditions}</td>
+              <td colspan="2" class="text-red">${contractData.additionalConditions2}</td>
+              <td colspan="2">водителю быть на связи</td>
             </tr>
             <tr>
-              <td class="bg-gray font-bold">Груз:</td>
-              <td class="text-red" colspan="6">${contractData.cargoDescription}</td>
+              <td><b>Груз:</b></td>
+              <td colspan="6" class="text-red">${contractData.cargoDescription}</td>
             </tr>
           </table>
 
-          <!-- Loading -->
           <table>
             <tr>
-              <td class="bg-gray font-bold" style="width: 10%;">Погрузка:</td>
-              <td class="text-red" colspan="5">${contractData.loadingAddress}</td>
+              <td style="width: 10%;"><b>Погрузка:</b></td>
+              <td colspan="5" class="text-red">${contractData.loadingAddress}</td>
             </tr>
             <tr>
               <td>дата</td>
-              <td class="text-red" style="width: 18%;">${contractData.loadingDate}</td>
-              <td style="width: 5%;">с</td>
-              <td style="width: 18%;">${contractData.loadingTimeFrom}</td>
-              <td style="width: 5%;">до</td>
-              <td style="width: 18%;">${contractData.loadingTimeTo}</td>
+              <td style="width: 15%;" class="text-red">${contractData.loadingDate}</td>
+              <td style="width: 3%;">с</td>
+              <td style="width: 15%;"></td>
+              <td style="width: 3%;">до</td>
+              <td style="width: 15%;"></td>
             </tr>
             <tr>
               <td colspan="2"></td>
-              <td class="bg-gray" colspan="2">контактное лицо</td>
-              <td class="text-red" colspan="2">${contractData.loadingContact}</td>
+              <td colspan="2">контактное лицо</td>
+              <td colspan="2" class="text-red">${contractData.loadingContact}</td>
             </tr>
           </table>
 
-          <!-- Unloading -->
           <table>
             <tr>
-              <td class="bg-gray font-bold" style="width: 10%;">Разгрузка:</td>
-              <td class="text-red" colspan="5">${contractData.unloadingAddress}</td>
+              <td style="width: 10%;"><b>Разгрузка:</b></td>
+              <td colspan="5" class="text-red">${contractData.unloadingAddress}</td>
             </tr>
             <tr>
               <td>дата</td>
-              <td class="text-red" style="width: 18%;">${contractData.unloadingDate}</td>
-              <td style="width: 5%;">с</td>
-              <td style="width: 18%;">${contractData.unloadingTimeFrom}</td>
-              <td style="width: 5%;">до</td>
-              <td style="width: 18%;">${contractData.unloadingTimeTo}</td>
+              <td style="width: 15%;" class="text-red">${contractData.unloadingDate}</td>
+              <td style="width: 3%;">с</td>
+              <td style="width: 15%;"></td>
+              <td style="width: 3%;">до</td>
+              <td style="width: 15%;"></td>
             </tr>
             <tr>
               <td colspan="2"></td>
-              <td class="bg-gray" colspan="2">контактное лицо</td>
-              <td class="text-red" colspan="2">${contractData.unloadingContact}</td>
+              <td colspan="2">контактное лицо</td>
+              <td colspan="2" class="text-red">${contractData.unloadingContact}</td>
             </tr>
           </table>
 
-          <!-- Payment -->
           <table>
             <tr>
-              <td class="bg-gray font-bold" style="width: 10%;">Оплата:</td>
-              <td class="text-red" style="width: 15%;">${contractData.price}</td>
-              <td style="width: 10%;">руб.</td>
-              <td class="text-red" style="width: 15%;">${contractData.paymentTerms}</td>
-              <td class="text-red" style="width: 15%;">${contractData.paymentMethod}</td>
-              <td style="width: 35%;">по оригиналам документов</td>
+              <td style="width: 10%;"><b>Оплата:</b></td>
+              <td style="width: 12%;" class="text-red">${contractData.price}</td>
+              <td style="width: 8%;">руб.</td>
+              <td style="width: 12%;" class="text-red">${contractData.paymentTerms}</td>
+              <td style="width: 12%;" class="text-red">${contractData.paymentMethod}</td>
+              <td style="width: 46%;">по оригиналам документов</td>
             </tr>
           </table>
 
-          <!-- Driver Data -->
           <table>
             <tr>
-              <td class="bg-gray font-bold" colspan="6">Данные водителя:</td>
+              <td colspan="6"><b>Данные водителя:</b></td>
             </tr>
             <tr>
-              <td class="text-red" colspan="3">${contractData.driverName}</td>
-              <td class="text-red" colspan="3">${contractData.driverLicense}</td>
+              <td colspan="3" class="text-red">${contractData.driverName}</td>
+              <td colspan="3" class="text-red">${contractData.driverLicense} ${contractData.driverPhone}</td>
             </tr>
             <tr>
               <td style="width: 10%;">паспорт</td>
-              <td class="text-red" colspan="5">${contractData.driverPassport}</td>
+              <td colspan="5" class="text-red">${contractData.driverPassport}</td>
             </tr>
           </table>
 
-          <!-- Vehicle Data -->
           <table>
             <tr>
-              <td class="bg-gray font-bold" style="width: 20%;">Данные ТС:</td>
+              <td style="width: 15%;"><b>Данные ТС:</b></td>
               <td class="text-red">${contractData.vehicleNumber} ${contractData.vehicleTrailer}</td>
             </tr>
           </table>
 
-          <!-- Terms and Conditions -->
-          <div class="mb-2" style="margin-top: 8px;">
-            <div class="font-bold mb-1">Условия перевозки:</div>
-            <div class="text-xs">
-              <p class="mb-1">Перевозчик обязан в лице водителя-экспедитора обязан проверить правильность оформления ТоН/ТТН на погрузке. Количество загруженных мест должно быть прописано в ТрН/ТТН и соответствовать количеству загруженных в ТС мест. При сдаче груза грузополучателю Перевозчик в лице водителя-экспедитора, обязан в ТрН/ТТН в графе «получении груза поставить время и дату сдачи груза и заверить эти данные печатью грузополучателя и подписью ответственного лица».</p>
-              <p class="mb-1">В случае опозданий на погрузку/разгрузку Перевозчик обязан своевременно сообщить об этом Заказчику. Перевозчик обязан сообщать Заказчику о прибытии на погрузку/разгрузку, об убытии с места погрузки разгрузки, о местонахождении груза в пути.</p>
-              <p class="mb-1">Ставка за перевозку, указанная в Договоре-заявке является ценой за 1 тонну груза с учётом всех расходов, в том числе по пропускам в связи с действующими ограничениями движения ТС по автомобильным дорогам. При перечислении денежных средств на карту комиссия Банка взимается за счет Перевозчика.</p>
-            </div>
+          <div style="margin-top: 6px; margin-bottom: 6px;">
+            <p style="margin-bottom: 2px;"><b>Условия перевозки:</b></p>
+            <p class="text-xs" style="margin-bottom: 2px; text-align: justify;">Перевозчик обязан в лице водителя-экспедитора обязан проверить правильность оформления ТоН/ТТН на погрузке. Количество загруженных мест должно быть прописано в ТрН/ТТН и соответствовать количеству загруженных в ТС мест. При сдаче груза грузополучателю Перевозчик в лице водителя-экспедитора, обязан в ТрН/ТТН в графе «получении груза поставить время и дату сдачи груза и заверить эти данные печатью грузополучателя и подписью ответственного лица».</p>
+            <p class="text-xs" style="margin-bottom: 2px; text-align: justify;">В случае опозданий на погрузку/разгрузку Перевозчик обязан своевременно сообщить об этом Заказчику. Перевозчик обязан сообщать Заказчику о прибытии на погрузку/разгрузку, об убытии с места погрузки разгрузки, о местонахождении груза в пути.</p>
+            <p class="text-xs" style="text-align: justify;">Ставка за перевозку, указанная в Договоре-заявке является ценой за 1 тонну груза с учётом всех расходов, в том числе по пропускам в связи с действующими ограничениями движения ТС по автомобильным дорогам. При перечислении денежных средств на карту комиссия Банка взимается за счет Перевозчика.</p>
           </div>
 
-          <!-- Penalties -->
-          <div class="mb-3">
-            <div class="font-bold mb-1">Штрафные санкции и ответственность:</div>
-            <div class="text-xs">
-              <p class="mb-1">Срыв погрузки/разгрузки одной из сторон влечёт за собой штраф в размере 20% от стоимости перевозки с виновной стороны.</p>
-              <p class="mb-1">Перевозчик обязан доставить ТС в технически исправном состоянии, без повреждений (трещин, отбитых углов, пломб, следов посторонних грузов) и отвечающее санитарным требованиям, в строгом соответствии с подтвержденным Договором – заявкой, несоблюдения этих норм влечёт за собой штраф в размере 30% от стоимости перевозки.</p>
-              <p class="mb-1">За опоздание на погрузку Перевозчик оплачивает штраф в размере 500 руб. за каждый час опоздания.</p>
-              <p class="mb-1">Перевозчик несет ответственность за сохранность груза с момента принятия его для перевозки и до момента выдачи грузополучателю или уполномоченному им лицу. В случае порчи, недостачи или повреждения (порчи) груза по вине Перевозчика, Перевозчик обязан возместить стоимость нанесенного ущерба. Сумма ущерба, а также сумма штрафа, предъявленная в претензионном порядке, подлежит удержанию из сумму оказанных услуг.</p>
-              <p class="mb-1">Перевозчик не имеет права удерживать переданные ему в ведение груза или другие товарно-материальные ценности в целях обеспечения ему платежей. Перевозчик, удерживающий принятые действиями убытки в полном объеме, исходя из стоимости простоя груза – 1500 руб. за каждый час, а также упущенной коммерческой выгоды – 10% от общей стоимости груза.</p>
-            </div>
+          <div style="margin-bottom: 6px;">
+            <p style="margin-bottom: 2px;"><b>Штрафные санкции и ответственность:</b></p>
+            <p class="text-xs" style="margin-bottom: 2px; text-align: justify;">Срыв погрузки/разгрузки одной из сторон влечёт за собой штраф в размере 20% от стоимости перевозки с виновной стороны.</p>
+            <p class="text-xs" style="margin-bottom: 2px; text-align: justify;">Перевозчик обязан доставить ТС в технически исправном состоянии, без повреждений (трещин, отбитых углов, пломб, следов посторонних грузов) и отвечающее санитарным требованиям, в строгом соответствии с подтвержденным Договором – заявкой, несоблюдения этих норм влечёт за собой штраф в размере 30% от стоимости перевозки.</p>
+            <p class="text-xs" style="margin-bottom: 2px; text-align: justify;">За опоздание на погрузку Перевозчик оплачивает штраф в размере 500 руб. за каждый час опоздания.</p>
+            <p class="text-xs" style="margin-bottom: 2px; text-align: justify;">Перевозчик несет ответственность за сохранность груза с момента принятия его для перевозки и до момента выдачи грузополучателю или уполномоченному им лицу. В случае порчи, недостачи или повреждения (порчи) груза по вине Перевозчика, Перевозчик обязан возместить стоимость нанесенного ущерба. Сумма ущерба, а также сумма штрафа, предъявленная в претензионном порядке, подлежит удержанию из сумму оказанных услуг.</p>
+            <p class="text-xs" style="text-align: justify;">Перевозчик не имеет права удерживать переданные ему в ведение груза или другие товарно-материальные ценности в целях обеспечения ему платежей. Перевозчик, удерживающий принятые действиями убытки в полном объеме, исходя из стоимости простоя груза – 1500 руб. за каждый час, а также упущенной коммерческой выгоды – 10% от общей стоимости груза.</p>
           </div>
 
-          <!-- Signatures -->
-          <div class="grid-2">
-            <div>
-              <p class="font-bold mb-1">Заказчик:</p>
-              <p class="text-xs mb-1">Общество с ограниченной ответственностью</p>
-              <p class="text-xs mb-1">«ФЛАУЭР МАСТЕР»</p>
-              <p class="text-tiny mb-1">ИНН 7723449594 КПП 772201001</p>
-              <p class="text-tiny mb-1">ОГРН: 1187746741566</p>
-              <p class="text-tiny mb-1">Юридический адрес: 111024, Город Москва, вн.тер. г. Муниципальный</p>
-              <p class="text-tiny mb-1">Округ Вьюново, ул Авиамоторная, дом 55, корпус 31, помещение 11/5</p>
-              <p class="text-tiny mb-1">ОКПО: 32370514</p>
-              <p class="text-tiny mb-1">ОКВЭД: 46.22</p>
-              <p class="text-tiny mb-3">Расчетный счет: 40702810600021002373</p>
-              <p class="text-tiny mb-1">Наименование банка: АО "ТелеПорт Банк" г. Москва</p>
-              <p class="text-tiny mb-1">БИК: 044525273</p>
-              <p class="text-tiny mb-1">Корр.счет: 30101810545250000273</p>
-              <p class="text-tiny mb-3">тк.56@yandex.ru</p>
-              <p class="text-tiny mb-4">Генеральный директор Знаменский М.А</p>
-              <div class="signature-line">
-                <span style="font-size: 10px;">__________/___________/</span>
-                <span style="font-size: 10px;">МП</span>
+          <div style="display: flex; gap: 20px;">
+            <div style="flex: 1;">
+              <p style="margin-bottom: 2px;"><b>Заказчик:</b></p>
+              <p class="text-xs" style="margin-bottom: 1px;">Общество с ограниченной ответственностью</p>
+              <p class="text-xs" style="margin-bottom: 1px;">«ФЛАУЭР МАСТЕР»</p>
+              <p class="text-tiny" style="margin-bottom: 1px;">ИНН 7723449594 КПП 772201001</p>
+              <p class="text-tiny" style="margin-bottom: 1px;">ОГРН: 1187746741566</p>
+              <p class="text-tiny" style="margin-bottom: 1px;">Юридический адрес: 111024, Город Москва, вн.тер. г. Муниципальный</p>
+              <p class="text-tiny" style="margin-bottom: 1px;">Округ Вьюново, ул Авиамоторная, дом 55, корпус 31, помещение 11/5</p>
+              <p class="text-tiny" style="margin-bottom: 1px;">ОКПО: 32370514</p>
+              <p class="text-tiny" style="margin-bottom: 1px;">ОКВЭД: 46.22</p>
+              <p class="text-tiny" style="margin-bottom: 3px;">Расчетный счет: 40702810600021002373</p>
+              <p class="text-tiny" style="margin-bottom: 1px;">Наименование банка: АО "ТелеПорт Банк" г. Москва</p>
+              <p class="text-tiny" style="margin-bottom: 1px;">БИК: 044525273</p>
+              <p class="text-tiny" style="margin-bottom: 1px;">Корр.счет: 30101810545250000273</p>
+              <p class="text-tiny" style="margin-bottom: 3px;">тк.56@yandex.ru</p>
+              <p class="text-tiny" style="margin-bottom: 8px;">Генеральный директор Знаменский М.А</p>
+              <div style="display: flex; justify-content: space-between; border-bottom: 1px solid black; padding-top: 20px; margin-bottom: 2px;">
+                <span style="font-size: 9px;">__________/___________/</span>
+                <span style="font-size: 9px;">МП</span>
               </div>
             </div>
-            <div>
-              <p class="font-bold mb-1">Перевозчик:</p>
-              <p class="text-xs mb-1 text-red">Индивидуальный предприниматель СЕМИОНОВ ИГОРЬ ГЕННАДЬЕВИЧ</p>
-              <p class="text-tiny mb-1 text-red">ОГРНИП 317619600018</p>
-              <p class="text-tiny mb-1 text-red">ИНН 560993629160</p>
-              <p class="text-tiny mb-1 text-red">р/с 40802.810.5.4600024045</p>
-              <p class="text-tiny mb-1 text-red">ОТДЕЛЕНИЕ N8623 СБЕРБАНКА РОССИИ Г. ОРЕНБУРГ</p>
-              <p class="text-tiny mb-1 text-red">БИК 045354601</p>
-              <p class="text-tiny mb-1 text-red">к/с 3010 1810 6000 0000 0601</p>
-              <p class="text-tiny mb-1 text-red">юр. адрес 460044, г.Оренбург, ул. Конституции СССР, д. 5, кв. 22</p>
-              <p class="text-tiny mb-1 text-red">почт. адрес 460052, г.Оренбург, мкр 70 лет ВЛКСМ, д. 10, кв. 16</p>
-              <p class="text-tiny mb-3 text-red">тел. рабочая 8(35334)25512666</p>
-              <p class="text-tiny mb-4 text-red">рабочая электронная почта vezet56@mail.ru</p>
-              <div class="signature-line">
-                <span style="font-size: 10px;">__________/___________/</span>
-                <span style="font-size: 10px;">МП</span>
+            <div style="flex: 1;">
+              <p style="margin-bottom: 2px;"><b>Перевозчик:</b></p>
+              <p class="text-xs text-red" style="margin-bottom: 1px;">Индивидуальный предприниматель СЕМИОНОВ ИГОРЬ ГЕННАДЬЕВИЧ</p>
+              <p class="text-tiny text-red" style="margin-bottom: 1px;">ОГРНИП 317619600018</p>
+              <p class="text-tiny text-red" style="margin-bottom: 1px;">ИНН 560993629160</p>
+              <p class="text-tiny text-red" style="margin-bottom: 1px;">р/с 40802.810.5.4600024045</p>
+              <p class="text-tiny text-red" style="margin-bottom: 1px;">ОТДЕЛЕНИЕ N8623 СБЕРБАНКА РОССИИ Г. ОРЕНБУРГ</p>
+              <p class="text-tiny text-red" style="margin-bottom: 1px;">БИК 045354601</p>
+              <p class="text-tiny text-red" style="margin-bottom: 1px;">к/с 3010 1810 6000 0000 0601</p>
+              <p class="text-tiny text-red" style="margin-bottom: 1px;">юр. адрес 460044, г.Оренбург, ул. Конституции СССР, д. 5, кв. 22</p>
+              <p class="text-tiny text-red" style="margin-bottom: 1px;">почт. адрес 460052, г.Оренбург, мкр 70 лет ВЛКСМ, д. 10, кв. 16</p>
+              <p class="text-tiny text-red" style="margin-bottom: 1px;">тел. рабочая 8(35334)25512666</p>
+              <p class="text-tiny text-red" style="margin-bottom: 8px;">рабочая электронная почта vezet56@mail.ru</p>
+              <div style="display: flex; justify-content: space-between; border-bottom: 1px solid black; padding-top: 20px; margin-bottom: 2px;">
+                <span style="font-size: 9px;">__________/___________/</span>
+                <span style="font-size: 9px;">МП</span>
               </div>
             </div>
           </div>
