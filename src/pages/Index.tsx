@@ -758,6 +758,42 @@ const Index = () => {
                   />
                 </div>
 
+                <div>
+                  <label className="block text-sm font-medium text-gray-900 mb-3">
+                    Роль <span className="text-red-500">*</span>
+                  </label>
+                  <div className="grid grid-cols-2 gap-3">
+                    <label className="flex items-center gap-2 cursor-pointer p-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                      <input
+                        type="checkbox"
+                        className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-2 focus:ring-primary"
+                      />
+                      <span className="text-sm text-gray-900">Продавец</span>
+                    </label>
+                    <label className="flex items-center gap-2 cursor-pointer p-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                      <input
+                        type="checkbox"
+                        className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-2 focus:ring-primary"
+                      />
+                      <span className="text-sm text-gray-900">Покупатель</span>
+                    </label>
+                    <label className="flex items-center gap-2 cursor-pointer p-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                      <input
+                        type="checkbox"
+                        className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-2 focus:ring-primary"
+                      />
+                      <span className="text-sm text-gray-900">Перевозчик</span>
+                    </label>
+                    <label className="flex items-center gap-2 cursor-pointer p-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                      <input
+                        type="checkbox"
+                        className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-2 focus:ring-primary"
+                      />
+                      <span className="text-sm text-gray-900">Экспедитор</span>
+                    </label>
+                  </div>
+                </div>
+
                 <div className="border-b border-gray-200 pb-4">
                   <div className="flex items-center gap-2 mb-4">
                     <Icon name="FileText" size={18} className="text-gray-600" />
