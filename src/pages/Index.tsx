@@ -114,14 +114,16 @@ const Index = () => {
                         <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">Время в пути</th>
                         <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">Статус</th>
                         <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">Фито</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">Статус</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">Действия</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200">
                       {[
-                        { number: '001', date: '20.12.2024', invoice: 'INV-12453', gosNumber: 'А123БВ77', time: '2ч 30м', status: 'В пути', fito: 'Да' },
-                        { number: '002', date: '20.12.2024', invoice: 'INV-12452', gosNumber: 'В456ГД77', time: '1ч 45м', status: 'Доставлен', fito: 'Нет' },
-                        { number: '003', date: '19.12.2024', invoice: 'INV-12451', gosNumber: 'С789ЕЖ77', time: '3ч 15м', status: 'В пути', fito: 'Да' },
-                        { number: '004', date: '19.12.2024', invoice: 'INV-12450', gosNumber: 'Д012ЗИ77', time: '4ч 00м', status: 'Ожидание', fito: 'Нет' },
+                        { number: '001', date: '20.12.2024', invoice: 'INV-12453', gosNumber: 'А123БВ77', time: '2ч 30м', status: 'В пути', fito: 'Да', orderStatus: 'Активный' },
+                        { number: '002', date: '20.12.2024', invoice: 'INV-12452', gosNumber: 'В456ГД77', time: '1ч 45м', status: 'Доставлен', fito: 'Нет', orderStatus: 'Завершен' },
+                        { number: '003', date: '19.12.2024', invoice: 'INV-12451', gosNumber: 'С789ЕЖ77', time: '3ч 15м', status: 'В пути', fito: 'Да', orderStatus: 'Активный' },
+                        { number: '004', date: '19.12.2024', invoice: 'INV-12450', gosNumber: 'Д012ЗИ77', time: '4ч 00м', status: 'Ожидание', fito: 'Нет', orderStatus: 'Ожидание' },
                       ].map((order, index) => (
                         <tr key={index} className="hover:bg-gray-50 transition-colors">
                           <td className="px-4 py-3 text-sm text-gray-900">{order.number}</td>
@@ -141,6 +143,20 @@ const Index = () => {
                             </span>
                           </td>
                           <td className="px-4 py-3 text-sm text-gray-900">{order.fito}</td>
+                          <td className="px-4 py-3 text-sm text-gray-700">{order.orderStatus}</td>
+                          <td className="px-4 py-3">
+                            <div className="flex items-center gap-2">
+                              <button className="p-1 hover:bg-gray-100 rounded transition-colors" title="Просмотр">
+                                <Icon name="Eye" size={18} className="text-gray-600" />
+                              </button>
+                              <button className="p-1 hover:bg-gray-100 rounded transition-colors" title="Редактировать">
+                                <Icon name="Edit" size={18} className="text-gray-600" />
+                              </button>
+                              <button className="p-1 hover:bg-gray-100 rounded transition-colors" title="Удалить">
+                                <Icon name="Trash2" size={18} className="text-red-600" />
+                              </button>
+                            </div>
+                          </td>
                         </tr>
                       ))}
                     </tbody>
