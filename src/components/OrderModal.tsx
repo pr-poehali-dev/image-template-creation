@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Icon from './ui/icon';
 import ConfirmDialog from './ConfirmDialog';
 import ModalFooter from './ModalFooter';
-import DateInput from './DateInput';
+import RulesInput from './RulesInput';
 
 interface OrderModalProps {
   isOpen: boolean;
@@ -195,7 +195,8 @@ const OrderModal = ({ isOpen, onClose }: OrderModalProps) => {
                       />
                     </div>
                   </div>
-                  <DateInput
+                  <RulesInput
+                    type="date"
                     value={orderDate}
                     onChange={setOrderDate}
                     label="Дата заказа"
@@ -308,7 +309,8 @@ const OrderModal = ({ isOpen, onClose }: OrderModalProps) => {
                         </button>
                       </div>
 
-                      <DateInput
+                      <RulesInput
+                        type="date"
                         value={route.loadingDate}
                         onChange={(val) => setRoutes(routes.map(r => 
                           r.id === route.id ? { ...r, loadingDate: val } : r

@@ -1,7 +1,10 @@
 import { useState, ChangeEvent, FocusEvent } from 'react';
 import Icon from './ui/icon';
 
-interface DateInputProps {
+type InputType = 'date' | 'text';
+
+interface RulesInputProps {
+  type: InputType;
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
@@ -9,17 +12,20 @@ interface DateInputProps {
   label?: string;
   required?: boolean;
   className?: string;
+  iconName?: string;
 }
 
-export default function DateInput({
+export default function RulesInput({
+  type,
   value,
   onChange,
-  placeholder = 'ДД-ММ-ГГГГ',
+  placeholder = '',
   maxDate = 'none',
   label,
   required = false,
-  className = ''
-}: DateInputProps) {
+  className = '',
+  iconName
+}: RulesInputProps) {
   const [error, setError] = useState<string>('');
   const [showError, setShowError] = useState(false);
 
@@ -86,8 +92,13 @@ export default function DateInput({
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const formatted = formatDateInput(e.target.value);
-    onChange(formatted);
+    let newValue = e.target.value;
+
+    if (type === 'date') {
+      newValue = formatDateInput(e.target.value);
+    }
+
+    onChange(newValue);
     
     if (error) setError('');
   };
@@ -96,16 +107,37 @@ export default function DateInput({
     const val = e.target.value;
     if (!val) return;
 
-    const validation = validateDate(val);
-    if (!validation.valid) {
-      setError(validation.message);
-      setShowError(true);
+    if (type === 'date') {
+      const validation = validateDate(val);
+      if (!validation.valid) {
+        setError(validation.message);
+        setShowError(true);
+      }
     }
   };
 
   const handleErrorClose = () => {
     setShowError(false);
   };
+
+  const getPlaceholder = () => {
+    if (placeholder) return placeholder;
+    if (type === 'date') return 'ДД-ММ-ГГГГ';
+    return '';
+  };
+
+  const getMaxLength = () => {
+    if (type === 'date') return 10;
+    return undefined;
+  };
+
+  const getIcon = () => {
+    if (iconName) return iconName;
+    if (type === 'date') return 'Calendar';
+    return null;
+  };
+
+  const icon = getIcon();
 
   return (
     <>
@@ -145,15 +177,17 @@ export default function DateInput({
             value={value}
             onChange={handleChange}
             onBlur={handleBlur}
-            placeholder={placeholder}
-            maxLength={10}
-            className={`w-full px-3 py-2 border ${error ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent pr-10 bg-white`}
+            placeholder={getPlaceholder()}
+            maxLength={getMaxLength()}
+            className={`w-full px-3 py-2 border ${error ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent ${icon ? 'pr-10' : ''} bg-white`}
           />
-          <Icon 
-            name="Calendar" 
-            size={18} 
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" 
-          />
+          {icon && (
+            <Icon 
+              name={icon} 
+              size={18} 
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" 
+            />
+          )}
         </div>
       </div>
     </>

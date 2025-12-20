@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Icon from '@/components/ui/icon';
 import ConfirmDialog from './ConfirmDialog';
 import ModalFooter from './ModalFooter';
-import DateInput from './DateInput';
+import RulesInput from './RulesInput';
 
 interface DriverModalProps {
   isOpen: boolean;
@@ -136,7 +136,8 @@ const DriverModal = ({ isOpen, onClose }: DriverModalProps) => {
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                   />
                 </div>
-                <DateInput
+                <RulesInput
+                  type="date"
                   value={passportIssueDate}
                   onChange={setPassportIssueDate}
                   label="Дата выдачи"
@@ -183,7 +184,8 @@ const DriverModal = ({ isOpen, onClose }: DriverModalProps) => {
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                   />
                 </div>
-                <DateInput
+                <RulesInput
+                  type="date"
                   value={licenseIssueDate}
                   onChange={setLicenseIssueDate}
                   label="Дата выдачи"
