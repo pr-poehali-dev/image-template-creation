@@ -475,7 +475,7 @@ const Index = () => {
                     <span className="text-sm font-medium text-gray-600">Паспорт</span>
                   </div>
                   
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-3 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-900 mb-2">
                         Серия <span className="text-red-500">*</span>
@@ -496,15 +496,56 @@ const Index = () => {
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                       />
                     </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4 mt-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-900 mb-2">
-                        Кем выдан <span className="text-red-500">*</span>
+                        Дата выдачи <span className="text-red-500">*</span>
+                      </label>
+                      <div className="relative">
+                        <input
+                          type="text"
+                          placeholder="ДД-ММ-ГГГГ"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent pr-10"
+                        />
+                        <Icon name="Calendar" size={18} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-4">
+                    <label className="block text-sm font-medium text-gray-900 mb-2">
+                      Кем выдан <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    />
+                  </div>
+                </div>
+
+                <div className="border-t border-gray-200 pt-4 mt-4">
+                  <div className="flex items-center gap-2 mb-4">
+                    <Icon name="IdCard" size={18} className="text-gray-600" />
+                    <span className="text-sm font-medium text-gray-600">Водительское удостоверение</span>
+                  </div>
+                  
+                  <div className="grid grid-cols-3 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-900 mb-2">
+                        Серия <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="text"
+                        placeholder="77 АА"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-900 mb-2">
+                        Номер <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="123456"
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                       />
                     </div>
@@ -521,6 +562,16 @@ const Index = () => {
                         <Icon name="Calendar" size={18} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
                       </div>
                     </div>
+                  </div>
+
+                  <div className="mt-4">
+                    <label className="block text-sm font-medium text-gray-900 mb-2">
+                      Кем выдан <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    />
                   </div>
                 </div>
               </div>
