@@ -727,6 +727,17 @@ const Index = () => {
             
             <div className="p-6">
               <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-900 mb-2">
+                    Название компании <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder='ООО "Название компании"'
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  />
+                </div>
+
                 <div className="border-b border-gray-200 pb-4">
                   <div className="flex items-center gap-2 mb-4">
                     <Icon name="FileText" size={18} className="text-gray-600" />
@@ -812,6 +823,58 @@ const Index = () => {
                       placeholder="Иванов Иван Иванович"
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                     />
+                  </div>
+                </div>
+
+                <div className="border-t border-gray-200 pt-4">
+                  <div className="flex items-center gap-2 mb-4">
+                    <Icon name="Landmark" size={18} className="text-gray-600" />
+                    <span className="text-sm font-medium text-gray-600">Банковские реквизиты</span>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-900 mb-2">
+                      Наименование банка
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="ПАО Сбербанк"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    />
+                  </div>
+
+                  <div className="mt-4">
+                    <label className="block text-sm font-medium text-gray-900 mb-2">
+                      Расчетный счет
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="40702810000000000000"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4 mt-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-900 mb-2">
+                        БИК
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="044525225"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-900 mb-2">
+                        Корр. счет
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="30101810000000000225"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
