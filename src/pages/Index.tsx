@@ -10,7 +10,7 @@ const menuItems = [
     submenu: [
       { id: 'drivers', label: 'Водители', icon: 'Users' },
       { id: 'vehicles', label: 'Автомобили', icon: 'Truck' },
-      { id: 'customers', label: 'Заказчики', icon: 'Contact' },
+      { id: 'customers', label: 'Контрагент', icon: 'Contact' },
     ]
   },
   { id: 'documents', label: 'Документы', icon: 'FileText' },
