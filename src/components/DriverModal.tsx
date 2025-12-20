@@ -1,0 +1,203 @@
+import Icon from '@/components/ui/icon';
+
+interface DriverModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const DriverModal = ({ isOpen, onClose }: DriverModalProps) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+          <h3 className="text-xl font-bold text-gray-900">Создать</h3>
+          <button 
+            onClick={onClose}
+            className="p-1 hover:bg-gray-100 rounded transition-colors"
+          >
+            <Icon name="X" size={20} className="text-gray-600" />
+          </button>
+        </div>
+        
+        <div className="p-6">
+          <div className="space-y-4">
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-900 mb-2">
+                  Фамилия <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-900 mb-2">
+                  Имя <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-900 mb-2">
+                  Отчество
+                </label>
+                <input
+                  type="text"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-900 mb-2">
+                  Телефон <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="tel"
+                  placeholder="+375291234567"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-900 mb-2">
+                  Доп. телефон
+                </label>
+                <input
+                  type="tel"
+                  placeholder="+375291234567"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                />
+              </div>
+            </div>
+
+            <div className="border-t border-gray-200 pt-4">
+              <div className="flex items-center gap-2 mb-4">
+                <Icon name="CreditCard" size={18} className="text-gray-600" />
+                <span className="text-sm font-medium text-gray-600">Паспорт</span>
+              </div>
+              
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-900 mb-2">
+                    Серия <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="1234"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-900 mb-2">
+                    Номер <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="567890"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-900 mb-2">
+                    Дата выдачи <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      placeholder="ДД-ММ-ГГГГ"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent pr-10"
+                    />
+                    <Icon name="Calendar" size={18} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-4">
+                <label className="block text-sm font-medium text-gray-900 mb-2">
+                  Кем выдан <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                />
+              </div>
+            </div>
+
+            <div className="border-t border-gray-200 pt-4 mt-4">
+              <div className="flex items-center gap-2 mb-4">
+                <Icon name="IdCard" size={18} className="text-gray-600" />
+                <span className="text-sm font-medium text-gray-600">Водительское удостоверение</span>
+              </div>
+              
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-900 mb-2">
+                    Серия <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="77 АА"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-900 mb-2">
+                    Номер <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="123456"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-900 mb-2">
+                    Дата выдачи <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      placeholder="ДД-ММ-ГГГГ"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent pr-10"
+                    />
+                    <Icon name="Calendar" size={18} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-4">
+                <label className="block text-sm font-medium text-gray-900 mb-2">
+                  Кем выдан <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-end gap-3 mt-6 pt-6 border-t border-gray-200">
+            <button
+              onClick={onClose}
+              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+            >
+              Отмена
+            </button>
+            <button className="px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg transition-colors font-medium">
+              Создать
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default DriverModal;
