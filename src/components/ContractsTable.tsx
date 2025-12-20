@@ -83,8 +83,8 @@ export default function ContractsTable({ onBack }: ContractsTableProps) {
 
   const handleDownloadPDF = (contract: Contract) => {
     const contractData = {
-      number: '2012ФМ-1',
-      date: '20 декабря 2025 г.',
+      number: contract.number || '2012ФМ-1',
+      date: contract.date || '20 декабря 2025 г.',
       customer: 'ООО «ФЛАУЭР МАСТЕР»',
       carrier: 'ИП СЕМИОНОВ ИГОРЬ ГЕННАДЬЕВИЧ',
       vehicleBody: 'рефрижератор',
@@ -99,8 +99,7 @@ export default function ContractsTable({ onBack }: ContractsTableProps) {
       loadingContact: 'Константин зав складом 89104355433, Артем 89035532883',
       unloadingAddress: 'г. Ижевск, Завьяловский район, д. Шабердино',
       unloadingDate: '22.12.25',
-      unloadingTime: '20:00ч',
-      unloadingContact: 'Денис 8912012077',
+      unloadingContact: 'Денис 89120120277',
       price: '150 000',
       paymentTerms: 'без НДС',
       paymentMethod: '5-7 б/д',
