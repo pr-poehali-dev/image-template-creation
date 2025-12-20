@@ -54,15 +54,16 @@ const Index = () => {
             </div>
             <div className="flex-1">
               <p className="text-sm font-medium text-sidebar-foreground">Администратор</p>
-              <p className="text-xs text-muted-foreground">admin@transhub.ru</p>
             </div>
           </div>
         </div>
       </aside>
 
-      <main className="flex-1 overflow-auto">
-        <div className="p-8">
-          <h2 className="text-3xl font-bold text-foreground mb-8">Управление заказами</h2>
+      <main className="flex-1 overflow-auto flex flex-col">
+        <header className="bg-card border-b border-border px-8 py-4">
+          <h2 className="text-xl font-bold text-foreground">Управление заказами</h2>
+        </header>
+        <div className="flex-1 p-8">
           
           <div className="grid gap-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
