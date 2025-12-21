@@ -6,7 +6,7 @@ from io import BytesIO
 def handler(event, context):
     """Download and parse PDF file to extract contract template text"""
     
-    url = "https://cdn.poehali.dev/projects/19fc2d54-8db4-4df4-b970-568be02f70ef/bucket/123.pdf"
+    url = "https://cdn.poehali.dev/projects/19fc2d54-8db4-4df4-b970-568be02f70ef/bucket/321.pdf"
     
     try:
         response = requests.get(url, timeout=30)

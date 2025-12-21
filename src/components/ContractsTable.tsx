@@ -103,9 +103,9 @@ export default function ContractsTable({ onBack }: ContractsTableProps) {
       price: '150 000',
       paymentTerms: 'без НДС',
       paymentMethod: '5-7 б/д',
-      driverName: 'Шильков Алексей Леонидович',
-      driverLicenseAndPhone: 'ВУ 9940 381012 89120266424',
-      driverPassport: '9421 № 975426 выдан 03.02.2022г, МВД по Удмуртской Республике код подразделения 180-010',
+      driverName: 'Александров Александр Николаевич',
+      driverLicenseAndPhone: 'ВУ 9928 348732 89225512666 – рабочий',
+      driverPassport: '97 05 № 396707 ОВД Московского района города Чебоксары 28.01.2006г',
       vehicleNumber: 'Вольво H777AP/18',
       vehicleTrailer: 'прицеп АО0714/18',
     };
