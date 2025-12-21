@@ -95,6 +95,7 @@ export default function TemplateEditor({ template, onSave, onClose }: TemplateEd
           setSelectedText('');
           setSelectionRect(null);
         } else {
+          setSelectedMapping(null);
           setSelectedText(text);
           setSelectionRect({
             x: selX,
@@ -150,6 +151,7 @@ export default function TemplateEditor({ template, onSave, onClose }: TemplateEd
 
   const handleSave = () => {
     onSave(mappings);
+    onClose();
   };
 
   const getFieldColor = (mapping: FieldMapping) => {
@@ -424,6 +426,41 @@ export default function TemplateEditor({ template, onSave, onClose }: TemplateEd
               <div className="text-center text-gray-500 py-8">
                 <Icon name="MousePointerClick" size={48} className="mx-auto mb-2 opacity-50" />
                 <p className="text-sm">Выделите текст в PDF<br />или кликните на цветное поле</p>
+              </div>
+            )}
+
+            {mappings.length > 0 && (
+              <div className="mt-6 pt-6 border-t">
+                <h5 className="font-semibold mb-3 flex items-center gap-2">
+                  <Icon name="List" size={16} />
+                  Все поля ({mappings.length})
+                </h5>
+                <div className="space-y-2 max-h-[300px] overflow-y-auto">
+                  {mappings.map(mapping => (
+                    <div
+                      key={mapping.id}
+                      onClick={() => {
+                        setSelectedMapping(mapping);
+                        setCurrentPage(mapping.page);
+                      }}
+                      className={`p-2 border rounded cursor-pointer hover:bg-gray-50 transition-colors ${
+                        selectedMapping?.id === mapping.id ? 'bg-blue-50 border-blue-500' : 'border-gray-200'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-sm font-medium truncate">{mapping.label}</span>
+                        {mapping.dbField ? (
+                          <Icon name="Check" size={14} className="text-green-600 flex-shrink-0" />
+                        ) : (
+                          <Icon name="AlertCircle" size={14} className="text-red-600 flex-shrink-0" />
+                        )}
+                      </div>
+                      <p className="text-xs text-gray-500">
+                        {mapping.dbField ? `${mapping.tableName}.${mapping.dbField}` : 'Не настроено'} • стр. {mapping.page}
+                      </p>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
             </div>
