@@ -88,30 +88,28 @@ export default function TemplatesDashboard() {
   }, []);
 
   useEffect(() => {
-    if (templates.length > 0) {
-      const toStore: StoredTemplate[] = templates.map(t => {
-        const stored: StoredTemplate = {
-          id: t.id,
-          name: t.name,
-          description: t.description,
-          createdAt: t.createdAt,
-          fields: t.fields,
-          templateType: t.templateType,
-          pdfPreviewUrl: t.pdfPreviewUrl,
-          excelSheetName: t.excelSheetName
-        };
-        if (t.pdfFile) {
-          stored.pdfFileId = t.id + '_pdf';
-          fileCache.set(stored.pdfFileId, t.pdfFile);
-        }
-        if (t.excelFile) {
-          stored.excelFileId = t.id + '_excel';
-          fileCache.set(stored.excelFileId, t.excelFile);
-        }
-        return stored;
-      });
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(toStore));
-    }
+    const toStore: StoredTemplate[] = templates.map(t => {
+      const stored: StoredTemplate = {
+        id: t.id,
+        name: t.name,
+        description: t.description,
+        createdAt: t.createdAt,
+        fields: t.fields,
+        templateType: t.templateType,
+        pdfPreviewUrl: t.pdfPreviewUrl,
+        excelSheetName: t.excelSheetName
+      };
+      if (t.pdfFile) {
+        stored.pdfFileId = t.id + '_pdf';
+        fileCache.set(stored.pdfFileId, t.pdfFile);
+      }
+      if (t.excelFile) {
+        stored.excelFileId = t.id + '_excel';
+        fileCache.set(stored.excelFileId, t.excelFile);
+      }
+      return stored;
+    });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(toStore));
   }, [templates]);
 
   const [isLoading, setIsLoading] = useState(false);
