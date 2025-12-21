@@ -73,7 +73,12 @@ const MainContent = ({
         ) : activeSection === 'documents' ? (
           <DocumentsDashboard onNavigate={setActiveSection} />
         ) : activeSection === 'reports' ? (
-          <ReportsDashboard onCreateReport={() => setIsReportModalOpen?.(true)} />
+          <ReportsDashboard 
+            onCreateReport={() => setIsReportModalOpen?.(true)}
+            onSaveReport={(reportData) => {
+              console.log('Сохранен договор-заявка:', reportData);
+            }}
+          />
         ) : activeSection === 'orders' ? (
           <div className="px-4 sm:px-6 lg:px-8 py-6">
           <div className="space-y-4">

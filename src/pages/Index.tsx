@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Sidebar from '@/components/Sidebar';
 import MainContent from '@/components/MainContent';
 import Modals from '@/components/Modals';
-import ReportModal from '@/components/ReportModal';
+import ReportModal, { ReportFormData } from '@/components/ReportModal';
 
 const menuItems = [
   { id: 'orders', label: 'Заказы', icon: 'ClipboardList' },
@@ -125,6 +125,9 @@ const Index = () => {
       <ReportModal
         isOpen={isReportModalOpen}
         onClose={() => setIsReportModalOpen(false)}
+        onSave={(reportData: ReportFormData) => {
+          console.log('Сохранен новый договор-заявка:', reportData);
+        }}
       />
     </div>
   );
