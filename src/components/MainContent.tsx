@@ -2,6 +2,7 @@ import Icon from '@/components/ui/icon';
 import ReferenceDashboard from './ReferenceDashboard';
 import DocumentsDashboard from './DocumentsDashboard';
 import TemplatesDashboard from './TemplatesDashboard';
+import SettingsDashboard from './SettingsDashboard';
 
 interface MenuItem {
   id: string;
@@ -70,7 +71,9 @@ const MainContent = ({
           <ReferenceDashboard onNavigate={setActiveSection} />
         ) : activeSection === 'documents' ? (
           <DocumentsDashboard onNavigate={setActiveSection} />
-        ) : activeSection === 'reports' ? (
+        ) : activeSection === 'settings' ? (
+          <SettingsDashboard onNavigate={setActiveSection} />
+        ) : activeSection === 'templates' ? (
           <TemplatesDashboard />
         ) : activeSection === 'orders' ? (
           <div className="px-4 sm:px-6 lg:px-8 py-6">

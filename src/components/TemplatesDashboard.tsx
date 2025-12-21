@@ -333,13 +333,9 @@ export default function TemplatesDashboard() {
   };
 
   return (
-    <div className="p-6">
-      <div className="mb-6 flex justify-between items-center">
-        <div>
-          <h3 className="text-xl font-semibold">Шаблоны отчетов</h3>
-          <p className="text-sm text-gray-600 mt-1">Загрузите PDF или Excel для создания шаблона</p>
-        </div>
-        <div className="flex gap-2">
+    <div className="px-4 sm:px-6 lg:px-8 py-6">
+      <div className="space-y-4">
+        <div className="flex justify-end gap-2">
           <button
             onClick={() => fileInputRef.current?.click()}
             disabled={isLoading}
@@ -370,53 +366,81 @@ export default function TemplatesDashboard() {
           onChange={handleUploadExcel}
           className="hidden"
         />
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {templates.map((template) => (
-          <div key={template.id} className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-            <div className="flex items-start justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <Icon name={template.templateType === 'excel' ? 'Sheet' : 'FileText'} size={20} className={template.templateType === 'excel' ? 'text-green-600' : 'text-primary'} />
-                <h4 className="font-semibold text-gray-900">{template.name}</h4>
-              </div>
-              <span className="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-600">
-                {template.templateType === 'excel' ? 'Excel' : 'PDF'}
-              </span>
-            </div>
-            
-            <p className="text-sm text-gray-600 mb-3">{template.description}</p>
-            
-            <div className="flex items-center gap-2 text-sm text-gray-500 mb-4">
-              <Icon name="Calendar" size={14} />
-              <span>{template.createdAt}</span>
-              <span className="mx-2">•</span>
-              <Icon name="List" size={14} />
-              <span>{template.fields.length} полей</span>
-            </div>
+        <div className="relative">
+          <Icon name="Search" size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Поиск шаблона..."
+            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+          />
+        </div>
 
-            <div className="flex gap-2">
-              <button
-                onClick={() => handleEditTemplate(template)}
-                className="flex-1 px-3 py-1.5 text-sm bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
-              >
-                Редактор
-              </button>
-              <button
-                onClick={() => handleViewTemplate(template)}
-                className="px-3 py-1.5 text-sm bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors"
-              >
-                <Icon name="Eye" size={16} />
-              </button>
-              <button
-                onClick={() => handleDeleteTemplate(template.id)}
-                className="px-3 py-1.5 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-              >
-                <Icon name="Trash2" size={16} />
-              </button>
-            </div>
+        <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-50 border-b border-gray-200">
+                <tr>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">Название</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">Описание</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">Тип</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">Дата создания</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">Полей</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">Действия</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {templates.map((template) => (
+                  <tr key={template.id} className="hover:bg-gray-50 transition-colors">
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-2">
+                        <Icon name={template.templateType === 'excel' ? 'Sheet' : 'FileText'} size={18} className={template.templateType === 'excel' ? 'text-green-600' : 'text-primary'} />
+                        <span className="text-sm font-medium text-gray-900">{template.name}</span>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 text-sm text-gray-900">{template.description}</td>
+                    <td className="px-4 py-3">
+                      <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
+                        template.templateType === 'excel'
+                          ? 'bg-green-100 text-green-700'
+                          : 'bg-blue-100 text-blue-700'
+                      }`}>
+                        {template.templateType === 'excel' ? 'Excel' : 'PDF'}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-sm text-gray-900">{template.createdAt}</td>
+                    <td className="px-4 py-3 text-sm text-gray-900">{template.fields.length}</td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-2">
+                        <button 
+                          onClick={() => handleEditTemplate(template)}
+                          className="p-1 hover:bg-gray-100 rounded transition-colors" 
+                          title="Редактор"
+                        >
+                          <Icon name="Edit" size={18} className="text-gray-600" />
+                        </button>
+                        <button 
+                          onClick={() => handleViewTemplate(template)}
+                          className="p-1 hover:bg-gray-100 rounded transition-colors" 
+                          title="Просмотр"
+                        >
+                          <Icon name="Eye" size={18} className="text-gray-600" />
+                        </button>
+                        <button 
+                          onClick={() => handleDeleteTemplate(template.id)}
+                          className="p-1 hover:bg-gray-100 rounded transition-colors" 
+                          title="Удалить"
+                        >
+                          <Icon name="Trash2" size={18} className="text-red-600" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-        ))}
+        </div>
       </div>
 
       {editingTemplate && (
