@@ -31,39 +31,46 @@ export default function ReportsDashboard({ onCreateReport }: ReportsDashboardPro
     },
   ]);
 
-  const handleExportExcel = () => {
+  const handleExportExcel = (report: Report) => {
     const workbook = XLSX.utils.book_new();
 
-    reports.forEach((report, index) => {
-      const data = [
-        ['Договор-заявка №', report.number, '', 'от', report.date, ''],
-        ['', '', '', '', '', ''],
-        ['', '', 'на перевозку грузов автомобильным транспортом', '', '', ''],
-        ['', '', '', '', '', ''],
-        ['Заказчик:', report.customer, '', 'Перевозчик:', report.carrier, ''],
-        ['', '', '', '', '', ''],
-        ['Груз:', report.cargo, '', '', '', ''],
-        ['', '', '', '', '', ''],
-        ['Маршрут:', report.route, '', '', '', ''],
-        ['', '', '', '', '', ''],
-        ['Сумма:', report.amount, '', '', '', ''],
-      ];
+    const data = [
+      ['Договор-заявка №', report.number, '', 'от', report.date, ''],
+      ['', '', '', '', '', ''],
+      ['', '', 'на перевозку грузов автомобильным транспортом', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['Заказчик:', report.customer, '', 'Перевозчик:', report.carrier, ''],
+      ['', '', '', '', '', ''],
+      ['Груз:', report.cargo, '', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['Маршрут:', report.route, '', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['Сумма:', report.amount, '', '', '', ''],
+    ];
 
-      const worksheet = XLSX.utils.aoa_to_sheet(data);
-      
-      worksheet['!cols'] = [
-        { wch: 15 },
-        { wch: 25 },
-        { wch: 25 },
-        { wch: 15 },
-        { wch: 25 },
-        { wch: 10 }
-      ];
+    const worksheet = XLSX.utils.aoa_to_sheet(data);
+    
+    worksheet['!cols'] = [
+      { wch: 15 },
+      { wch: 25 },
+      { wch: 25 },
+      { wch: 15 },
+      { wch: 25 },
+      { wch: 10 }
+    ];
 
-      XLSX.utils.book_append_sheet(workbook, worksheet, `Договор ${report.number}`);
-    });
+    XLSX.utils.book_append_sheet(workbook, worksheet, `Договор ${report.number}`);
+    XLSX.writeFile(workbook, `Договор-заявка_${report.number}.xlsx`);
+  };
 
-    XLSX.writeFile(workbook, `Договора-заявки_${new Date().toLocaleDateString('ru-RU')}.xlsx`);
+  const handleDeleteReport = (id: string) => {
+    if (confirm('Удалить этот отчет?')) {
+      setReports(reports.filter(r => r.id !== id));
+    }
+  };
+
+  const handleEditReport = (id: string) => {
+    console.log('Редактирование отчета', id);
   };
 
   const handlePrintPDF = (report: Report) => {
@@ -157,22 +164,13 @@ export default function ReportsDashboard({ onCreateReport }: ReportsDashboardPro
     <div className="p-6">
       <div className="mb-6 flex justify-between items-center">
         <h3 className="text-xl font-semibold">Отчеты по договорам-заявкам</h3>
-        <div className="flex gap-3">
-          <button
-            onClick={handleExportExcel}
-            className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-          >
-            <Icon name="Download" size={20} />
-            Экспорт в Excel
-          </button>
-          <button
-            onClick={onCreateReport}
-            className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
-          >
-            <Icon name="Plus" size={20} />
-            Создать отчет
-          </button>
-        </div>
+        <button
+          onClick={onCreateReport}
+          className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+        >
+          <Icon name="Plus" size={20} />
+          Создать отчет
+        </button>
       </div>
 
       <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
@@ -200,14 +198,37 @@ export default function ReportsDashboard({ onCreateReport }: ReportsDashboardPro
                   <td className="px-4 py-3 text-sm text-gray-600">{report.cargo}</td>
                   <td className="px-4 py-3 text-sm text-gray-600">{report.route}</td>
                   <td className="px-4 py-3 text-sm font-medium text-gray-900">{report.amount}</td>
-                  <td className="px-4 py-3 text-right">
-                    <button
-                      onClick={() => handlePrintPDF(report)}
-                      className="text-primary hover:text-primary/80 transition-colors"
-                      title="Печать/PDF"
-                    >
-                      <Icon name="Printer" size={20} />
-                    </button>
+                  <td className="px-4 py-3">
+                    <div className="flex items-center justify-end gap-2">
+                      <button
+                        onClick={() => handlePrintPDF(report)}
+                        className="p-1 text-blue-600 hover:text-blue-800 transition-colors"
+                        title="Печать/PDF"
+                      >
+                        <Icon name="Printer" size={18} />
+                      </button>
+                      <button
+                        onClick={() => handleExportExcel(report)}
+                        className="p-1 text-green-600 hover:text-green-800 transition-colors"
+                        title="Экспорт в Excel"
+                      >
+                        <Icon name="Download" size={18} />
+                      </button>
+                      <button
+                        onClick={() => handleEditReport(report.id)}
+                        className="p-1 text-gray-600 hover:text-gray-800 transition-colors"
+                        title="Редактировать"
+                      >
+                        <Icon name="Edit" size={18} />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteReport(report.id)}
+                        className="p-1 text-red-600 hover:text-red-800 transition-colors"
+                        title="Удалить"
+                      >
+                        <Icon name="Trash2" size={18} />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
