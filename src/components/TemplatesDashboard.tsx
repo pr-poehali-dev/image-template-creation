@@ -17,6 +17,7 @@ export interface ReportTemplate {
   createdAt: string;
   fields: TemplateField[];
   pdfPreviewUrl?: string;
+  pdfFile?: File;
 }
 
 export default function TemplatesDashboard() {
@@ -96,7 +97,8 @@ export default function TemplatesDashboard() {
             description: `Автоматически распознан из PDF`,
             createdAt: new Date().toISOString().split('T')[0],
             fields: detectedFields,
-            pdfPreviewUrl: base64
+            pdfPreviewUrl: base64,
+            pdfFile: file
           };
 
           setTemplates([...templates, newTemplate]);
@@ -128,10 +130,14 @@ export default function TemplatesDashboard() {
   };
 
   const handleEditTemplate = (template: ReportTemplate) => {
+    if (!template.pdfFile && !template.pdfPreviewUrl) {
+      alert('PDF файл недоступен');
+      return;
+    }
     setEditingTemplate({
       id: template.id,
       name: template.name,
-      pdfUrl: template.pdfPreviewUrl || '',
+      pdfUrl: template.pdfFile || template.pdfPreviewUrl || '',
       mappings: []
     });
   };

@@ -22,7 +22,7 @@ export interface FieldMapping {
 export interface TemplateWithMappings {
   id: string;
   name: string;
-  pdfUrl: string;
+  pdfUrl: string | File;
   mappings: FieldMapping[];
 }
 
