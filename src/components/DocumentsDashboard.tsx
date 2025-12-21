@@ -84,7 +84,7 @@ export default function DocumentsDashboard({ onNavigate }: DocumentsDashboardPro
             <div>
               <h4 className="text-lg font-semibold text-gray-900 mb-2">Экспорт документов</h4>
               <p className="text-gray-700 text-sm">
-                Выгружайте документы в PDF или Excel для печати 
+                Выгружайте документы в PDF для печати 
                 и отправки контрагентам.
               </p>
             </div>

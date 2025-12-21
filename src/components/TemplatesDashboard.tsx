@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import Icon from './ui/icon';
 import TemplateEditor, { TemplateWithMappings, FieldMapping } from './TemplateEditor';
-import ExcelTemplateEditor, { ExcelTemplateWithMappings, ExcelColumnMapping } from './ExcelTemplateEditor';
 
 export interface TemplateField {
   name: string;
@@ -19,21 +18,16 @@ export interface ReportTemplate {
   fields: TemplateField[];
   pdfPreviewUrl?: string;
   pdfFile?: File;
-  excelFile?: File;
-  templateType: 'pdf' | 'excel';
-  excelSheetName?: string;
+  templateType: 'pdf';
   pdfMappings?: FieldMapping[];
-  excelMappings?: ExcelColumnMapping[];
 }
 
 const STORAGE_KEY = 'poehali_templates';
 const FILE_CACHE_KEY = 'poehali_template_files';
 
-interface StoredTemplate extends Omit<ReportTemplate, 'pdfFile' | 'excelFile'> {
+interface StoredTemplate extends Omit<ReportTemplate, 'pdfFile'> {
   pdfFileId?: string;
-  excelFileId?: string;
   pdfMappings?: FieldMapping[];
-  excelMappings?: ExcelColumnMapping[];
 }
 
 export default function TemplatesDashboard() {
@@ -55,15 +49,10 @@ export default function TemplatesDashboard() {
             fields: st.fields,
             templateType: st.templateType,
             pdfPreviewUrl: st.pdfPreviewUrl,
-            excelSheetName: st.excelSheetName,
-            pdfMappings: st.pdfMappings,
-            excelMappings: st.excelMappings
+            pdfMappings: st.pdfMappings
           };
           if (st.pdfFileId && fileCache.has(st.pdfFileId)) {
             template.pdfFile = fileCache.get(st.pdfFileId);
-          }
-          if (st.excelFileId && fileCache.has(st.excelFileId)) {
-            template.excelFile = fileCache.get(st.excelFileId);
           }
           return template;
         });
@@ -103,17 +92,11 @@ export default function TemplatesDashboard() {
         fields: t.fields,
         templateType: t.templateType,
         pdfPreviewUrl: t.pdfPreviewUrl,
-        excelSheetName: t.excelSheetName,
-        pdfMappings: t.pdfMappings,
-        excelMappings: t.excelMappings
+        pdfMappings: t.pdfMappings
       };
       if (t.pdfFile) {
         stored.pdfFileId = t.id + '_pdf';
         fileCache.set(stored.pdfFileId, t.pdfFile);
-      }
-      if (t.excelFile) {
-        stored.excelFileId = t.id + '_excel';
-        fileCache.set(stored.excelFileId, t.excelFile);
       }
       return stored;
     });
@@ -124,8 +107,6 @@ export default function TemplatesDashboard() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedTemplate, setSelectedTemplate] = useState<ReportTemplate | null>(null);
   const [editingTemplate, setEditingTemplate] = useState<TemplateWithMappings | null>(null);
-  const [editingExcelTemplate, setEditingExcelTemplate] = useState<ExcelTemplateWithMappings | null>(null);
-  const excelInputRef = useRef<HTMLInputElement>(null);
 
   const handleUploadPDF = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -214,7 +195,7 @@ export default function TemplatesDashboard() {
   };
 
   const handlePrintTemplate = (template: ReportTemplate) => {
-    if (template.templateType === 'pdf' && template.pdfPreviewUrl) {
+    if (template.pdfPreviewUrl) {
       const printWindow = window.open('', '_blank');
       if (printWindow) {
         printWindow.document.write(`
@@ -234,28 +215,17 @@ export default function TemplatesDashboard() {
         printWindow.document.close();
         setTimeout(() => printWindow.print(), 500);
       }
-    } else if (template.templateType === 'excel') {
-      alert('Печать Excel шаблонов пока не поддерживается. Скачайте файл и откройте в Excel.');
     } else {
       alert('Файл для печати недоступен');
     }
   };
 
   const handleDownloadTemplate = (template: ReportTemplate) => {
-    if (template.templateType === 'pdf' && template.pdfFile) {
+    if (template.pdfFile) {
       const url = URL.createObjectURL(template.pdfFile);
       const a = document.createElement('a');
       a.href = url;
       a.download = `${template.name}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    } else if (template.templateType === 'excel' && template.excelFile) {
-      const url = URL.createObjectURL(template.excelFile);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${template.name}.xlsx`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -266,58 +236,20 @@ export default function TemplatesDashboard() {
   };
 
   const handleEditTemplate = (template: ReportTemplate) => {
-    if (template.templateType === 'excel') {
-      if (!template.excelFile) {
-        alert('Excel файл недоступен');
-        return;
-      }
-      setEditingExcelTemplate({
-        id: template.id,
-        name: template.name,
-        description: template.description,
-        excelFile: template.excelFile,
-        sheetName: template.excelSheetName || '',
-        mappings: template.excelMappings || []
-      });
-    } else {
-      if (!template.pdfFile && !template.pdfPreviewUrl) {
-        alert('PDF файл недоступен');
-        return;
-      }
-      setEditingTemplate({
-        id: template.id,
-        name: template.name,
-        description: template.description,
-        pdfUrl: template.pdfFile || template.pdfPreviewUrl || '',
-        mappings: template.pdfMappings || []
-      });
-    }
-  };
-
-  const handleUploadExcel = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file || !file.name.match(/\.(xlsx|xls)$/i)) {
-      alert('Пожалуйста, загрузите Excel файл (.xlsx или .xls)');
+    if (!template.pdfFile && !template.pdfPreviewUrl) {
+      alert('PDF файл недоступен');
       return;
     }
-
-    const newTemplate: ReportTemplate = {
-      id: Date.now().toString(),
-      name: `Шаблон ${file.name.replace(/\.(xlsx|xls)$/i, '')}`,
-      description: 'Распознано из Excel',
-      createdAt: new Date().toISOString().split('T')[0],
-      fields: [],
-      excelFile: file,
-      templateType: 'excel'
-    };
-
-    setTemplates([...templates, newTemplate]);
-    alert(`Excel шаблон создан! Откройте редактор для настройки колонок`);
-    
-    if (excelInputRef.current) {
-      excelInputRef.current.value = '';
-    }
+    setEditingTemplate({
+      id: template.id,
+      name: template.name,
+      description: template.description,
+      pdfUrl: template.pdfFile || template.pdfPreviewUrl || '',
+      mappings: template.pdfMappings || []
+    });
   };
+
+
 
   const handleSaveMappings = (mappings: FieldMapping[], name: string, description: string) => {
     if (!editingTemplate) return;
@@ -344,38 +276,7 @@ export default function TemplatesDashboard() {
     setEditingTemplate(null);
   };
 
-  const handleSaveExcelMappings = (mappings: ExcelColumnMapping[], sheetName: string, name: string, description: string) => {
-    if (!editingExcelTemplate) return;
-    
-    const updatedTemplates = templates.map(t => {
-      if (t.id === editingExcelTemplate.id) {
-        const fields: TemplateField[] = mappings
-          .filter(m => m.dbField)
-          .map(m => ({
-            name: m.dbField,
-            label: m.columnName,
-            type: m.fieldType === 'date' ? 'date' : m.fieldType === 'number' ? 'number' : 'text',
-            required: true,
-            section: m.tableName
-          }));
-        
-        return {
-          ...t,
-          name,
-          description,
-          fields,
-          excelSheetName: sheetName,
-          excelMappings: mappings
-        };
-      }
-      return t;
-    });
-    
-    setTemplates(updatedTemplates);
-    console.log('Сохранены Excel маппинги:', mappings);
-    alert(`Сохранено ${mappings.length} колонок для Excel шаблона`);
-    setEditingExcelTemplate(null);
-  };
+
 
   const groupFieldsBySection = (fields: TemplateField[]) => {
     const grouped: Record<string, TemplateField[]> = {};
@@ -400,26 +301,12 @@ export default function TemplatesDashboard() {
             <Icon name="FileText" size={20} />
             {isLoading ? 'Загрузка...' : 'Загрузить PDF'}
           </button>
-          <button
-            onClick={() => excelInputRef.current?.click()}
-            className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-          >
-            <Icon name="Sheet" size={20} />
-            Загрузить Excel
-          </button>
         </div>
         <input
           ref={fileInputRef}
           type="file"
           accept=".pdf"
           onChange={handleUploadPDF}
-          className="hidden"
-        />
-        <input
-          ref={excelInputRef}
-          type="file"
-          accept=".xlsx,.xls"
-          onChange={handleUploadExcel}
           className="hidden"
         />
 
@@ -450,18 +337,14 @@ export default function TemplatesDashboard() {
                   <tr key={template.id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
-                        <Icon name={template.templateType === 'excel' ? 'Sheet' : 'FileText'} size={18} className={template.templateType === 'excel' ? 'text-green-600' : 'text-primary'} />
+                        <Icon name="FileText" size={18} className="text-primary" />
                         <span className="text-sm font-medium text-gray-900">{template.name}</span>
                       </div>
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-900">{template.description}</td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
-                        template.templateType === 'excel'
-                          ? 'bg-green-100 text-green-700'
-                          : 'bg-blue-100 text-blue-700'
-                      }`}>
-                        {template.templateType === 'excel' ? 'Excel' : 'PDF'}
+                      <span className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
+                        PDF
                       </span>
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-900">{template.createdAt}</td>
@@ -514,13 +397,7 @@ export default function TemplatesDashboard() {
         />
       )}
 
-      {editingExcelTemplate && (
-        <ExcelTemplateEditor
-          template={editingExcelTemplate}
-          onSave={handleSaveExcelMappings}
-          onClose={() => setEditingExcelTemplate(null)}
-        />
-      )}
+
 
       {selectedTemplate && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
