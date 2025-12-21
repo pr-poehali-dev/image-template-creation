@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -68,6 +68,8 @@ export interface ReportFormData {
 }
 
 export default function ReportModal({ isOpen, onClose, onSave }: ReportModalProps) {
+  const [isLoading, setIsLoading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState<ReportFormData>({
     number: '',
     date: '',
@@ -118,6 +120,99 @@ export default function ReportModal({ isOpen, onClose, onSave }: ReportModalProp
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
+  const convertDateFormat = (dateStr: string) => {
+    if (!dateStr) return '';
+    const match = dateStr.match(/(\d{2})\.(\d{2})\.(\d{4})/);
+    if (match) {
+      return `${match[3]}-${match[2]}-${match[1]}`;
+    }
+    return dateStr;
+  };
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || file.type !== 'application/pdf') {
+      alert('Пожалуйста, загрузите PDF файл');
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const reader = new FileReader();
+      reader.onload = async (event) => {
+        const base64 = event.target?.result as string;
+        const base64Data = base64.split(',')[1];
+
+        const response = await fetch('https://functions.poehali.dev/8eb81581-d997-4368-abcd-924530939855', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ file: base64Data })
+        });
+
+        const result = await response.json();
+        
+        if (result.success && result.data) {
+          setFormData({
+            number: result.data.number || '',
+            date: convertDateFormat(result.data.date) || '',
+            customerName: result.data.customerName || '',
+            customerInn: result.data.customerInn || '',
+            customerOgrn: result.data.customerOgrn || '',
+            customerAddress: result.data.customerAddress || '',
+            customerOkpo: result.data.customerOkpo || '',
+            customerOkvd: result.data.customerOkvd || '',
+            customerAccount: result.data.customerAccount || '',
+            customerBank: result.data.customerBank || '',
+            customerBik: result.data.customerBik || '',
+            customerCorAccount: result.data.customerCorAccount || '',
+            customerDirector: result.data.customerDirector || '',
+            carrierName: result.data.carrierName || '',
+            carrierInn: result.data.carrierInn || '',
+            carrierOgrn: result.data.carrierOgrn || '',
+            carrierAccount: result.data.carrierAccount || '',
+            carrierBank: result.data.carrierBank || '',
+            carrierAddress: result.data.carrierAddress || '',
+            carrierEmail: result.data.carrierEmail || '',
+            cargoType: result.data.cargoType || '',
+            bodyType: result.data.bodyType || '',
+            weight: result.data.weight || '',
+            volume: result.data.volume || '',
+            specialConditions: result.data.specialConditions || '',
+            extraConditions: result.data.extraConditions || '',
+            cargoName: result.data.cargoName || '',
+            loadingAddress: result.data.loadingAddress || '',
+            loadingDate: convertDateFormat(result.data.loadingDate) || '',
+            loadingContact: result.data.loadingContact || '',
+            unloadingAddress: result.data.unloadingAddress || '',
+            unloadingDate: convertDateFormat(result.data.unloadingDate) || '',
+            unloadingContact: result.data.unloadingContact || '',
+            amount: result.data.amount || '',
+            paymentTerms: result.data.paymentTerms || '',
+            paymentConditions: result.data.paymentConditions || '',
+            driverName: result.data.driverName || '',
+            driverPassport: result.data.driverPassport || '',
+            driverLicense: result.data.driverLicense || '',
+            vehicleModel: result.data.vehicleModel || '',
+            vehicleNumber: result.data.vehicleNumber || '',
+            trailerNumber: result.data.trailerNumber || '',
+            transportConditions: result.data.transportConditions || ''
+          });
+        } else {
+          alert('Не удалось распознать данные из PDF');
+        }
+      };
+      reader.readAsDataURL(file);
+    } catch (error) {
+      console.error('Ошибка загрузки PDF:', error);
+      alert('Ошибка при загрузке файла');
+    } finally {
+      setIsLoading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSave(formData);
@@ -128,9 +223,28 @@ export default function ReportModal({ isOpen, onClose, onSave }: ReportModalProp
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Icon name="FileText" size={24} />
-            Создать договор-заявку
+          <DialogTitle className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Icon name="FileText" size={24} />
+              Создать договор-заявку
+            </div>
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isLoading}
+              className="flex items-center gap-2 px-3 py-1.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              title="Загрузить PDF для автозаполнения"
+            >
+              <Icon name="Upload" size={16} />
+              {isLoading ? 'Загрузка...' : 'Загрузить PDF'}
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".pdf"
+              onChange={handleFileUpload}
+              className="hidden"
+            />
           </DialogTitle>
         </DialogHeader>
 
