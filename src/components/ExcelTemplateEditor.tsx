@@ -15,6 +15,7 @@ export interface ExcelColumnMapping {
 export interface ExcelTemplateWithMappings {
   id: string;
   name: string;
+  description?: string;
   excelFile: File;
   sheetName: string;
   mappings: ExcelColumnMapping[];
@@ -22,7 +23,7 @@ export interface ExcelTemplateWithMappings {
 
 interface ExcelTemplateEditorProps {
   template: ExcelTemplateWithMappings;
-  onSave: (mappings: ExcelColumnMapping[], sheetName: string) => void;
+  onSave: (mappings: ExcelColumnMapping[], sheetName: string, name: string, description: string) => void;
   onClose: () => void;
 }
 
@@ -43,6 +44,8 @@ export default function ExcelTemplateEditor({ template, onSave, onClose }: Excel
   const [selectedColumn, setSelectedColumn] = useState<number | null>(null);
   const [sheets, setSheets] = useState<string[]>([]);
   const [currentSheet, setCurrentSheet] = useState<string>(template.sheetName || '');
+  const [templateName, setTemplateName] = useState(template.name);
+  const [templateDescription, setTemplateDescription] = useState(template.description || '');
 
   useEffect(() => {
     loadExcelFile();
@@ -148,7 +151,7 @@ export default function ExcelTemplateEditor({ template, onSave, onClose }: Excel
       alert('Настройте хотя бы одну колонку');
       return;
     }
-    onSave(configuredMappings, currentSheet);
+    onSave(configuredMappings, currentSheet, templateName, templateDescription);
   };
 
   const selectedMapping = selectedColumn !== null && mappings.length > 0 
@@ -159,9 +162,30 @@ export default function ExcelTemplateEditor({ template, onSave, onClose }: Excel
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg w-full h-full max-w-[95vw] max-h-[95vh] flex flex-col">
         <div className="flex items-center justify-between p-4 border-b">
-          <div>
-            <h3 className="text-xl font-semibold">{template.name}</h3>
-            <p className="text-sm text-gray-600">Кликните на заголовок колонки для настройки привязки к БД</p>
+          <div className="flex-1 mr-4">
+            <div className="grid grid-cols-2 gap-3 mb-2">
+              <div>
+                <label className="block text-xs font-medium text-gray-700 mb-1">Название шаблона</label>
+                <input
+                  type="text"
+                  value={templateName}
+                  onChange={(e) => setTemplateName(e.target.value)}
+                  className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  placeholder="Введите название"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-700 mb-1">Описание</label>
+                <input
+                  type="text"
+                  value={templateDescription}
+                  onChange={(e) => setTemplateDescription(e.target.value)}
+                  className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  placeholder="Введите описание"
+                />
+              </div>
+            </div>
+            <p className="text-xs text-gray-600">Кликните на заголовок колонки для настройки привязки к БД</p>
           </div>
           <div className="flex items-center gap-2">
             {sheets.length > 1 && (

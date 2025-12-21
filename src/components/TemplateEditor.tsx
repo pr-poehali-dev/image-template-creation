@@ -32,13 +32,14 @@ export interface FieldMapping {
 export interface TemplateWithMappings {
   id: string;
   name: string;
+  description?: string;
   pdfUrl: string | File;
   mappings: FieldMapping[];
 }
 
 interface TemplateEditorProps {
   template: TemplateWithMappings;
-  onSave: (mappings: FieldMapping[]) => void;
+  onSave: (mappings: FieldMapping[], name: string, description: string) => void;
   onClose: () => void;
 }
 
@@ -57,6 +58,8 @@ export default function TemplateEditor({ template, onSave, onClose }: TemplateEd
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [mappings, setMappings] = useState<FieldMapping[]>(template.mappings || []);
   const [selectedMapping, setSelectedMapping] = useState<FieldMapping | null>(null);
+  const [templateName, setTemplateName] = useState(template.name);
+  const [templateDescription, setTemplateDescription] = useState(template.description || '');
   const [selectedText, setSelectedText] = useState<string>('');
   const [selectionRect, setSelectionRect] = useState<{ x: number; y: number; width: number; height: number } | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -152,7 +155,7 @@ export default function TemplateEditor({ template, onSave, onClose }: TemplateEd
   };
 
   const handleSave = () => {
-    onSave(mappings);
+    onSave(mappings, templateName, templateDescription);
     onClose();
   };
 
@@ -197,17 +200,39 @@ export default function TemplateEditor({ template, onSave, onClose }: TemplateEd
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg w-full max-w-[95vw] h-[95vh] flex flex-col">
-        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-          <div>
-            <h3 className="text-xl font-bold text-gray-900">{template.name}</h3>
-            <p className="text-sm text-gray-600 mt-1">Выделите текст в PDF. Красные = не настроены, зеленые = настроены</p>
+        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-lg font-bold text-gray-900">Редактор шаблона</h3>
+            <button 
+              onClick={onClose}
+              className="p-1 hover:bg-gray-100 rounded transition-colors"
+            >
+              <Icon name="X" size={20} className="text-gray-600" />
+            </button>
           </div>
-          <button 
-            onClick={onClose}
-            className="p-1 hover:bg-gray-100 rounded transition-colors"
-          >
-            <Icon name="X" size={20} className="text-gray-600" />
-          </button>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-medium text-gray-700 mb-1">Название шаблона</label>
+              <input
+                type="text"
+                value={templateName}
+                onChange={(e) => setTemplateName(e.target.value)}
+                className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                placeholder="Введите название"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-700 mb-1">Описание</label>
+              <input
+                type="text"
+                value={templateDescription}
+                onChange={(e) => setTemplateDescription(e.target.value)}
+                className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                placeholder="Введите описание"
+              />
+            </div>
+          </div>
+          <p className="text-xs text-gray-600 mt-2">Выделите текст в PDF. Красные = не настроены, зеленые = настроены</p>
         </div>
 
         <div className="flex-1 flex overflow-hidden">
