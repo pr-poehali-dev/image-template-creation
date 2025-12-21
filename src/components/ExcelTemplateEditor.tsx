@@ -154,8 +154,8 @@ export default function ExcelTemplateEditor({ template, onSave, onClose }: Excel
     onSave(configuredMappings, currentSheet, templateName, templateDescription);
   };
 
-  const selectedMapping = selectedColumn !== null && mappings.length > 0 
-    ? mappings.find(m => m.columnIndex === selectedColumn) || null 
+  const selectedMapping = selectedColumn !== null && mappings.length > selectedColumn
+    ? mappings[selectedColumn] 
     : null;
 
   return (
