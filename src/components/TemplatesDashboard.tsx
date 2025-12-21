@@ -38,23 +38,7 @@ export default function TemplatesDashboard() {
 
   useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
-    const defaultTemplate: ReportTemplate = {
-      id: '1',
-      name: 'Договор-заявка на перевозку',
-      description: 'Стандартный шаблон договора-заявки для транспортных компаний',
-      createdAt: '2025-12-21',
-      templateType: 'pdf',
-      fields: [
-        { name: 'number', label: 'Номер договора', type: 'text', required: true, section: 'Основное' },
-        { name: 'date', label: 'Дата', type: 'date', required: true, section: 'Основное' },
-        { name: 'customerName', label: 'Заказчик', type: 'text', required: true, section: 'Заказчик' },
-        { name: 'customerInn', label: 'ИНН', type: 'text', required: true, section: 'Заказчик' },
-        { name: 'carrierName', label: 'Перевозчик', type: 'text', required: true, section: 'Перевозчик' },
-        { name: 'cargoName', label: 'Груз', type: 'text', required: true, section: 'Груз' },
-        { name: 'amount', label: 'Сумма', type: 'text', required: true, section: 'Оплата' }
-      ]
-    };
-
+    
     if (stored) {
       try {
         const storedTemplates: StoredTemplate[] = JSON.parse(stored);
@@ -77,13 +61,28 @@ export default function TemplatesDashboard() {
           }
           return template;
         });
-        const hasDefault = restored.some(t => t.id === '1');
-        setTemplates(hasDefault ? restored : [defaultTemplate, ...restored]);
+        setTemplates(restored);
       } catch (e) {
         console.error('Ошибка загрузки шаблонов:', e);
-        setTemplates([defaultTemplate]);
+        setTemplates([]);
       }
     } else {
+      const defaultTemplate: ReportTemplate = {
+        id: '1',
+        name: 'Договор-заявка на перевозку',
+        description: 'Стандартный шаблон договора-заявки для транспортных компаний',
+        createdAt: '2025-12-21',
+        templateType: 'pdf',
+        fields: [
+          { name: 'number', label: 'Номер договора', type: 'text', required: true, section: 'Основное' },
+          { name: 'date', label: 'Дата', type: 'date', required: true, section: 'Основное' },
+          { name: 'customerName', label: 'Заказчик', type: 'text', required: true, section: 'Заказчик' },
+          { name: 'customerInn', label: 'ИНН', type: 'text', required: true, section: 'Заказчик' },
+          { name: 'carrierName', label: 'Перевозчик', type: 'text', required: true, section: 'Перевозчик' },
+          { name: 'cargoName', label: 'Груз', type: 'text', required: true, section: 'Груз' },
+          { name: 'amount', label: 'Сумма', type: 'text', required: true, section: 'Оплата' }
+        ]
+      };
       setTemplates([defaultTemplate]);
     }
   }, []);
