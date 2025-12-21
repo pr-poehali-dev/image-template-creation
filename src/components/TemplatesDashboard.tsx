@@ -258,8 +258,27 @@ export default function TemplatesDashboard() {
   };
 
   const handleSaveMappings = (mappings: FieldMapping[]) => {
-    console.log('Сохранены PDF маппинги:', mappings);
-    alert(`Сохранено ${mappings.length} полей для PDF шаблона`);
+    if (!editingTemplate) return;
+    
+    const updatedTemplates = templates.map(t => {
+      if (t.id === editingTemplate.id) {
+        const fields: TemplateField[] = mappings
+          .filter(m => m.dbField)
+          .map(m => ({
+            name: m.dbField,
+            label: m.label || m.selectedText || 'Поле',
+            type: m.fieldType === 'date' ? 'date' : m.fieldType === 'number' ? 'number' : 'text',
+            required: true,
+            section: m.tableName
+          }));
+        
+        return { ...t, fields };
+      }
+      return t;
+    });
+    
+    setTemplates(updatedTemplates);
+    alert(`Сохранено ${mappings.filter(m => m.dbField).length} полей`);
     setEditingTemplate(null);
   };
 
