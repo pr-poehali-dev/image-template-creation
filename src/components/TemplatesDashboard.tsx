@@ -22,6 +22,8 @@ export interface ReportTemplate {
   excelFile?: File;
   templateType: 'pdf' | 'excel';
   excelSheetName?: string;
+  pdfMappings?: FieldMapping[];
+  excelMappings?: ExcelColumnMapping[];
 }
 
 const STORAGE_KEY = 'poehali_templates';
@@ -30,6 +32,8 @@ const FILE_CACHE_KEY = 'poehali_template_files';
 interface StoredTemplate extends Omit<ReportTemplate, 'pdfFile' | 'excelFile'> {
   pdfFileId?: string;
   excelFileId?: string;
+  pdfMappings?: FieldMapping[];
+  excelMappings?: ExcelColumnMapping[];
 }
 
 export default function TemplatesDashboard() {
@@ -51,7 +55,9 @@ export default function TemplatesDashboard() {
             fields: st.fields,
             templateType: st.templateType,
             pdfPreviewUrl: st.pdfPreviewUrl,
-            excelSheetName: st.excelSheetName
+            excelSheetName: st.excelSheetName,
+            pdfMappings: st.pdfMappings,
+            excelMappings: st.excelMappings
           };
           if (st.pdfFileId && fileCache.has(st.pdfFileId)) {
             template.pdfFile = fileCache.get(st.pdfFileId);
@@ -97,7 +103,9 @@ export default function TemplatesDashboard() {
         fields: t.fields,
         templateType: t.templateType,
         pdfPreviewUrl: t.pdfPreviewUrl,
-        excelSheetName: t.excelSheetName
+        excelSheetName: t.excelSheetName,
+        pdfMappings: t.pdfMappings,
+        excelMappings: t.excelMappings
       };
       if (t.pdfFile) {
         stored.pdfFileId = t.id + '_pdf';
@@ -216,7 +224,7 @@ export default function TemplatesDashboard() {
         name: template.name,
         excelFile: template.excelFile,
         sheetName: template.excelSheetName || '',
-        mappings: []
+        mappings: template.excelMappings || []
       });
     } else {
       if (!template.pdfFile && !template.pdfPreviewUrl) {
@@ -227,7 +235,7 @@ export default function TemplatesDashboard() {
         id: template.id,
         name: template.name,
         pdfUrl: template.pdfFile || template.pdfPreviewUrl || '',
-        mappings: []
+        mappings: template.pdfMappings || []
       });
     }
   };
@@ -272,7 +280,7 @@ export default function TemplatesDashboard() {
             section: m.tableName
           }));
         
-        return { ...t, fields };
+        return { ...t, fields, pdfMappings: mappings };
       }
       return t;
     });
@@ -300,7 +308,8 @@ export default function TemplatesDashboard() {
         return {
           ...t,
           fields,
-          excelSheetName: sheetName
+          excelSheetName: sheetName,
+          excelMappings: mappings
         };
       }
       return t;
