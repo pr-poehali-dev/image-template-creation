@@ -18,6 +18,15 @@ export interface FieldMapping {
   fieldType: 'text' | 'date' | 'number';
   tableName: string;
   selectedText?: string;
+  maxLength?: number;
+  subFields?: Array<{
+    id: string;
+    dbField: string;
+    label: string;
+    fieldType: 'text' | 'date' | 'number';
+    tableName: string;
+    maxLength?: number;
+  }>;
 }
 
 export interface TemplateWithMappings {
@@ -38,7 +47,7 @@ const DB_TABLES = [
   { name: 'carriers', label: 'Перевозчики', fields: ['name', 'inn', 'ogrn', 'address', 'phone', 'email'] },
   { name: 'cargo', label: 'Грузы', fields: ['name', 'weight', 'volume', 'type', 'conditions'] },
   { name: 'routes', label: 'Маршруты', fields: ['loading_address', 'loading_date', 'unloading_address', 'unloading_date'] },
-  { name: 'drivers', label: 'Водители', fields: ['name', 'passport', 'license', 'phone'] },
+  { name: 'drivers', label: 'Водители', fields: ['name', 'passport_series', 'passport_number', 'passport_issued_by', 'passport_issued_date', 'license', 'phone'] },
   { name: 'vehicles', label: 'ТС', fields: ['model', 'number', 'trailer_number', 'body_type'] },
   { name: 'contracts', label: 'Договоры', fields: ['number', 'date', 'amount', 'payment_terms'] }
 ];
@@ -52,6 +61,7 @@ export default function TemplateEditor({ template, onSave, onClose }: TemplateEd
   const [selectionRect, setSelectionRect] = useState<{ x: number; y: number; width: number; height: number } | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1.0);
+  const [editingSubField, setEditingSubField] = useState<{ mappingId: string; subFieldId: string } | null>(null);
 
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
@@ -126,8 +136,13 @@ export default function TemplateEditor({ template, onSave, onClose }: TemplateEd
   };
 
   const getFieldColor = (mapping: FieldMapping) => {
-    if (!mapping.dbField) return 'rgba(220, 38, 38, 0.3)';
-    return 'rgba(34, 197, 94, 0.3)';
+    const hasMainField = !!mapping.dbField;
+    const hasAllSubFields = !mapping.subFields || mapping.subFields.every(sf => !!sf.dbField);
+    
+    if (hasMainField && hasAllSubFields) {
+      return 'rgba(34, 197, 94, 0.3)';
+    }
+    return 'rgba(220, 38, 38, 0.3)';
   };
 
   return (
@@ -210,8 +225,8 @@ export default function TemplateEditor({ template, onSave, onClose }: TemplateEd
                         e.stopPropagation();
                         setSelectedMapping(mapping);
                       }}
-                      className={`absolute border-2 cursor-pointer transition-all ${
-                        selectedMapping?.id === mapping.id ? 'border-blue-500' : 'border-red-500'
+                      className={`absolute cursor-pointer transition-all ${
+                        selectedMapping?.id === mapping.id ? 'ring-2 ring-blue-500' : ''
                       }`}
                       style={{
                         left: mapping.x * scale,
@@ -221,11 +236,7 @@ export default function TemplateEditor({ template, onSave, onClose }: TemplateEd
                         backgroundColor: getFieldColor(mapping)
                       }}
                       title={mapping.label}
-                    >
-                      <div className="absolute -top-6 left-0 bg-white px-1 py-0.5 text-xs border rounded shadow-sm whitespace-nowrap">
-                        {mapping.label}
-                      </div>
-                    </div>
+                    />
                   ))}
 
                 {selectionRect && selectedText && (
@@ -317,6 +328,62 @@ export default function TemplateEditor({ template, onSave, onClose }: TemplateEd
                   </select>
                 </div>
 
+                <div>
+                  <label className="text-sm font-medium block mb-1">Макс. длина (перенос)</label>
+                  <input
+                    type="number"
+                    value={selectedMapping.maxLength || ''}
+                    onChange={(e) => handleUpdateMapping(selectedMapping.id, { maxLength: e.target.value ? parseInt(e.target.value) : undefined })}
+                    placeholder="Не ограничено"
+                    className="w-full px-3 py-2 border rounded-lg"
+                  />
+                </div>
+
+                <div className="pt-4 border-t">
+                  <h5 className="text-sm font-semibold mb-2">Дополнительные поля в этой ячейке</h5>
+                  {selectedMapping.subFields && selectedMapping.subFields.length > 0 ? (
+                    <div className="space-y-2 mb-3">
+                      {selectedMapping.subFields.map((subField, idx) => (
+                        <div key={subField.id} className="p-2 bg-gray-50 rounded border text-xs hover:bg-gray-100 cursor-pointer" onClick={() => setEditingSubField({ mappingId: selectedMapping.id, subFieldId: subField.id })}>
+                          <div className="flex justify-between items-start mb-1">
+                            <span className="font-medium">{subField.label}</span>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                const newSubFields = selectedMapping.subFields?.filter(sf => sf.id !== subField.id) || [];
+                                handleUpdateMapping(selectedMapping.id, { subFields: newSubFields.length > 0 ? newSubFields : undefined });
+                              }}
+                              className="text-red-600 hover:text-red-800"
+                            >
+                              <Icon name="X" size={14} />
+                            </button>
+                          </div>
+                          <div className="text-gray-600">{subField.dbField ? `${subField.tableName}.${subField.dbField}` : 'Не настроено'}</div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-xs text-gray-500 mb-2">Нет доп. полей</p>
+                  )}
+                  <button
+                    onClick={() => {
+                      const newSubField = {
+                        id: Date.now().toString(),
+                        dbField: '',
+                        label: 'Подполе ' + ((selectedMapping.subFields?.length || 0) + 1),
+                        fieldType: 'text' as const,
+                        tableName: selectedMapping.tableName
+                      };
+                      const currentSubFields = selectedMapping.subFields || [];
+                      handleUpdateMapping(selectedMapping.id, { subFields: [...currentSubFields, newSubField] });
+                    }}
+                    className="w-full px-3 py-1.5 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 flex items-center justify-center gap-1"
+                  >
+                    <Icon name="Plus" size={14} />
+                    Добавить подполе
+                  </button>
+                </div>
+
                 <div className="pt-4 border-t">
                   <p className="text-xs text-gray-500 mb-2">
                     Значение будет: <code className="bg-gray-100 px-1 rounded">{selectedMapping.tableName}.{selectedMapping.dbField || '???'}</code>
@@ -375,6 +442,117 @@ export default function TemplateEditor({ template, onSave, onClose }: TemplateEd
           </div>
         </div>
       </div>
+
+      {editingSubField && (() => {
+        const mapping = mappings.find(m => m.id === editingSubField.mappingId);
+        const subField = mapping?.subFields?.find(sf => sf.id === editingSubField.subFieldId);
+        if (!mapping || !subField) return null;
+
+        return (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 w-full max-w-md">
+              <h4 className="text-lg font-semibold mb-4">Редактирование подполя</h4>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium block mb-1">Название</label>
+                  <input
+                    type="text"
+                    value={subField.label}
+                    onChange={(e) => {
+                      const updatedSubFields = mapping.subFields?.map(sf => 
+                        sf.id === subField.id ? { ...sf, label: e.target.value } : sf
+                      );
+                      handleUpdateMapping(mapping.id, { subFields: updatedSubFields });
+                    }}
+                    className="w-full px-3 py-2 border rounded-lg"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium block mb-1">Таблица БД</label>
+                  <select
+                    value={subField.tableName}
+                    onChange={(e) => {
+                      const updatedSubFields = mapping.subFields?.map(sf => 
+                        sf.id === subField.id ? { ...sf, tableName: e.target.value, dbField: '' } : sf
+                      );
+                      handleUpdateMapping(mapping.id, { subFields: updatedSubFields });
+                    }}
+                    className="w-full px-3 py-2 border rounded-lg"
+                  >
+                    {DB_TABLES.map(table => (
+                      <option key={table.name} value={table.name}>{table.label}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium block mb-1">Поле БД</label>
+                  <select
+                    value={subField.dbField}
+                    onChange={(e) => {
+                      const updatedSubFields = mapping.subFields?.map(sf => 
+                        sf.id === subField.id ? { ...sf, dbField: e.target.value } : sf
+                      );
+                      handleUpdateMapping(mapping.id, { subFields: updatedSubFields });
+                    }}
+                    className="w-full px-3 py-2 border rounded-lg"
+                  >
+                    <option value="">Выберите поле</option>
+                    {DB_TABLES.find(t => t.name === subField.tableName)?.fields.map(field => (
+                      <option key={field} value={field}>{field}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium block mb-1">Тип данных</label>
+                  <select
+                    value={subField.fieldType}
+                    onChange={(e) => {
+                      const updatedSubFields = mapping.subFields?.map(sf => 
+                        sf.id === subField.id ? { ...sf, fieldType: e.target.value as any } : sf
+                      );
+                      handleUpdateMapping(mapping.id, { subFields: updatedSubFields });
+                    }}
+                    className="w-full px-3 py-2 border rounded-lg"
+                  >
+                    <option value="text">Текст</option>
+                    <option value="date">Дата</option>
+                    <option value="number">Число</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium block mb-1">Макс. длина (перенос)</label>
+                  <input
+                    type="number"
+                    value={subField.maxLength || ''}
+                    onChange={(e) => {
+                      const updatedSubFields = mapping.subFields?.map(sf => 
+                        sf.id === subField.id ? { ...sf, maxLength: e.target.value ? parseInt(e.target.value) : undefined } : sf
+                      );
+                      handleUpdateMapping(mapping.id, { subFields: updatedSubFields });
+                    }}
+                    placeholder="Не ограничено"
+                    className="w-full px-3 py-2 border rounded-lg"
+                  />
+                </div>
+              </div>
+
+              <div className="flex gap-2 mt-6">
+                <button
+                  onClick={() => setEditingSubField(null)}
+                  className="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
+                >
+                  Готово
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 }
