@@ -151,7 +151,9 @@ export default function ExcelTemplateEditor({ template, onSave, onClose }: Excel
     onSave(configuredMappings);
   };
 
-  const selectedMapping = selectedColumn !== null ? mappings.find(m => m.columnIndex === selectedColumn) : null;
+  const selectedMapping = selectedColumn !== null && mappings.length > 0 
+    ? mappings.find(m => m.columnIndex === selectedColumn) || null 
+    : null;
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -197,7 +199,7 @@ export default function ExcelTemplateEditor({ template, onSave, onClose }: Excel
                         #
                       </th>
                       {headers.map((header, index) => {
-                        const mapping = mappings[index];
+                        const mapping = mappings.length > index ? mappings[index] : undefined;
                         const isConfigured = mapping?.dbField;
                         const isSelected = selectedColumn === index;
                         
