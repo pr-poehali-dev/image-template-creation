@@ -62,6 +62,8 @@ export default function TemplateEditor({ template, onSave, onClose }: TemplateEd
   const containerRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1.0);
   const [editingSubField, setEditingSubField] = useState<{ mappingId: string; subFieldId: string } | null>(null);
+  const [sidebarWidth, setSidebarWidth] = useState(384);
+  const [isResizing, setIsResizing] = useState(false);
 
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
@@ -164,6 +166,34 @@ export default function TemplateEditor({ template, onSave, onClose }: TemplateEd
     return 'rgba(220, 38, 38, 0.3)';
   };
 
+  const handleMouseDown = () => {
+    setIsResizing(true);
+  };
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isResizing) return;
+      const newWidth = window.innerWidth - e.clientX;
+      if (newWidth >= 300 && newWidth <= 800) {
+        setSidebarWidth(newWidth);
+      }
+    };
+
+    const handleMouseUp = () => {
+      setIsResizing(false);
+    };
+
+    if (isResizing) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    }
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isResizing]);
+
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg w-full max-w-[95vw] h-[95vh] flex flex-col">
@@ -201,23 +231,23 @@ export default function TemplateEditor({ template, onSave, onClose }: TemplateEd
                 </button>
               </div>
               
-              <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-lg border border-gray-300 shadow-sm">
+              <div className="flex items-center gap-2 bg-primary text-white px-4 py-2.5 rounded-lg shadow-md">
                 <button
                   onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                   disabled={currentPage === 1}
-                  className="p-1 hover:bg-gray-100 rounded disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="p-1 hover:bg-white/20 rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                 >
-                  <Icon name="ChevronLeft" size={20} />
+                  <Icon name="ChevronLeft" size={22} />
                 </button>
-                <span className="text-sm font-semibold min-w-[120px] text-center">
+                <span className="text-sm font-bold min-w-[130px] text-center">
                   Страница {currentPage} из {numPages}
                 </span>
                 <button
                   onClick={() => setCurrentPage(p => Math.min(numPages, p + 1))}
                   disabled={currentPage === numPages}
-                  className="p-1 hover:bg-gray-100 rounded disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="p-1 hover:bg-white/20 rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                 >
-                  <Icon name="ChevronRight" size={20} />
+                  <Icon name="ChevronRight" size={22} />
                 </button>
               </div>
             </div>
@@ -270,7 +300,15 @@ export default function TemplateEditor({ template, onSave, onClose }: TemplateEd
             </div>
           </div>
 
-          <div className="w-96 border-l bg-gray-50 overflow-y-auto">
+          <div 
+            className="relative border-l bg-gray-50 overflow-y-auto"
+            style={{ width: `${sidebarWidth}px` }}
+          >
+            <div
+              className="absolute left-0 top-0 bottom-0 w-1 cursor-col-resize hover:bg-primary/50 transition-colors"
+              onMouseDown={handleMouseDown}
+              style={{ zIndex: 10 }}
+            />
             <div className="sticky top-0 bg-white border-b border-gray-200 px-4 py-3 shadow-sm">
               <h4 className="text-sm font-semibold text-gray-900">Настройка поля</h4>
             </div>
@@ -294,18 +332,6 @@ export default function TemplateEditor({ template, onSave, onClose }: TemplateEd
 
             {selectedMapping ? (
               <div className="space-y-3">
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1.5">
-                    Название поля <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={selectedMapping.label}
-                    onChange={(e) => handleUpdateMapping(selectedMapping.id, { label: e.target.value })}
-                    className="w-full px-2.5 py-1.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white"
-                  />
-                </div>
-
                 <div>
                   <label className="block text-xs font-medium text-gray-700 mb-1.5">
                     Таблица БД <span className="text-red-500">*</span>
@@ -338,6 +364,18 @@ export default function TemplateEditor({ template, onSave, onClose }: TemplateEd
                       <option key={field} value={field}>{field}</option>
                     ))}
                   </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-gray-700 mb-1.5">
+                    Название поля <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={selectedMapping.label}
+                    onChange={(e) => handleUpdateMapping(selectedMapping.id, { label: e.target.value })}
+                    className="w-full px-2.5 py-1.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white"
+                  />
                 </div>
 
                 <div>
@@ -437,41 +475,6 @@ export default function TemplateEditor({ template, onSave, onClose }: TemplateEd
               <div className="text-center text-gray-500 py-8">
                 <Icon name="MousePointerClick" size={48} className="mx-auto mb-2 opacity-50" />
                 <p className="text-sm">Выделите текст в PDF<br />или кликните на цветное поле</p>
-              </div>
-            )}
-
-            {mappings.length > 0 && (
-              <div className="mt-4 pt-4 border-t">
-                <h5 className="text-xs font-semibold text-gray-700 mb-2 flex items-center gap-1.5">
-                  <Icon name="List" size={14} />
-                  Все поля ({mappings.length})
-                </h5>
-                <div className="space-y-1.5 max-h-[300px] overflow-y-auto">
-                  {mappings.map(mapping => (
-                    <div
-                      key={mapping.id}
-                      onClick={() => {
-                        setSelectedMapping(mapping);
-                        setCurrentPage(mapping.page);
-                      }}
-                      className={`p-2 border rounded cursor-pointer hover:bg-white transition-colors ${
-                        selectedMapping?.id === mapping.id ? 'bg-blue-50 border-blue-400' : 'bg-white border-gray-200'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between mb-0.5">
-                        <span className="text-xs font-medium truncate">{mapping.label}</span>
-                        {mapping.dbField ? (
-                          <Icon name="Check" size={12} className="text-green-600 flex-shrink-0" />
-                        ) : (
-                          <Icon name="AlertCircle" size={12} className="text-red-600 flex-shrink-0" />
-                        )}
-                      </div>
-                      <p className="text-xs text-gray-500">
-                        {mapping.dbField ? `${mapping.tableName}.${mapping.dbField}` : 'Не настроено'} • стр. {mapping.page}
-                      </p>
-                    </div>
-                  ))}
-                </div>
               </div>
             )}
             </div>
