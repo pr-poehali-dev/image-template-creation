@@ -83,31 +83,52 @@ export default function ContractsTable({ onBack }: ContractsTableProps) {
 
   const handleDownloadPDF = (contract: Contract) => {
     const contractData = {
-      number: contract.number || '2012ФМ-1',
-      date: contract.date || '20 декабря 2025 г.',
-      customer: 'ООО «ФЛАУЭР МАСТЕР»',
-      carrier: 'ИП СЕМИОНОВ ИГОРЬ ГЕННАДЬЕВИЧ',
+      number: contract.number || '2112ФМ-1',
+      date: contract.date || '21 декабря 2025 г.',
+      customerName: 'ООО «ФЛАУЭР МАСТЕР»',
+      customerInn: 'ИНН 7724449594',
+      customerKpp: 'КПП 772201001',
+      customerOgrn: 'ОГРН 1187746741566',
+      customerAddress: 'г. Москва, 111024, ул. Авиамоторная д.55 корпус 31',
+      customerAccount: 'р/с 40702810600010002373 в АО «ТелеПорт Банк»',
+      customerBik: 'БИК 044525273',
+      customerContact: 'Альбина 89179214260',
+      customerEmail: 'tlk-56@yandex.ru',
+      customerDirector: 'Знаменский М.А.',
+      
+      carrierName: 'ООО «Везет 56»',
+      carrierInn: 'ИНН/КПП 5609087575 / 560901001',
+      carrierLegalAddress: 'Оренбургская обл., 460052, ул. Брестская, д.9-138',
+      carrierPostalAddress: 'г. Оренбург, 460052, мкр. 70 лет ВЛКСМ 10-16',
+      carrierAccount: 'р/с 40702810346000006046 в Сбербанк Оренбургское отд. №8623',
+      carrierContact: 'Семионов Игорь Геннадьевич 89225512666',
+      carrierEmail: 'vezet56@mail.ru',
+      
       vehicleBody: 'рефрижератор',
       tons: '20',
       cubicMeters: '82',
-      specialConditions: 't режим',
-      additionalConditions: '+ 2 град',
-      additionalConditions2: 'доп. условия',
+      temperatureMode: '+ 2 град',
+      specialConditions: 'водителю быть на связи',
       cargoDescription: 'Луковицы',
-      loadingAddress: 'Московская область, городской округ Люберцы, деревня Островцы, ул. Школьная 27',
-      loadingDate: '20.12.25',
+      
+      loadingAddress: 'Московская обл., городской округ Люберцы, д. Островцы, ул. Школьная 27',
+      loadingDate: '21.12.25',
       loadingContact: 'Константин зав складом 89104355433, Артем 89035532883',
-      unloadingAddress: 'г. Ижевск, Завьяловский район, д. Шабердино',
+      
+      unloadingAddress: 'г. Казань, РТ, Пестречинский район, с. Богородское, ул. Центральная, д.23а',
       unloadingDate: '22.12.25',
-      unloadingContact: 'Денис 89120120277',
+      unloadingContact: 'Павел 89178790960',
+      
       price: '150 000',
-      paymentTerms: 'без НДС',
-      paymentMethod: '5-7 б/д',
+      paymentTerms: 'с НДС',
+      paymentMethod: '5-7 б/д при получении оригиналов документов',
+      
       driverName: 'Александров Александр Николаевич',
       driverLicenseAndPhone: 'ВУ 9928 348732 89225512666 – рабочий',
       driverPassport: '97 05 № 396707 ОВД Московского района города Чебоксары 28.01.2006г',
-      vehicleNumber: 'Вольво H777AP/18',
-      vehicleTrailer: 'прицеп АО0714/18',
+      
+      vehicleNumber: 'DONGFENG Н394МА21',
+      vehicleTrailer: 'прицеп SCHMITZ АК 5788 21',
     };
 
     const printWindow = window.open('', '_blank');
@@ -162,9 +183,9 @@ export default function ContractsTable({ onBack }: ContractsTableProps) {
           <table>
             <tr>
               <td style="width: 12%;"><b>Заказчик:</b></td>
-              <td style="width: 38%;" class="text-red">${contractData.customer}</td>
+              <td style="width: 38%;" class="text-red">${contractData.customerName}</td>
               <td style="width: 12%;"><b>Перевозчик:</b></td>
-              <td style="width: 38%;" colspan="3" class="text-red">${contractData.carrier}</td>
+              <td style="width: 38%;" colspan="3" class="text-red">${contractData.carrierName}</td>
             </tr>
           </table>
 
@@ -180,10 +201,9 @@ export default function ContractsTable({ onBack }: ContractsTableProps) {
             </tr>
             <tr>
               <td><b>Особые условия:</b></td>
-              <td>${contractData.specialConditions}</td>
-              <td class="text-red">${contractData.additionalConditions}</td>
-              <td colspan="2" class="text-red">${contractData.additionalConditions2}</td>
-              <td colspan="2">водителю быть на связи</td>
+              <td>t режим</td>
+              <td class="text-red">${contractData.temperatureMode}</td>
+              <td colspan="4" class="text-red">${contractData.specialConditions}</td>
             </tr>
             <tr>
               <td><b>Груз:</b></td>
@@ -237,8 +257,7 @@ export default function ContractsTable({ onBack }: ContractsTableProps) {
               <td style="width: 12%;" class="text-red">${contractData.price}</td>
               <td style="width: 8%;">руб.</td>
               <td style="width: 12%;" class="text-red">${contractData.paymentTerms}</td>
-              <td style="width: 12%;" class="text-red">${contractData.paymentMethod}</td>
-              <td style="width: 46%;">по оригиналам документов</td>
+              <td colspan="2" class="text-red">${contractData.paymentMethod}</td>
             </tr>
           </table>
 
@@ -284,18 +303,15 @@ export default function ContractsTable({ onBack }: ContractsTableProps) {
               <p style="margin-bottom: 2px;"><b>Заказчик:</b></p>
               <p class="text-xs" style="margin-bottom: 1px;">Общество с ограниченной ответственностью</p>
               <p class="text-xs" style="margin-bottom: 1px;">«ФЛАУЭР МАСТЕР»</p>
-              <p class="text-tiny" style="margin-bottom: 1px;">ИНН 7723449594 КПП 772201001</p>
-              <p class="text-tiny" style="margin-bottom: 1px;">ОГРН: 1187746741566</p>
-              <p class="text-tiny" style="margin-bottom: 1px;">Юридический адрес: 111024, Город Москва, вн.тер. г. Муниципальный</p>
-              <p class="text-tiny" style="margin-bottom: 1px;">Округ Вьюново, ул Авиамоторная, дом 55, корпус 31, помещение 11/5</p>
-              <p class="text-tiny" style="margin-bottom: 1px;">ОКПО: 32370514</p>
-              <p class="text-tiny" style="margin-bottom: 1px;">ОКВЭД: 46.22</p>
-              <p class="text-tiny" style="margin-bottom: 3px;">Расчетный счет: 40702810600021002373</p>
-              <p class="text-tiny" style="margin-bottom: 1px;">Наименование банка: АО "ТелеПорт Банк" г. Москва</p>
-              <p class="text-tiny" style="margin-bottom: 1px;">БИК: 044525273</p>
-              <p class="text-tiny" style="margin-bottom: 1px;">Корр.счет: 30101810545250000273</p>
-              <p class="text-tiny" style="margin-bottom: 3px;">тк.56@yandex.ru</p>
-              <p class="text-tiny" style="margin-bottom: 8px;">Генеральный директор Знаменский М.А</p>
+              <p class="text-tiny" style="margin-bottom: 1px;">${contractData.customerInn}</p>
+              <p class="text-tiny" style="margin-bottom: 1px;">${contractData.customerKpp}</p>
+              <p class="text-tiny" style="margin-bottom: 1px;">${contractData.customerOgrn}</p>
+              <p class="text-tiny" style="margin-bottom: 1px;">Юридический адрес: ${contractData.customerAddress}</p>
+              <p class="text-tiny" style="margin-bottom: 3px;">${contractData.customerAccount}</p>
+              <p class="text-tiny" style="margin-bottom: 1px;">${contractData.customerBik}</p>
+              <p class="text-tiny" style="margin-bottom: 3px;">${contractData.customerEmail}</p>
+              <p class="text-tiny" style="margin-bottom: 1px;">Контакт: ${contractData.customerContact}</p>
+              <p class="text-tiny" style="margin-bottom: 8px;">Генеральный директор ${contractData.customerDirector}</p>
               <div style="display: flex; justify-content: space-between; border-bottom: 1px solid black; padding-top: 20px; margin-bottom: 2px;">
                 <span style="font-size: 9px;">__________/___________/</span>
                 <span style="font-size: 9px;">МП</span>
@@ -303,17 +319,13 @@ export default function ContractsTable({ onBack }: ContractsTableProps) {
             </div>
             <div style="flex: 1;">
               <p style="margin-bottom: 2px;"><b>Перевозчик:</b></p>
-              <p class="text-xs text-red" style="margin-bottom: 1px;">Индивидуальный предприниматель СЕМИОНОВ ИГОРЬ ГЕННАДЬЕВИЧ</p>
-              <p class="text-tiny text-red" style="margin-bottom: 1px;">ОГРНИП 317619600018</p>
-              <p class="text-tiny text-red" style="margin-bottom: 1px;">ИНН 560993629160</p>
-              <p class="text-tiny text-red" style="margin-bottom: 1px;">р/с 40802.810.5.4600024045</p>
-              <p class="text-tiny text-red" style="margin-bottom: 1px;">ОТДЕЛЕНИЕ N8623 СБЕРБАНКА РОССИИ Г. ОРЕНБУРГ</p>
-              <p class="text-tiny text-red" style="margin-bottom: 1px;">БИК 045354601</p>
-              <p class="text-tiny text-red" style="margin-bottom: 1px;">к/с 3010 1810 6000 0000 0601</p>
-              <p class="text-tiny text-red" style="margin-bottom: 1px;">юр. адрес 460044, г.Оренбург, ул. Конституции СССР, д. 5, кв. 22</p>
-              <p class="text-tiny text-red" style="margin-bottom: 1px;">почт. адрес 460052, г.Оренбург, мкр 70 лет ВЛКСМ, д. 10, кв. 16</p>
-              <p class="text-tiny text-red" style="margin-bottom: 1px;">тел. рабочая 8(35334)25512666</p>
-              <p class="text-tiny text-red" style="margin-bottom: 8px;">рабочая электронная почта vezet56@mail.ru</p>
+              <p class="text-xs text-red" style="margin-bottom: 1px;">${contractData.carrierName}</p>
+              <p class="text-tiny text-red" style="margin-bottom: 1px;">${contractData.carrierInn}</p>
+              <p class="text-tiny text-red" style="margin-bottom: 1px;">Юридический адрес: ${contractData.carrierLegalAddress}</p>
+              <p class="text-tiny text-red" style="margin-bottom: 1px;">Почтовый адрес: ${contractData.carrierPostalAddress}</p>
+              <p class="text-tiny text-red" style="margin-bottom: 3px;">${contractData.carrierAccount}</p>
+              <p class="text-tiny text-red" style="margin-bottom: 1px;">Контакт: ${contractData.carrierContact}</p>
+              <p class="text-tiny text-red" style="margin-bottom: 8px;">${contractData.carrierEmail}</p>
               <div style="display: flex; justify-content: space-between; border-bottom: 1px solid black; padding-top: 20px; margin-bottom: 2px;">
                 <span style="font-size: 9px;">__________/___________/</span>
                 <span style="font-size: 9px;">МП</span>
