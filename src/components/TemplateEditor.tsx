@@ -17,6 +17,7 @@ export interface FieldMapping {
   label: string;
   fieldType: 'text' | 'date' | 'number';
   tableName: string;
+  selectedText?: string;
 }
 
 export interface TemplateWithMappings {
@@ -47,9 +48,8 @@ export default function TemplateEditor({ template, onSave, onClose }: TemplateEd
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [mappings, setMappings] = useState<FieldMapping[]>(template.mappings || []);
   const [selectedMapping, setSelectedMapping] = useState<FieldMapping | null>(null);
-  const [isDrawing, setIsDrawing] = useState(false);
-  const [drawStart, setDrawStart] = useState<{ x: number; y: number } | null>(null);
-  const [currentRect, setCurrentRect] = useState<{ x: number; y: number; width: number; height: number } | null>(null);
+  const [selectedText, setSelectedText] = useState<string>('');
+  const [selectionRect, setSelectionRect] = useState<{ x: number; y: number; width: number; height: number } | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1.0);
 
@@ -57,55 +57,54 @@ export default function TemplateEditor({ template, onSave, onClose }: TemplateEd
     setNumPages(numPages);
   };
 
-  const handleMouseDown = (e: React.MouseEvent) => {
-    if (!containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    setIsDrawing(true);
-    setDrawStart({ x, y });
-    setCurrentRect({ x, y, width: 0, height: 0 });
-  };
+  useEffect(() => {
+    const handleTextSelection = () => {
+      const selection = window.getSelection();
+      if (!selection || selection.rangeCount === 0) return;
+      
+      const range = selection.getRangeAt(0);
+      const text = selection.toString().trim();
+      
+      if (text && containerRef.current) {
+        const rect = range.getBoundingClientRect();
+        const containerRect = containerRef.current.getBoundingClientRect();
+        
+        setSelectedText(text);
+        setSelectionRect({
+          x: (rect.left - containerRect.left) / scale,
+          y: (rect.top - containerRect.top) / scale,
+          width: rect.width / scale,
+          height: rect.height / scale
+        });
+      }
+    };
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDrawing || !drawStart || !containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    setCurrentRect({
-      x: Math.min(drawStart.x, x),
-      y: Math.min(drawStart.y, y),
-      width: Math.abs(x - drawStart.x),
-      height: Math.abs(y - drawStart.y)
-    });
-  };
+    document.addEventListener('mouseup', handleTextSelection);
+    return () => document.removeEventListener('mouseup', handleTextSelection);
+  }, [scale]);
 
-  const handleMouseUp = () => {
-    if (!isDrawing || !currentRect || currentRect.width < 10 || currentRect.height < 10) {
-      setIsDrawing(false);
-      setDrawStart(null);
-      setCurrentRect(null);
-      return;
-    }
+  const handleCreateField = () => {
+    if (!selectedText || !selectionRect) return;
 
     const newMapping: FieldMapping = {
       id: Date.now().toString(),
-      x: currentRect.x,
-      y: currentRect.y,
-      width: currentRect.width,
-      height: currentRect.height,
+      x: selectionRect.x,
+      y: selectionRect.y,
+      width: selectionRect.width,
+      height: selectionRect.height,
       page: currentPage,
       dbField: '',
-      label: 'Новое поле',
+      label: selectedText,
       fieldType: 'text',
-      tableName: 'customers'
+      tableName: 'customers',
+      selectedText: selectedText
     };
 
     setMappings([...mappings, newMapping]);
     setSelectedMapping(newMapping);
-    setIsDrawing(false);
-    setDrawStart(null);
-    setCurrentRect(null);
+    setSelectedText('');
+    setSelectionRect(null);
+    window.getSelection()?.removeAllRanges();
   };
 
   const handleDeleteMapping = (id: string) => {
@@ -137,7 +136,7 @@ export default function TemplateEditor({ template, onSave, onClose }: TemplateEd
         <div className="flex items-center justify-between p-4 border-b">
           <div>
             <h3 className="text-xl font-semibold">{template.name}</h3>
-            <p className="text-sm text-gray-600">Кликните и перетащите для создания поля. Красные = не настроены, зеленые = настроены</p>
+            <p className="text-sm text-gray-600">Выделите текст в PDF и нажмите "Преобразовать в поле". Красные = не настроены, зеленые = настроены</p>
           </div>
           <div className="flex items-center gap-2">
             <button
@@ -195,10 +194,7 @@ export default function TemplateEditor({ template, onSave, onClose }: TemplateEd
             <div className="flex justify-center">
               <div
                 ref={containerRef}
-                className="relative bg-white shadow-lg cursor-crosshair"
-                onMouseDown={handleMouseDown}
-                onMouseMove={handleMouseMove}
-                onMouseUp={handleMouseUp}
+                className="relative bg-white shadow-lg cursor-text select-text"
                 style={{ width: 'fit-content' }}
               >
                 <Document file={template.pdfUrl} onLoadSuccess={onDocumentLoadSuccess}>
@@ -232,14 +228,14 @@ export default function TemplateEditor({ template, onSave, onClose }: TemplateEd
                     </div>
                   ))}
 
-                {currentRect && (
+                {selectionRect && selectedText && (
                   <div
                     className="absolute border-2 border-blue-500 bg-blue-500/20 pointer-events-none"
                     style={{
-                      left: currentRect.x,
-                      top: currentRect.y,
-                      width: currentRect.width,
-                      height: currentRect.height
+                      left: selectionRect.x * scale,
+                      top: selectionRect.y * scale,
+                      width: selectionRect.width * scale,
+                      height: selectionRect.height * scale
                     }}
                   />
                 )}
@@ -249,6 +245,22 @@ export default function TemplateEditor({ template, onSave, onClose }: TemplateEd
 
           <div className="w-80 border-l bg-white overflow-y-auto p-4">
             <h4 className="font-semibold mb-4">Настройка полей ({mappings.length})</h4>
+
+            {selectedText && selectionRect ? (
+              <div className="space-y-4 mb-6 pb-6 border-b">
+                <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                  <div className="text-xs text-gray-600 mb-1">Выделенный текст</div>
+                  <div className="font-semibold text-sm">{selectedText}</div>
+                </div>
+                <button
+                  onClick={handleCreateField}
+                  className="w-full px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 flex items-center justify-center gap-2"
+                >
+                  <Icon name="Plus" size={18} />
+                  Преобразовать в поле
+                </button>
+              </div>
+            ) : null}
 
             {selectedMapping ? (
               <div className="space-y-4">
@@ -318,10 +330,15 @@ export default function TemplateEditor({ template, onSave, onClose }: TemplateEd
                   </button>
                 </div>
               </div>
+            ) : mappings.length === 0 ? (
+              <div className="text-center text-gray-500 py-8">
+                <Icon name="MousePointerClick" size={48} className="mx-auto mb-2 opacity-50" />
+                <p className="text-sm">Выделите текст в PDF<br />для создания поля</p>
+              </div>
             ) : (
               <div className="text-center text-gray-500 py-8">
                 <Icon name="MousePointerClick" size={48} className="mx-auto mb-2 opacity-50" />
-                <p className="text-sm">Нарисуйте прямоугольник на PDF<br />или выберите существующее поле</p>
+                <p className="text-sm">Выберите поле из списка ниже<br />или выделите текст для нового</p>
               </div>
             )}
 
