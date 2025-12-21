@@ -46,6 +46,12 @@ export default function ExcelTemplateEditor({ template, onSave, onClose }: Excel
 
   useEffect(() => {
     loadExcelFile();
+  }, []);
+
+  useEffect(() => {
+    if (currentSheet && sheets.length > 0) {
+      loadSheetData();
+    }
   }, [currentSheet]);
 
   const loadExcelFile = async () => {
@@ -53,13 +59,11 @@ export default function ExcelTemplateEditor({ template, onSave, onClose }: Excel
       const arrayBuffer = await template.excelFile.arrayBuffer();
       const workbook = XLSX.read(arrayBuffer);
       
-      if (sheets.length === 0) {
-        setSheets(workbook.SheetNames);
-        setCurrentSheet(workbook.SheetNames[0]);
-        return;
-      }
+      setSheets(workbook.SheetNames);
+      const firstSheet = workbook.SheetNames[0];
+      setCurrentSheet(firstSheet);
 
-      const worksheet = workbook.Sheets[currentSheet || workbook.SheetNames[0]];
+      const worksheet = workbook.Sheets[firstSheet];
       const jsonData: any[][] = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
       if (jsonData.length > 0) {
@@ -86,6 +90,39 @@ export default function ExcelTemplateEditor({ template, onSave, onClose }: Excel
     } catch (error) {
       console.error('Ошибка загрузки Excel:', error);
       alert('Не удалось загрузить Excel файл');
+    }
+  };
+
+  const loadSheetData = async () => {
+    try {
+      const arrayBuffer = await template.excelFile.arrayBuffer();
+      const workbook = XLSX.read(arrayBuffer);
+      const worksheet = workbook.Sheets[currentSheet];
+      const jsonData: any[][] = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+      if (jsonData.length > 0) {
+        const headerRow = jsonData[0].map((h: any) => String(h || ''));
+        setHeaders(headerRow);
+        setWorkbookData(jsonData.slice(1));
+
+        const autoMappings: ExcelColumnMapping[] = headerRow.map((colName, index) => {
+          const sampleData = jsonData.slice(1, 6).map(row => String(row[index] || '')).filter(v => v);
+          
+          return {
+            columnIndex: index,
+            columnLetter: getColumnLetter(index),
+            columnName: colName,
+            dbField: '',
+            tableName: 'customers',
+            fieldType: 'text',
+            sampleData
+          };
+        });
+
+        setMappings(autoMappings);
+      }
+    } catch (error) {
+      console.error('Ошибка загрузки листа:', error);
     }
   };
 

@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Icon from './ui/icon';
 import TemplateEditor, { TemplateWithMappings, FieldMapping } from './TemplateEditor';
 import ExcelTemplateEditor, { ExcelTemplateWithMappings, ExcelColumnMapping } from './ExcelTemplateEditor';
@@ -24,9 +24,21 @@ export interface ReportTemplate {
   excelSheetName?: string;
 }
 
+const STORAGE_KEY = 'poehali_templates';
+const FILE_CACHE_KEY = 'poehali_template_files';
+
+interface StoredTemplate extends Omit<ReportTemplate, 'pdfFile' | 'excelFile'> {
+  pdfFileId?: string;
+  excelFileId?: string;
+}
+
 export default function TemplatesDashboard() {
-  const [templates, setTemplates] = useState<ReportTemplate[]>([
-    {
+  const [templates, setTemplates] = useState<ReportTemplate[]>([]);
+  const [fileCache] = useState<Map<string, File>>(new Map());
+
+  useEffect(() => {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    const defaultTemplate: ReportTemplate = {
       id: '1',
       name: 'Договор-заявка на перевозку',
       description: 'Стандартный шаблон договора-заявки для транспортных компаний',
@@ -41,8 +53,67 @@ export default function TemplatesDashboard() {
         { name: 'cargoName', label: 'Груз', type: 'text', required: true, section: 'Груз' },
         { name: 'amount', label: 'Сумма', type: 'text', required: true, section: 'Оплата' }
       ]
+    };
+
+    if (stored) {
+      try {
+        const storedTemplates: StoredTemplate[] = JSON.parse(stored);
+        const restored: ReportTemplate[] = storedTemplates.map(st => {
+          const template: ReportTemplate = {
+            id: st.id,
+            name: st.name,
+            description: st.description,
+            createdAt: st.createdAt,
+            fields: st.fields,
+            templateType: st.templateType,
+            pdfPreviewUrl: st.pdfPreviewUrl,
+            excelSheetName: st.excelSheetName
+          };
+          if (st.pdfFileId && fileCache.has(st.pdfFileId)) {
+            template.pdfFile = fileCache.get(st.pdfFileId);
+          }
+          if (st.excelFileId && fileCache.has(st.excelFileId)) {
+            template.excelFile = fileCache.get(st.excelFileId);
+          }
+          return template;
+        });
+        const hasDefault = restored.some(t => t.id === '1');
+        setTemplates(hasDefault ? restored : [defaultTemplate, ...restored]);
+      } catch (e) {
+        console.error('Ошибка загрузки шаблонов:', e);
+        setTemplates([defaultTemplate]);
+      }
+    } else {
+      setTemplates([defaultTemplate]);
     }
-  ]);
+  }, []);
+
+  useEffect(() => {
+    if (templates.length > 0) {
+      const toStore: StoredTemplate[] = templates.map(t => {
+        const stored: StoredTemplate = {
+          id: t.id,
+          name: t.name,
+          description: t.description,
+          createdAt: t.createdAt,
+          fields: t.fields,
+          templateType: t.templateType,
+          pdfPreviewUrl: t.pdfPreviewUrl,
+          excelSheetName: t.excelSheetName
+        };
+        if (t.pdfFile) {
+          stored.pdfFileId = t.id + '_pdf';
+          fileCache.set(stored.pdfFileId, t.pdfFile);
+        }
+        if (t.excelFile) {
+          stored.excelFileId = t.id + '_excel';
+          fileCache.set(stored.excelFileId, t.excelFile);
+        }
+        return stored;
+      });
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(toStore));
+    }
+  }, [templates]);
 
   const [isLoading, setIsLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
