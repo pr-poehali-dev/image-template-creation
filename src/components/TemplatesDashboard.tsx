@@ -266,7 +266,31 @@ export default function TemplatesDashboard() {
     setEditingTemplate(null);
   };
 
-  const handleSaveExcelMappings = (mappings: ExcelColumnMapping[]) => {
+  const handleSaveExcelMappings = (mappings: ExcelColumnMapping[], sheetName: string) => {
+    if (!editingExcelTemplate) return;
+    
+    const updatedTemplates = templates.map(t => {
+      if (t.id === editingExcelTemplate.id) {
+        const fields: TemplateField[] = mappings
+          .filter(m => m.dbField)
+          .map(m => ({
+            name: m.dbField,
+            label: m.columnName,
+            type: m.fieldType === 'date' ? 'date' : m.fieldType === 'number' ? 'number' : 'text',
+            required: true,
+            section: m.tableName
+          }));
+        
+        return {
+          ...t,
+          fields,
+          excelSheetName: sheetName
+        };
+      }
+      return t;
+    });
+    
+    setTemplates(updatedTemplates);
     console.log('Сохранены Excel маппинги:', mappings);
     alert(`Сохранено ${mappings.length} колонок для Excel шаблона`);
     setEditingExcelTemplate(null);

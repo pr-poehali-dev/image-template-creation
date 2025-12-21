@@ -22,7 +22,7 @@ export interface ExcelTemplateWithMappings {
 
 interface ExcelTemplateEditorProps {
   template: ExcelTemplateWithMappings;
-  onSave: (mappings: ExcelColumnMapping[]) => void;
+  onSave: (mappings: ExcelColumnMapping[], sheetName: string) => void;
   onClose: () => void;
 }
 
@@ -148,7 +148,7 @@ export default function ExcelTemplateEditor({ template, onSave, onClose }: Excel
       alert('Настройте хотя бы одну колонку');
       return;
     }
-    onSave(configuredMappings);
+    onSave(configuredMappings, currentSheet);
   };
 
   const selectedMapping = selectedColumn !== null && mappings.length > 0 
