@@ -39,6 +39,10 @@ interface StoredTemplate extends Omit<ReportTemplate, 'pdfFile' | 'excelFile'> {
 export default function TemplatesDashboard() {
   const [templates, setTemplates] = useState<ReportTemplate[]>([]);
   const [fileCache] = useState<Map<string, File>>(new Map());
+  const [editingNameId, setEditingNameId] = useState<string | null>(null);
+  const [editingDescId, setEditingDescId] = useState<string | null>(null);
+  const [tempName, setTempName] = useState('');
+  const [tempDesc, setTempDesc] = useState('');
 
   useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
@@ -395,10 +399,72 @@ export default function TemplatesDashboard() {
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
                         <Icon name={template.templateType === 'excel' ? 'Sheet' : 'FileText'} size={18} className={template.templateType === 'excel' ? 'text-green-600' : 'text-primary'} />
-                        <span className="text-sm font-medium text-gray-900">{template.name}</span>
+                        {editingNameId === template.id ? (
+                          <input
+                            type="text"
+                            value={tempName}
+                            onChange={(e) => setTempName(e.target.value)}
+                            onBlur={() => {
+                              if (tempName.trim()) {
+                                setTemplates(templates.map(t => 
+                                  t.id === template.id ? { ...t, name: tempName.trim() } : t
+                                ));
+                              }
+                              setEditingNameId(null);
+                            }}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') {
+                                e.currentTarget.blur();
+                              }
+                            }}
+                            autoFocus
+                            className="text-sm font-medium text-gray-900 border border-primary rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-primary"
+                          />
+                        ) : (
+                          <span 
+                            onClick={() => {
+                              setEditingNameId(template.id);
+                              setTempName(template.name);
+                            }}
+                            className="text-sm font-medium text-gray-900 cursor-pointer hover:text-primary"
+                          >
+                            {template.name}
+                          </span>
+                        )}
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-sm text-gray-900">{template.description}</td>
+                    <td className="px-4 py-3">
+                      {editingDescId === template.id ? (
+                        <input
+                          type="text"
+                          value={tempDesc}
+                          onChange={(e) => setTempDesc(e.target.value)}
+                          onBlur={() => {
+                            setTemplates(templates.map(t => 
+                              t.id === template.id ? { ...t, description: tempDesc } : t
+                            ));
+                            setEditingDescId(null);
+                          }}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              e.currentTarget.blur();
+                            }
+                          }}
+                          autoFocus
+                          className="w-full text-sm text-gray-900 border border-primary rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-primary"
+                        />
+                      ) : (
+                        <span 
+                          onClick={() => {
+                            setEditingDescId(template.id);
+                            setTempDesc(template.description);
+                          }}
+                          className="text-sm text-gray-900 cursor-pointer hover:text-primary block"
+                        >
+                          {template.description}
+                        </span>
+                      )}
+                    </td>
                     <td className="px-4 py-3">
                       <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
                         template.templateType === 'excel'
@@ -419,13 +485,7 @@ export default function TemplatesDashboard() {
                         >
                           <Icon name="Edit" size={18} className="text-gray-600" />
                         </button>
-                        <button 
-                          onClick={() => handleViewTemplate(template)}
-                          className="p-1 hover:bg-gray-100 rounded transition-colors" 
-                          title="Просмотр"
-                        >
-                          <Icon name="Eye" size={18} className="text-gray-600" />
-                        </button>
+
                         <button 
                           onClick={() => handleDeleteTemplate(template.id)}
                           className="p-1 hover:bg-gray-100 rounded transition-colors" 
