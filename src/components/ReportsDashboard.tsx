@@ -32,21 +32,38 @@ export default function ReportsDashboard({ onCreateReport }: ReportsDashboardPro
   ]);
 
   const handleExportExcel = () => {
-    const worksheet = XLSX.utils.json_to_sheet(
-      reports.map(report => ({
-        'Номер': report.number,
-        'Дата': report.date,
-        'Заказчик': report.customer,
-        'Перевозчик': report.carrier,
-        'Груз': report.cargo,
-        'Маршрут': report.route,
-        'Сумма': report.amount,
-      }))
-    );
-
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Отчеты');
-    XLSX.writeFile(workbook, `Отчеты_${new Date().toLocaleDateString('ru-RU')}.xlsx`);
+
+    reports.forEach((report, index) => {
+      const data = [
+        ['Договор-заявка №', report.number, '', 'от', report.date, ''],
+        ['', '', '', '', '', ''],
+        ['', '', 'на перевозку грузов автомобильным транспортом', '', '', ''],
+        ['', '', '', '', '', ''],
+        ['Заказчик:', report.customer, '', 'Перевозчик:', report.carrier, ''],
+        ['', '', '', '', '', ''],
+        ['Груз:', report.cargo, '', '', '', ''],
+        ['', '', '', '', '', ''],
+        ['Маршрут:', report.route, '', '', '', ''],
+        ['', '', '', '', '', ''],
+        ['Сумма:', report.amount, '', '', '', ''],
+      ];
+
+      const worksheet = XLSX.utils.aoa_to_sheet(data);
+      
+      worksheet['!cols'] = [
+        { wch: 15 },
+        { wch: 25 },
+        { wch: 25 },
+        { wch: 15 },
+        { wch: 25 },
+        { wch: 10 }
+      ];
+
+      XLSX.utils.book_append_sheet(workbook, worksheet, `Договор ${report.number}`);
+    });
+
+    XLSX.writeFile(workbook, `Договора-заявки_${new Date().toLocaleDateString('ru-RU')}.xlsx`);
   };
 
   const handlePrintPDF = (report: Report) => {
