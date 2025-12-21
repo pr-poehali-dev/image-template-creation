@@ -478,9 +478,7 @@ export default function TemplateEditor({ template, onSave, onClose }: TemplateEd
                   </p>
                   <div className="flex gap-2">
                     <button
-                      onClick={() => {
-                        onSave(mappings);
-                      }}
+                      onClick={() => setSelectedMapping(null)}
                       className="flex-1 px-3 py-1.5 text-sm bg-primary text-white border border-primary rounded-lg hover:bg-primary/90 flex items-center justify-center gap-1.5 font-medium"
                     >
                       <Icon name="Check" size={14} />
