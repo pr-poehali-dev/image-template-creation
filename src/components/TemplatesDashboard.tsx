@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import Icon from './ui/icon';
+import TemplateEditor, { TemplateWithMappings, FieldMapping } from './TemplateEditor';
 
 export interface TemplateField {
   name: string;
@@ -40,6 +41,7 @@ export default function TemplatesDashboard() {
   const [isLoading, setIsLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedTemplate, setSelectedTemplate] = useState<ReportTemplate | null>(null);
+  const [editingTemplate, setEditingTemplate] = useState<TemplateWithMappings | null>(null);
 
   const handleUploadPDF = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -125,6 +127,21 @@ export default function TemplatesDashboard() {
     setSelectedTemplate(template);
   };
 
+  const handleEditTemplate = (template: ReportTemplate) => {
+    setEditingTemplate({
+      id: template.id,
+      name: template.name,
+      pdfUrl: template.pdfPreviewUrl || '',
+      mappings: []
+    });
+  };
+
+  const handleSaveMappings = (mappings: FieldMapping[]) => {
+    console.log('Сохранены маппинги:', mappings);
+    alert(`Сохранено ${mappings.length} полей для шаблона`);
+    setEditingTemplate(null);
+  };
+
   const groupFieldsBySection = (fields: TemplateField[]) => {
     const grouped: Record<string, TemplateField[]> = {};
     fields.forEach(field => {
@@ -182,10 +199,16 @@ export default function TemplatesDashboard() {
 
             <div className="flex gap-2">
               <button
-                onClick={() => handleViewTemplate(template)}
-                className="flex-1 px-3 py-1.5 text-sm bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors"
+                onClick={() => handleEditTemplate(template)}
+                className="flex-1 px-3 py-1.5 text-sm bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
               >
-                Просмотр
+                Редактор
+              </button>
+              <button
+                onClick={() => handleViewTemplate(template)}
+                className="px-3 py-1.5 text-sm bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors"
+              >
+                <Icon name="Eye" size={16} />
               </button>
               <button
                 onClick={() => handleDeleteTemplate(template.id)}
@@ -197,6 +220,14 @@ export default function TemplatesDashboard() {
           </div>
         ))}
       </div>
+
+      {editingTemplate && (
+        <TemplateEditor
+          template={editingTemplate}
+          onSave={handleSaveMappings}
+          onClose={() => setEditingTemplate(null)}
+        />
+      )}
 
       {selectedTemplate && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
