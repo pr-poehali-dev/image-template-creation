@@ -1,6 +1,7 @@
 import Icon from '@/components/ui/icon';
 import ReferenceDashboard from './ReferenceDashboard';
 import DocumentsDashboard from './DocumentsDashboard';
+import ReportsDashboard from './ReportsDashboard';
 
 interface MenuItem {
   id: string;
@@ -22,6 +23,7 @@ interface MainContentProps {
   setIsVehicleModalOpen: (open: boolean) => void;
   setIsCustomerModalOpen: (open: boolean) => void;
   setIsOrderModalOpen: (open: boolean) => void;
+  setIsReportModalOpen?: (open: boolean) => void;
 }
 
 const MainContent = ({
@@ -32,7 +34,8 @@ const MainContent = ({
   setIsDriverModalOpen,
   setIsVehicleModalOpen,
   setIsCustomerModalOpen,
-  setIsOrderModalOpen
+  setIsOrderModalOpen,
+  setIsReportModalOpen
 }: MainContentProps) => {
   return (
     <main className="flex-1 overflow-auto flex flex-col bg-white w-full">
@@ -69,6 +72,8 @@ const MainContent = ({
           <ReferenceDashboard onNavigate={setActiveSection} />
         ) : activeSection === 'documents' ? (
           <DocumentsDashboard onNavigate={setActiveSection} />
+        ) : activeSection === 'reports' ? (
+          <ReportsDashboard onCreateReport={() => setIsReportModalOpen?.(true)} />
         ) : activeSection === 'orders' ? (
           <div className="px-4 sm:px-6 lg:px-8 py-6">
           <div className="space-y-4">

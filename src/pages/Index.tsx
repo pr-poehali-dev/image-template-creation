@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Sidebar from '@/components/Sidebar';
 import MainContent from '@/components/MainContent';
 import Modals from '@/components/Modals';
+import ReportModal from '@/components/ReportModal';
 
 const menuItems = [
   { id: 'orders', label: 'Заказы', icon: 'ClipboardList' },
@@ -25,6 +26,7 @@ const menuItems = [
       { id: 'upd', label: 'УПД', icon: 'FileBarChart' },
     ]
   },
+  { id: 'reports', label: 'Отчеты', icon: 'FileSpreadsheet' },
   { id: 'overview', label: 'Обзор', icon: 'Activity' },
   { id: 'settings', label: 'Настройки', icon: 'Settings' },
 ];
@@ -41,6 +43,7 @@ const Index = () => {
   const [isReferenceOpen, setIsReferenceOpen] = useState(false);
   const [isDocumentsOpen, setIsDocumentsOpen] = useState(false);
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   
   const isSubmenuActive = (item: any) => {
     return item.submenu?.some((sub: any) => sub.id === activeSection);
@@ -95,6 +98,7 @@ const Index = () => {
         setIsVehicleModalOpen={setIsVehicleModalOpen}
         setIsCustomerModalOpen={setIsCustomerModalOpen}
         setIsOrderModalOpen={setIsOrderModalOpen}
+        setIsReportModalOpen={setIsReportModalOpen}
       />
 
       <Modals
@@ -116,6 +120,11 @@ const Index = () => {
         removeDeliveryAddress={removeDeliveryAddress}
         addBankAccount={addBankAccount}
         removeBankAccount={removeBankAccount}
+      />
+
+      <ReportModal
+        isOpen={isReportModalOpen}
+        onClose={() => setIsReportModalOpen(false)}
       />
     </div>
   );
