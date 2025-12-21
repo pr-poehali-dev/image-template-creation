@@ -217,6 +217,58 @@ export default function TemplatesDashboard() {
     setSelectedTemplate(template);
   };
 
+  const handlePrintTemplate = (template: ReportTemplate) => {
+    if (template.templateType === 'pdf' && template.pdfPreviewUrl) {
+      const printWindow = window.open('', '_blank');
+      if (printWindow) {
+        printWindow.document.write(`
+          <html>
+            <head>
+              <title>Печать: ${template.name}</title>
+              <style>
+                body { margin: 0; }
+                embed { width: 100%; height: 100vh; }
+              </style>
+            </head>
+            <body>
+              <embed src="${template.pdfPreviewUrl}" type="application/pdf" />
+            </body>
+          </html>
+        `);
+        printWindow.document.close();
+        setTimeout(() => printWindow.print(), 500);
+      }
+    } else if (template.templateType === 'excel') {
+      alert('Печать Excel шаблонов пока не поддерживается. Скачайте файл и откройте в Excel.');
+    } else {
+      alert('Файл для печати недоступен');
+    }
+  };
+
+  const handleDownloadTemplate = (template: ReportTemplate) => {
+    if (template.templateType === 'pdf' && template.pdfFile) {
+      const url = URL.createObjectURL(template.pdfFile);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${template.name}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } else if (template.templateType === 'excel' && template.excelFile) {
+      const url = URL.createObjectURL(template.excelFile);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${template.name}.xlsx`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } else {
+      alert('Файл для скачивания недоступен');
+    }
+  };
+
   const handleEditTemplate = (template: ReportTemplate) => {
     if (template.templateType === 'excel') {
       if (!template.excelFile) {
@@ -485,7 +537,20 @@ export default function TemplatesDashboard() {
                         >
                           <Icon name="Edit" size={18} className="text-gray-600" />
                         </button>
-
+                        <button 
+                          onClick={() => handlePrintTemplate(template)}
+                          className="p-1 hover:bg-gray-100 rounded transition-colors" 
+                          title="Печать"
+                        >
+                          <Icon name="Printer" size={18} className="text-gray-600" />
+                        </button>
+                        <button 
+                          onClick={() => handleDownloadTemplate(template)}
+                          className="p-1 hover:bg-gray-100 rounded transition-colors" 
+                          title="Скачать"
+                        >
+                          <Icon name="Download" size={18} className="text-gray-600" />
+                        </button>
                         <button 
                           onClick={() => handleDeleteTemplate(template.id)}
                           className="p-1 hover:bg-gray-100 rounded transition-colors" 
