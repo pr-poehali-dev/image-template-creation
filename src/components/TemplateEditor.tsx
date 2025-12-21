@@ -186,36 +186,36 @@ export default function TemplateEditor({ template, onSave, onClose }: TemplateEd
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setScale(s => Math.max(0.5, s - 0.1))}
-                  className="p-2 hover:bg-white rounded border border-gray-300 transition-colors"
+                  className="p-2 bg-white hover:bg-gray-50 rounded border border-gray-300 transition-colors"
                   title="Уменьшить"
                 >
                   <Icon name="ZoomOut" size={18} />
                 </button>
-                <span className="text-sm font-mono px-3">{Math.round(scale * 100)}%</span>
+                <span className="text-sm font-mono px-3 font-semibold">{Math.round(scale * 100)}%</span>
                 <button
                   onClick={() => setScale(s => Math.min(2, s + 0.1))}
-                  className="p-2 hover:bg-white rounded border border-gray-300 transition-colors"
+                  className="p-2 bg-white hover:bg-gray-50 rounded border border-gray-300 transition-colors"
                   title="Увеличить"
                 >
                   <Icon name="ZoomIn" size={18} />
                 </button>
               </div>
               
-              <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-lg border border-gray-300">
+              <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-lg border border-gray-300 shadow-sm">
                 <button
                   onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                   disabled={currentPage === 1}
-                  className="p-1 hover:bg-gray-100 rounded disabled:opacity-50"
+                  className="p-1 hover:bg-gray-100 rounded disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   <Icon name="ChevronLeft" size={20} />
                 </button>
-                <span className="text-sm">
+                <span className="text-sm font-semibold min-w-[120px] text-center">
                   Страница {currentPage} из {numPages}
                 </span>
                 <button
                   onClick={() => setCurrentPage(p => Math.min(numPages, p + 1))}
                   disabled={currentPage === numPages}
-                  className="p-1 hover:bg-gray-100 rounded disabled:opacity-50"
+                  className="p-1 hover:bg-gray-100 rounded disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   <Icon name="ChevronRight" size={20} />
                 </button>
@@ -270,44 +270,44 @@ export default function TemplateEditor({ template, onSave, onClose }: TemplateEd
             </div>
           </div>
 
-          <div className="w-96 border-l bg-white overflow-y-auto">
-            <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4">
-              <h4 className="text-lg font-bold text-gray-900">Настройка поля</h4>
+          <div className="w-96 border-l bg-gray-50 overflow-y-auto">
+            <div className="sticky top-0 bg-white border-b border-gray-200 px-4 py-3 shadow-sm">
+              <h4 className="text-sm font-semibold text-gray-900">Настройка поля</h4>
             </div>
-            <div className="p-6">
+            <div className="p-4">
 
             {selectedText && selectionRect && !selectedMapping ? (
               <div className="space-y-3">
-                <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
                   <div className="text-xs font-medium text-gray-600 mb-1">Выделенный текст</div>
-                  <div className="font-semibold text-sm">{selectedText}</div>
+                  <div className="font-medium text-sm">{selectedText}</div>
                 </div>
                 <button
                   onClick={handleCreateField}
-                  className="w-full px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 flex items-center justify-center gap-2 transition-colors"
+                  className="w-full px-3 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 flex items-center justify-center gap-2 transition-colors text-sm font-medium"
                 >
-                  <Icon name="Plus" size={18} />
+                  <Icon name="Plus" size={16} />
                   Создать поле
                 </button>
               </div>
             ) : null}
 
             {selectedMapping ? (
-              <div className="space-y-4">
+              <div className="space-y-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-900 mb-2">
+                  <label className="block text-xs font-medium text-gray-700 mb-1.5">
                     Название поля <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
                     value={selectedMapping.label}
                     onChange={(e) => handleUpdateMapping(selectedMapping.id, { label: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    className="w-full px-2.5 py-1.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-900 mb-2">
+                  <label className="block text-xs font-medium text-gray-700 mb-1.5">
                     Таблица БД <span className="text-red-500">*</span>
                   </label>
                   <select
@@ -316,7 +316,7 @@ export default function TemplateEditor({ template, onSave, onClose }: TemplateEd
                       tableName: e.target.value,
                       dbField: ''
                     })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    className="w-full px-2.5 py-1.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white"
                   >
                     {DB_TABLES.map(table => (
                       <option key={table.name} value={table.name}>{table.label}</option>
@@ -325,13 +325,13 @@ export default function TemplateEditor({ template, onSave, onClose }: TemplateEd
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-900 mb-2">
+                  <label className="block text-xs font-medium text-gray-700 mb-1.5">
                     Поле БД <span className="text-red-500">*</span>
                   </label>
                   <select
                     value={selectedMapping.dbField}
                     onChange={(e) => handleUpdateMapping(selectedMapping.id, { dbField: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    className="w-full px-2.5 py-1.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white"
                   >
                     <option value="">Выберите поле</option>
                     {DB_TABLES.find(t => t.name === selectedMapping.tableName)?.fields.map(field => (
@@ -354,22 +354,22 @@ export default function TemplateEditor({ template, onSave, onClose }: TemplateEd
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-900 mb-2">Макс. длина (перенос)</label>
+                  <label className="block text-xs font-medium text-gray-700 mb-1.5">Макс. длина (перенос)</label>
                   <input
                     type="number"
                     value={selectedMapping.maxLength || ''}
                     onChange={(e) => handleUpdateMapping(selectedMapping.id, { maxLength: e.target.value ? parseInt(e.target.value) : undefined })}
                     placeholder="Не ограничено"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    className="w-full px-2.5 py-1.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white"
                   />
                 </div>
 
-                <div className="pt-4 border-t">
-                  <h5 className="text-sm font-semibold mb-2">Дополнительные поля в этой ячейке</h5>
+                <div className="pt-3 border-t">
+                  <h5 className="text-xs font-semibold text-gray-700 mb-2">Дополнительные поля в этой ячейке</h5>
                   {selectedMapping.subFields && selectedMapping.subFields.length > 0 ? (
-                    <div className="space-y-2 mb-3">
+                    <div className="space-y-1.5 mb-2">
                       {selectedMapping.subFields.map((subField, idx) => (
-                        <div key={subField.id} className="p-2 bg-gray-50 rounded border text-xs hover:bg-gray-100 cursor-pointer" onClick={() => setEditingSubField({ mappingId: selectedMapping.id, subFieldId: subField.id })}>
+                        <div key={subField.id} className="p-2 bg-white rounded border border-gray-200 text-xs hover:bg-gray-50 cursor-pointer" onClick={() => setEditingSubField({ mappingId: selectedMapping.id, subFieldId: subField.id })}>
                           <div className="flex justify-between items-start mb-1">
                             <span className="font-medium">{subField.label}</span>
                             <button
@@ -402,24 +402,35 @@ export default function TemplateEditor({ template, onSave, onClose }: TemplateEd
                       const currentSubFields = selectedMapping.subFields || [];
                       handleUpdateMapping(selectedMapping.id, { subFields: [...currentSubFields, newSubField] });
                     }}
-                    className="w-full px-3 py-1.5 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 flex items-center justify-center gap-1"
+                    className="w-full px-2.5 py-1.5 text-xs bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 flex items-center justify-center gap-1.5 font-medium"
                   >
-                    <Icon name="Plus" size={14} />
+                    <Icon name="Plus" size={12} />
                     Добавить подполе
                   </button>
                 </div>
 
-                <div className="pt-4 border-t">
-                  <p className="text-xs text-gray-500 mb-2">
-                    Значение будет: <code className="bg-gray-100 px-1 rounded">{selectedMapping.tableName}.{selectedMapping.dbField || '???'}</code>
+                <div className="pt-3 border-t space-y-2">
+                  <p className="text-xs text-gray-500">
+                    Значение: <code className="bg-gray-100 px-1.5 py-0.5 rounded text-xs">{selectedMapping.tableName}.{selectedMapping.dbField || '???'}</code>
                   </p>
-                  <button
-                    onClick={() => handleDeleteMapping(selectedMapping.id)}
-                    className="w-full px-3 py-2 text-red-600 border border-red-600 rounded-lg hover:bg-red-50 flex items-center justify-center gap-2"
-                  >
-                    <Icon name="Trash2" size={16} />
-                    Удалить поле
-                  </button>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => {
+                        onSave(mappings);
+                      }}
+                      className="flex-1 px-3 py-1.5 text-sm bg-primary text-white border border-primary rounded-lg hover:bg-primary/90 flex items-center justify-center gap-1.5 font-medium"
+                    >
+                      <Icon name="Check" size={14} />
+                      Применить
+                    </button>
+                    <button
+                      onClick={() => handleDeleteMapping(selectedMapping.id)}
+                      className="px-3 py-1.5 text-sm text-red-600 border border-red-300 rounded-lg hover:bg-red-50 flex items-center justify-center gap-1.5 font-medium"
+                    >
+                      <Icon name="Trash2" size={14} />
+                      Удалить
+                    </button>
+                  </div>
                 </div>
               </div>
             ) : (
@@ -430,12 +441,12 @@ export default function TemplateEditor({ template, onSave, onClose }: TemplateEd
             )}
 
             {mappings.length > 0 && (
-              <div className="mt-6 pt-6 border-t">
-                <h5 className="font-semibold mb-3 flex items-center gap-2">
-                  <Icon name="List" size={16} />
+              <div className="mt-4 pt-4 border-t">
+                <h5 className="text-xs font-semibold text-gray-700 mb-2 flex items-center gap-1.5">
+                  <Icon name="List" size={14} />
                   Все поля ({mappings.length})
                 </h5>
-                <div className="space-y-2 max-h-[300px] overflow-y-auto">
+                <div className="space-y-1.5 max-h-[300px] overflow-y-auto">
                   {mappings.map(mapping => (
                     <div
                       key={mapping.id}
@@ -443,16 +454,16 @@ export default function TemplateEditor({ template, onSave, onClose }: TemplateEd
                         setSelectedMapping(mapping);
                         setCurrentPage(mapping.page);
                       }}
-                      className={`p-2 border rounded cursor-pointer hover:bg-gray-50 transition-colors ${
-                        selectedMapping?.id === mapping.id ? 'bg-blue-50 border-blue-500' : 'border-gray-200'
+                      className={`p-2 border rounded cursor-pointer hover:bg-white transition-colors ${
+                        selectedMapping?.id === mapping.id ? 'bg-blue-50 border-blue-400' : 'bg-white border-gray-200'
                       }`}
                     >
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="text-sm font-medium truncate">{mapping.label}</span>
+                      <div className="flex items-center justify-between mb-0.5">
+                        <span className="text-xs font-medium truncate">{mapping.label}</span>
                         {mapping.dbField ? (
-                          <Icon name="Check" size={14} className="text-green-600 flex-shrink-0" />
+                          <Icon name="Check" size={12} className="text-green-600 flex-shrink-0" />
                         ) : (
-                          <Icon name="AlertCircle" size={14} className="text-red-600 flex-shrink-0" />
+                          <Icon name="AlertCircle" size={12} className="text-red-600 flex-shrink-0" />
                         )}
                       </div>
                       <p className="text-xs text-gray-500">
@@ -467,16 +478,16 @@ export default function TemplateEditor({ template, onSave, onClose }: TemplateEd
           </div>
         </div>
         
-        <div className="sticky bottom-0 bg-white border-t border-gray-200 px-6 py-4 flex justify-end gap-3">
+        <div className="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-6 py-3 flex justify-end gap-3">
           <button
             onClick={onClose}
-            className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+            className="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
           >
             Отмена
           </button>
           <button
             onClick={handleSave}
-            className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors flex items-center gap-2"
+            className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors flex items-center gap-2 font-medium"
           >
             <Icon name="Save" size={18} />
             Сохранить
