@@ -3,19 +3,27 @@ import Icon from '@/components/ui/icon';
 
 interface BankAccountsSectionProps {
   bankAccounts: Array<{id: number, bankName: string, accountNumber: string, bik: string, corrAccount: string}>;
+  setBankAccounts: (accounts: Array<{id: number, bankName: string, accountNumber: string, bik: string, corrAccount: string}>) => void;
   addBankAccount: () => void;
   removeBankAccount: (id: number) => void;
 }
 
 const BankAccountsSection = ({
   bankAccounts,
+  setBankAccounts,
   addBankAccount,
   removeBankAccount
 }: BankAccountsSectionProps) => {
   const [loadingBik, setLoadingBik] = useState<{[key: number]: boolean}>({});
 
+  const updateBankAccount = (index: number, field: string, value: string) => {
+    const updated = [...bankAccounts];
+    updated[index] = {...updated[index], [field]: value};
+    setBankAccounts(updated);
+  };
+
   const handleBikChange = async (accountId: number, bikValue: string, index: number) => {
-    bankAccounts[index].bik = bikValue;
+    updateBankAccount(index, 'bik', bikValue);
 
     if (bikValue.length === 9) {
       setLoadingBik({...loadingBik, [accountId]: true});
@@ -28,8 +36,10 @@ const BankAccountsSection = ({
       
       if (response.ok) {
         const data = await response.json();
-        if (data.bank_name) bankAccounts[index].bankName = data.bank_name;
-        if (data.corr_account) bankAccounts[index].corrAccount = data.corr_account;
+        const updated = [...bankAccounts];
+        if (data.bank_name) updated[index].bankName = data.bank_name;
+        if (data.corr_account) updated[index].corrAccount = data.corr_account;
+        setBankAccounts(updated);
       }
       
       setLoadingBik({...loadingBik, [accountId]: false});
@@ -64,9 +74,7 @@ const BankAccountsSection = ({
             <input
               type="text"
               value={account.bankName}
-              onChange={(e) => {
-                bankAccounts[index].bankName = e.target.value;
-              }}
+              onChange={(e) => updateBankAccount(index, 'bankName', e.target.value)}
               placeholder="ПАО Сбербанк"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             />
@@ -79,9 +87,7 @@ const BankAccountsSection = ({
             <input
               type="text"
               value={account.accountNumber}
-              onChange={(e) => {
-                bankAccounts[index].accountNumber = e.target.value;
-              }}
+              onChange={(e) => updateBankAccount(index, 'accountNumber', e.target.value)}
               placeholder="40702810000000000000"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             />
@@ -115,9 +121,7 @@ const BankAccountsSection = ({
               <input
                 type="text"
                 value={account.corrAccount}
-                onChange={(e) => {
-                  bankAccounts[index].corrAccount = e.target.value;
-                }}
+                onChange={(e) => updateBankAccount(index, 'corrAccount', e.target.value)}
                 placeholder="30101810000000000225"
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               />

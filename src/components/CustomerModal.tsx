@@ -205,6 +205,7 @@ const CustomerModal = ({
 
             <BankAccountsSection
               bankAccounts={bankAccounts}
+              setBankAccounts={setBankAccounts}
               addBankAccount={addBankAccount}
               removeBankAccount={removeBankAccount}
             />
