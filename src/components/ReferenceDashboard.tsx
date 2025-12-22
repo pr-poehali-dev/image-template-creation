@@ -3,9 +3,16 @@ import Icon from './ui/icon';
 interface ReferenceDashboardProps {
   onNavigate: (section: string) => void;
   setIsDriverModalOpen?: (open: boolean) => void;
+  setIsVehicleModalOpen?: (open: boolean) => void;
+  setIsCustomerModalOpen?: (open: boolean) => void;
 }
 
-export default function ReferenceDashboard({ onNavigate, setIsDriverModalOpen }: ReferenceDashboardProps) {
+export default function ReferenceDashboard({ 
+  onNavigate, 
+  setIsDriverModalOpen, 
+  setIsVehicleModalOpen, 
+  setIsCustomerModalOpen 
+}: ReferenceDashboardProps) {
   const cards = [
     {
       id: 'drivers',
@@ -62,12 +69,16 @@ export default function ReferenceDashboard({ onNavigate, setIsDriverModalOpen }:
               onClick={() => {
                 if (card.id === 'drivers' && setIsDriverModalOpen) {
                   setIsDriverModalOpen(true);
+                } else if (card.id === 'vehicles' && setIsVehicleModalOpen) {
+                  setIsVehicleModalOpen(true);
+                } else if (card.id === 'customers' && setIsCustomerModalOpen) {
+                  setIsCustomerModalOpen(true);
                 }
               }}
-              className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
+              className="bg-[#00A6E5] hover:bg-[#0095CC] text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors font-medium text-sm"
             >
-              <Icon name="Plus" size={16} />
-              <span className="text-sm font-medium">Добавить</span>
+              <Icon name="Plus" size={18} />
+              <span>Добавить</span>
             </button>
           </div>
         ))}

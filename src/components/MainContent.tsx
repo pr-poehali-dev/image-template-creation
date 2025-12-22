@@ -71,6 +71,8 @@ const MainContent = ({
           <ReferenceDashboard 
             onNavigate={setActiveSection} 
             setIsDriverModalOpen={setIsDriverModalOpen}
+            setIsVehicleModalOpen={setIsVehicleModalOpen}
+            setIsCustomerModalOpen={setIsCustomerModalOpen}
           />
         ) : activeSection === 'documents' ? (
           <DocumentsDashboard onNavigate={setActiveSection} />
