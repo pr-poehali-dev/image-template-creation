@@ -228,7 +228,7 @@ const DriverModal = ({ isOpen, onClose }: DriverModalProps) => {
                     />
                   </div>
 
-                  <div className="mt-4">
+                  <div className="mt-4 mb-6">
                     <label className="block text-sm font-medium text-gray-900 mb-2">
                       Кем выдан
                     </label>
