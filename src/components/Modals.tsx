@@ -2,6 +2,7 @@ import DriverModal from './DriverModal';
 import VehicleModal from './VehicleModal';
 import CustomerModal from './CustomerModal';
 import OrderModal from './OrderModal';
+import ContractApplicationModal from './ContractApplicationModal';
 
 interface ModalsProps {
   isDriverModalOpen: boolean;
@@ -11,6 +12,8 @@ interface ModalsProps {
   isCustomerModalOpen: boolean;
   editingCustomer?: any;
   isOrderModalOpen: boolean;
+  isContractApplicationModalOpen?: boolean;
+  editingContractApplication?: any;
   sameAddress: boolean;
   deliveryAddresses: Array<{id: number, name: string, address: string, contact: string, phone: string, isMain: boolean}>;
   bankAccounts: Array<{id: number, bankName: string, accountNumber: string, bik: string, corrAccount: string}>;
@@ -21,6 +24,8 @@ interface ModalsProps {
   setIsCustomerModalOpen: (open: boolean) => void;
   setEditingCustomer?: (customer: any) => void;
   setIsOrderModalOpen: (open: boolean) => void;
+  setIsContractApplicationModalOpen?: (open: boolean) => void;
+  setEditingContractApplication?: (doc: any) => void;
   setSameAddress: (same: boolean) => void;
   setDeliveryAddresses: (addresses: Array<{id: number, name: string, address: string, contact: string, phone: string, isMain: boolean}>) => void;
   setBankAccounts: (accounts: Array<{id: number, bankName: string, accountNumber: string, bik: string, corrAccount: string}>) => void;
@@ -31,6 +36,7 @@ interface ModalsProps {
   onDriverSaved?: () => void;
   onVehicleSaved?: () => void;
   onCustomerSaved?: () => void;
+  onContractApplicationSaved?: () => void;
 }
 
 const Modals = ({
@@ -41,6 +47,8 @@ const Modals = ({
   isCustomerModalOpen,
   editingCustomer,
   isOrderModalOpen,
+  isContractApplicationModalOpen,
+  editingContractApplication,
   sameAddress,
   deliveryAddresses,
   bankAccounts,
@@ -51,6 +59,8 @@ const Modals = ({
   setIsCustomerModalOpen,
   setEditingCustomer,
   setIsOrderModalOpen,
+  setIsContractApplicationModalOpen,
+  setEditingContractApplication,
   setSameAddress,
   setDeliveryAddresses,
   setBankAccounts,
@@ -60,7 +70,8 @@ const Modals = ({
   removeBankAccount,
   onDriverSaved,
   onVehicleSaved,
-  onCustomerSaved
+  onCustomerSaved,
+  onContractApplicationSaved
 }: ModalsProps) => {
   return (
     <>
@@ -107,6 +118,16 @@ const Modals = ({
       <OrderModal 
         isOpen={isOrderModalOpen}
         onClose={() => setIsOrderModalOpen(false)}
+      />
+
+      <ContractApplicationModal 
+        isOpen={isContractApplicationModalOpen || false}
+        document={editingContractApplication}
+        onClose={() => {
+          if (setIsContractApplicationModalOpen) setIsContractApplicationModalOpen(false);
+          if (setEditingContractApplication) setEditingContractApplication(null);
+        }}
+        onSaved={onContractApplicationSaved}
       />
     </>
   );

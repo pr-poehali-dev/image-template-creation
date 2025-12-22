@@ -132,6 +132,8 @@ const Index = () => {
         isCustomerModalOpen={isCustomerModalOpen}
         editingCustomer={editingCustomer}
         isOrderModalOpen={isOrderModalOpen}
+        isContractApplicationModalOpen={isContractApplicationModalOpen}
+        editingContractApplication={editingContractApplication}
         sameAddress={sameAddress}
         deliveryAddresses={deliveryAddresses}
         bankAccounts={bankAccounts}
@@ -142,6 +144,8 @@ const Index = () => {
         setIsCustomerModalOpen={setIsCustomerModalOpen}
         setEditingCustomer={setEditingCustomer}
         setIsOrderModalOpen={setIsOrderModalOpen}
+        setIsContractApplicationModalOpen={setIsContractApplicationModalOpen}
+        setEditingContractApplication={setEditingContractApplication}
         setSameAddress={setSameAddress}
         setDeliveryAddresses={setDeliveryAddresses}
         setBankAccounts={setBankAccounts}
