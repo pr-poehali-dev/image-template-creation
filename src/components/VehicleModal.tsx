@@ -65,18 +65,17 @@ const VehicleModal = ({ isOpen, onClose }: VehicleModalProps) => {
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-900 mb-2">
-                Марка ТС <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                placeholder="Mercedes-Benz Actros"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-              />
-            </div>
-
             <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-900 mb-2">
+                  Марка ТС <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="Mercedes-Benz Actros"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                />
+              </div>
               <div>
                 <label className="block text-sm font-medium text-gray-900 mb-2">
                   Гос. номер <span className="text-red-500">*</span>
@@ -87,6 +86,9 @@ const VehicleModal = ({ isOpen, onClose }: VehicleModalProps) => {
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                 />
               </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-900 mb-2">
                   Прицеп
@@ -97,19 +99,18 @@ const VehicleModal = ({ isOpen, onClose }: VehicleModalProps) => {
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                 />
               </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-900 mb-2">
-                Тип кузова <span className="text-red-500">*</span>
-              </label>
-              <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white">
-                <option value="">Выберите тип</option>
-                <option value="tent">Тентованный</option>
-                <option value="ref">Рефрижератор</option>
-                <option value="isoterm">Изотермический</option>
-                <option value="open">Бортовой</option>
-              </select>
+              <div>
+                <label className="block text-sm font-medium text-gray-900 mb-2">
+                  Тип кузова <span className="text-red-500">*</span>
+                </label>
+                <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white">
+                  <option value="">Выберите тип</option>
+                  <option value="tent">Тентованный</option>
+                  <option value="ref">Рефрижератор</option>
+                  <option value="isoterm">Изотермический</option>
+                  <option value="open">Бортовой</option>
+                </select>
+              </div>
             </div>
 
             <div>
