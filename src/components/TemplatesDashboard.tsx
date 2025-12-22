@@ -22,7 +22,7 @@ export interface ReportTemplate {
   pdfMappings?: FieldMapping[];
 }
 
-const API_URL = 'https://functions.poehali.dev/0cc25e88-bc86-4179-a8ed-40a35746f993';
+const API_URL = 'https://functions.poehali.dev/7a16d5d7-0e5e-41bc-b0a7-53decbe50532?resource=templates';
 
 export default function TemplatesDashboard() {
   const [templates, setTemplates] = useState<ReportTemplate[]>([]);
