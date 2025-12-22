@@ -86,6 +86,7 @@ const DriverModal = ({ isOpen, onClose, driver }: DriverModalProps) => {
   };
 
   const handleSave = async () => {
+    if (loading) return;
     setLoading(true);
     
     try {
@@ -122,26 +123,13 @@ const DriverModal = ({ isOpen, onClose, driver }: DriverModalProps) => {
       const data = await response.json();
       console.log('Водитель сохранён:', data);
       
-      setFormData({
-        lastName: '',
-        firstName: '',
-        middleName: '',
-        phone: '',
-        passportSeries: '',
-        passportNumber: '',
-        passportIssuedBy: '',
-        passportIssuedDate: '',
-        licenseSeries: '',
-        licenseNumber: '',
-        licenseIssuedDate: '',
-        licenseIssuedBy: ''
-      });
+      setLoading(false);
       
       onClose();
+      window.location.reload();
     } catch (error) {
       console.error('Ошибка при сохранении:', error);
       alert('Не удалось сохранить водителя. Проверьте заполнение всех обязательных полей.');
-    } finally {
       setLoading(false);
     }
   };
