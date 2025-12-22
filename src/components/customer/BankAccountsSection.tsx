@@ -26,7 +26,7 @@ const BankAccountsSection = ({
     updateBankAccount(index, 'bik', bikValue);
 
     if (bikValue.length === 9) {
-      setLoadingBik({...loadingBik, [accountId]: true});
+      setLoadingBik(prev => ({...prev, [accountId]: true}));
       
       const response = await fetch('https://functions.poehali.dev/7a16d5d7-0e5e-41bc-b0a7-53decbe50532?resource=dadata', {
         method: 'POST',
@@ -37,12 +37,16 @@ const BankAccountsSection = ({
       if (response.ok) {
         const data = await response.json();
         const updated = [...bankAccounts];
-        if (data.bank_name) updated[index].bankName = data.bank_name;
-        if (data.corr_account) updated[index].corrAccount = data.corr_account;
+        updated[index] = {
+          ...updated[index],
+          bik: bikValue,
+          bankName: data.bank_name || updated[index].bankName,
+          corrAccount: data.corr_account || updated[index].corrAccount
+        };
         setBankAccounts(updated);
       }
       
-      setLoadingBik({...loadingBik, [accountId]: false});
+      setLoadingBik(prev => ({...prev, [accountId]: false}));
     }
   };
 
@@ -67,33 +71,19 @@ const BankAccountsSection = ({
             <span className="text-xs text-gray-500">Счет {index + 1}</span>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-900 mb-2">
-              Наименование банка
-            </label>
-            <input
-              type="text"
-              value={account.bankName}
-              onChange={(e) => updateBankAccount(index, 'bankName', e.target.value)}
-              placeholder="ПАО Сбербанк"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-            />
-          </div>
-
-          <div className="mt-4">
-            <label className="block text-sm font-medium text-gray-900 mb-2">
-              Расчетный счет
-            </label>
-            <input
-              type="text"
-              value={account.accountNumber}
-              onChange={(e) => updateBankAccount(index, 'accountNumber', e.target.value)}
-              placeholder="40702810000000000000"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4 mt-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-900 mb-2">
+                Расчетный счет
+              </label>
+              <input
+                type="text"
+                value={account.accountNumber}
+                onChange={(e) => updateBankAccount(index, 'accountNumber', e.target.value)}
+                placeholder="40702810000000000000"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              />
+            </div>
             <div>
               <label className="block text-sm font-medium text-gray-900 mb-2">
                 БИК
@@ -114,6 +104,9 @@ const BankAccountsSection = ({
                 )}
               </div>
             </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 mt-4">
             <div>
               <label className="block text-sm font-medium text-gray-900 mb-2">
                 Корр. счет
@@ -123,6 +116,18 @@ const BankAccountsSection = ({
                 value={account.corrAccount}
                 onChange={(e) => updateBankAccount(index, 'corrAccount', e.target.value)}
                 placeholder="30101810000000000225"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-900 mb-2">
+                Наименование банка
+              </label>
+              <input
+                type="text"
+                value={account.bankName}
+                onChange={(e) => updateBankAccount(index, 'bankName', e.target.value)}
+                placeholder="ПАО Сбербанк"
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               />
             </div>
