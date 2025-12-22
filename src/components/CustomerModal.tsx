@@ -19,6 +19,7 @@ interface CustomerModalProps {
   removeDeliveryAddress: (id: number) => void;
   addBankAccount: () => void;
   removeBankAccount: (id: number) => void;
+  onSaved?: () => void;
 }
 
 const CustomerModal = ({
@@ -33,7 +34,8 @@ const CustomerModal = ({
   addDeliveryAddress,
   removeDeliveryAddress,
   addBankAccount,
-  removeBankAccount
+  removeBankAccount,
+  onSaved
 }: CustomerModalProps) => {
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
   const [isSeller, setIsSeller] = useState(false);
@@ -72,12 +74,57 @@ const CustomerModal = ({
     setBankAccounts([]);
   };
 
-  const handleSave = () => {
-    console.log('Сохранение контрагента');
+  const handleSave = async () => {
+    const bankAccountsData = bankAccounts.map(ba => ({
+      bank_name: ba.bankName || '',
+      account_number: ba.accountNumber || '',
+      bik: ba.bik || '',
+      corr_account: ba.corrAccount || ''
+    }));
+
+    const deliveryAddressesData = deliveryAddresses.map(da => {
+      const contacts = [{ contact_name: da.contact || '', phone: da.phone || '' }];
+      const additionalContacts = (addressContacts[da.id] || []).map(() => ({
+        contact_name: '',
+        phone: ''
+      }));
+      
+      return {
+        name: da.name || '',
+        address: da.address || '',
+        is_main: da.isMain || false,
+        contacts: [...contacts, ...additionalContacts]
+      };
+    });
+
+    const customerData = {
+      company_name: '',
+      prefix: isSeller ? '' : null,
+      is_seller: isSeller,
+      is_buyer: isBuyer,
+      is_carrier: false,
+      inn: '',
+      kpp: '',
+      ogrn: '',
+      legal_address: legalAddress,
+      postal_address: postalAddress,
+      actual_address: actualAddress,
+      director_name: '',
+      bank_accounts: bankAccountsData,
+      delivery_addresses: deliveryAddressesData
+    };
+
+    await fetch('https://functions.poehali.dev/5bc88690-cb17-4309-bf18-4a5d04b41edf', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(customerData)
+    });
+
     onClose();
     setSameAddress(false);
     setDeliveryAddresses([]);
     setBankAccounts([]);
+    if (onSaved) onSaved();
   };
 
   const handleClose = () => {

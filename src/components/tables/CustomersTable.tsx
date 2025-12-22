@@ -1,6 +1,70 @@
+import { useState, useEffect } from 'react';
 import Icon from '@/components/ui/icon';
 
-const CustomersTable = () => {
+interface Customer {
+  id: number;
+  company_name: string;
+  prefix: string | null;
+  is_seller: boolean;
+  is_buyer: boolean;
+  is_carrier: boolean;
+  inn: string | null;
+  kpp: string | null;
+  ogrn: string | null;
+  legal_address: string | null;
+  postal_address: string | null;
+  actual_address: string | null;
+  director_name: string | null;
+  bank_accounts: any[];
+  delivery_addresses: any[];
+}
+
+interface CustomersTableProps {
+  refreshCustomers: number;
+}
+
+const CustomersTable = ({ refreshCustomers }: CustomersTableProps) => {
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const fetchCustomers = async () => {
+    setLoading(true);
+    const response = await fetch('https://functions.poehali.dev/5bc88690-cb17-4309-bf18-4a5d04b41edf');
+    const data = await response.json();
+    setCustomers(data.customers || []);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchCustomers();
+  }, [refreshCustomers]);
+
+  const handleDelete = async (id: number) => {
+    if (!confirm('Вы уверены, что хотите удалить этого контрагента?')) return;
+    
+    await fetch('https://functions.poehali.dev/5bc88690-cb17-4309-bf18-4a5d04b41edf', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id })
+    });
+    
+    fetchCustomers();
+  };
+
+  const getRoles = (customer: Customer) => {
+    const roles = [];
+    if (customer.is_seller) roles.push('Продавец');
+    if (customer.is_buyer) roles.push('Покупатель');
+    if (customer.is_carrier) roles.push('Перевозчик');
+    return roles.join(', ') || '-';
+  };
+
+  const filteredCustomers = customers.filter(c => 
+    c.company_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    c.inn?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    c.prefix?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-6">
       <div className="space-y-4">
@@ -9,6 +73,8 @@ const CustomersTable = () => {
           <input
             type="text"
             placeholder="Поиск контрагента..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
           />
         </div>
@@ -27,36 +93,50 @@ const CustomersTable = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {[
-                  { nickname: 'АгроПром', company: 'ООО "АгроПромышленная компания"', inn: '7701234567', ogrn: '1027700123456', role: 'Поставщик' },
-                  { nickname: 'МегаМаркет', company: 'ООО "Мега Маркет"', inn: '7702345678', ogrn: '1027700234567', role: 'Покупатель' },
-                  { nickname: 'ЛогистикПро', company: 'ООО "Логистик Про"', inn: '7703456789', ogrn: '1027700345678', role: 'Перевозчик' },
-                ].map((counterparty, index) => (
-                  <tr key={index} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-4 py-3 text-sm text-gray-900">{counterparty.nickname}</td>
-                    <td className="px-4 py-3 text-sm text-gray-900">{counterparty.company}</td>
-                    <td className="px-4 py-3 text-sm text-gray-900">{counterparty.inn}</td>
-                    <td className="px-4 py-3 text-sm text-gray-900">{counterparty.ogrn}</td>
-                    <td className="px-4 py-3">
-                      <span className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
-                        {counterparty.role}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-2">
-                        <button className="p-1 hover:bg-gray-100 rounded transition-colors" title="Просмотр">
-                          <Icon name="Eye" size={18} className="text-gray-600" />
-                        </button>
-                        <button className="p-1 hover:bg-gray-100 rounded transition-colors" title="Редактировать">
-                          <Icon name="Edit" size={18} className="text-gray-600" />
-                        </button>
-                        <button className="p-1 hover:bg-gray-100 rounded transition-colors" title="Удалить">
-                          <Icon name="Trash2" size={18} className="text-red-600" />
-                        </button>
-                      </div>
+                {loading ? (
+                  <tr>
+                    <td colSpan={6} className="px-4 py-8 text-center text-gray-500">
+                      Загрузка...
                     </td>
                   </tr>
-                ))}
+                ) : filteredCustomers.length === 0 ? (
+                  <tr>
+                    <td colSpan={6} className="px-4 py-8 text-center text-gray-500">
+                      {searchQuery ? 'Контрагенты не найдены' : 'Нет контрагентов'}
+                    </td>
+                  </tr>
+                ) : (
+                  filteredCustomers.map((customer) => (
+                    <tr key={customer.id} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-4 py-3 text-sm text-gray-900">{customer.prefix || '-'}</td>
+                      <td className="px-4 py-3 text-sm text-gray-900">{customer.company_name}</td>
+                      <td className="px-4 py-3 text-sm text-gray-900">{customer.inn || '-'}</td>
+                      <td className="px-4 py-3 text-sm text-gray-900">{customer.ogrn || '-'}</td>
+                      <td className="px-4 py-3">
+                        <span className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
+                          {getRoles(customer)}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-2">
+                          <button className="p-1 hover:bg-gray-100 rounded transition-colors" title="Просмотр">
+                            <Icon name="Eye" size={18} className="text-gray-600" />
+                          </button>
+                          <button className="p-1 hover:bg-gray-100 rounded transition-colors" title="Редактировать">
+                            <Icon name="Edit" size={18} className="text-gray-600" />
+                          </button>
+                          <button 
+                            onClick={() => handleDelete(customer.id)}
+                            className="p-1 hover:bg-gray-100 rounded transition-colors" 
+                            title="Удалить"
+                          >
+                            <Icon name="Trash2" size={18} className="text-red-600" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>

@@ -33,6 +33,7 @@ interface MainContentProps {
   setIsOrderModalOpen: (open: boolean) => void;
   refreshDrivers: number;
   refreshVehicles: number;
+  refreshCustomers: number;
 }
 
 const MainContent = ({
@@ -47,7 +48,8 @@ const MainContent = ({
   setIsCustomerModalOpen,
   setIsOrderModalOpen,
   refreshDrivers,
-  refreshVehicles
+  refreshVehicles,
+  refreshCustomers
 }: MainContentProps) => {
   return (
     <main className="flex-1 overflow-auto flex flex-col bg-white w-full">
@@ -110,7 +112,7 @@ const MainContent = ({
             refreshVehicles={refreshVehicles}
           />
         ) : activeSection === 'customers' ? (
-          <CustomersTable />
+          <CustomersTable refreshCustomers={refreshCustomers} />
         ) : (
           <div className="px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-center h-full">

@@ -54,6 +54,7 @@ const Index = () => {
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
   const [refreshDrivers, setRefreshDrivers] = useState(0);
   const [refreshVehicles, setRefreshVehicles] = useState(0);
+  const [refreshCustomers, setRefreshCustomers] = useState(0);
   
   const isSubmenuActive = (item: any) => {
     return item.submenu?.some((sub: any) => sub.id === activeSection);
@@ -114,6 +115,7 @@ const Index = () => {
         setIsOrderModalOpen={setIsOrderModalOpen}
         refreshDrivers={refreshDrivers}
         refreshVehicles={refreshVehicles}
+        refreshCustomers={refreshCustomers}
       />
 
       <Modals
@@ -141,6 +143,7 @@ const Index = () => {
         removeBankAccount={removeBankAccount}
         onDriverSaved={() => setRefreshDrivers(prev => prev + 1)}
         onVehicleSaved={() => setRefreshVehicles(prev => prev + 1)}
+        onCustomerSaved={() => setRefreshCustomers(prev => prev + 1)}
       />
 
 

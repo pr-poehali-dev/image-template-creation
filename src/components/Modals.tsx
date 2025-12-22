@@ -28,6 +28,7 @@ interface ModalsProps {
   removeBankAccount: (id: number) => void;
   onDriverSaved?: () => void;
   onVehicleSaved?: () => void;
+  onCustomerSaved?: () => void;
 }
 
 const Modals = ({
@@ -54,7 +55,8 @@ const Modals = ({
   addBankAccount,
   removeBankAccount,
   onDriverSaved,
-  onVehicleSaved
+  onVehicleSaved,
+  onCustomerSaved
 }: ModalsProps) => {
   return (
     <>
@@ -91,6 +93,7 @@ const Modals = ({
         removeDeliveryAddress={removeDeliveryAddress}
         addBankAccount={addBankAccount}
         removeBankAccount={removeBankAccount}
+        onSaved={onCustomerSaved}
       />
 
       <OrderModal 
