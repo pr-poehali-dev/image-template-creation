@@ -46,7 +46,7 @@ const DriverModal = ({ isOpen, onClose }: DriverModalProps) => {
     try {
       const fullName = `${formData.lastName} ${formData.firstName} ${formData.middleName}`.trim();
       
-      const response = await fetch('https://functions.poehali.dev/ffb2fa8e-9b1c-430d-887b-d0205d275b7e', {
+      const response = await fetch('https://functions.poehali.dev/7a16d5d7-0e5e-41bc-b0a7-53decbe50532?resource=drivers', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
