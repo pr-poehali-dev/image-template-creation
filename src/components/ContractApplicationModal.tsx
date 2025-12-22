@@ -2,6 +2,10 @@ import { useState, useEffect } from 'react';
 import Icon from '@/components/ui/icon';
 import ConfirmDialog from './ConfirmDialog';
 import ModalFooter from './ModalFooter';
+import ContractApplicationHeaderSection from './contract-application/ContractApplicationHeaderSection';
+import ContractApplicationTransportSection from './contract-application/ContractApplicationTransportSection';
+import ContractApplicationLocationSection from './contract-application/ContractApplicationLocationSection';
+import ContractApplicationPaymentAssignmentSection from './contract-application/ContractApplicationPaymentAssignmentSection';
 
 interface ContractApplicationModalProps {
   isOpen: boolean;
@@ -225,407 +229,40 @@ const ContractApplicationModal = ({ isOpen, onClose, document, onSaved }: Contra
           
           <div className="p-6">
             <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-900 mb-2">
-                    Договор-заявка № <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.number}
-                    readOnly
-                    placeholder="Выберите контрагента"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-900"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-900 mb-2">
-                    Дата заявки <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="date"
-                    value={formData.date}
-                    onChange={(e) => setFormData({...formData, date: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  />
-                </div>
-              </div>
+              <ContractApplicationHeaderSection
+                formData={formData}
+                setFormData={setFormData}
+                searchCustomer={searchCustomer}
+                setSearchCustomer={setSearchCustomer}
+                showCustomerDropdown={showCustomerDropdown}
+                setShowCustomerDropdown={setShowCustomerDropdown}
+                customers={customers}
+              />
 
-              <div className="relative">
-                <label className="block text-sm font-medium text-gray-900 mb-2">
-                  Контрагент (Продавец) <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={searchCustomer}
-                  onChange={(e) => {
-                    setSearchCustomer(e.target.value);
-                    setShowCustomerDropdown(true);
-                  }}
-                  onFocus={() => setShowCustomerDropdown(true)}
-                  onBlur={() => setTimeout(() => setShowCustomerDropdown(false), 200)}
-                  placeholder="Введите название или выберите из списка"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                />
-                
-                {showCustomerDropdown && (
-                  <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-                    {customers
-                      .filter(c => c.is_seller && c.company_name.toLowerCase().includes(searchCustomer.toLowerCase()))
-                      .map(customer => (
-                        <button
-                          key={customer.id}
-                          type="button"
-                          onClick={() => {
-                            setSearchCustomer(customer.company_name);
-                            setFormData({...formData, customerId: customer.id.toString()});
-                            setShowCustomerDropdown(false);
-                          }}
-                          className="w-full text-left px-3 py-2 hover:bg-primary/5 transition-colors text-sm text-gray-900"
-                        >
-                          {customer.company_name}
-                        </button>
-                      ))}
-                    
-                    {customers.filter(c => c.is_seller && c.company_name.toLowerCase().includes(searchCustomer.toLowerCase())).length === 0 && (
-                      <div className="px-3 py-2 text-sm text-gray-500">
-                        Нет подходящих продавцов
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
+              <ContractApplicationTransportSection
+                formData={formData}
+                setFormData={setFormData}
+              />
 
-              <div className="border-t border-gray-200 pt-6">
-                <h4 className="text-sm font-medium text-gray-900 mb-4 flex items-center gap-2">
-                  <Icon name="Truck" size={18} className="text-gray-600" />
-                  Транспорт и груз
-                </h4>
-                
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-900 mb-2">
-                      Требуемый тип кузова <span className="text-red-500">*</span>
-                    </label>
-                    <select 
-                      value={formData.bodyType}
-                      onChange={(e) => setFormData({...formData, bodyType: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white"
-                    >
-                      <option value="" disabled className="text-gray-400">Выберите тип</option>
-                      <option value="tent">Тентованный</option>
-                      <option value="ref">Рефрижератор</option>
-                      <option value="isoterm">Изотермический</option>
-                      <option value="open">Бортовой</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-900 mb-2">
-                      Температурный режим
-                    </label>
-                    <div className="grid grid-cols-2 gap-2">
-                      <input
-                        type="text"
-                        value={formData.tempFrom}
-                        onChange={(e) => setFormData({...formData, tempFrom: e.target.value})}
-                        placeholder="от °C"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                      />
-                      <input
-                        type="text"
-                        value={formData.tempTo}
-                        onChange={(e) => setFormData({...formData, tempTo: e.target.value})}
-                        placeholder="до °C"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                      />
-                    </div>
-                  </div>
-                </div>
+              <ContractApplicationLocationSection
+                formData={formData}
+                setFormData={setFormData}
+              />
 
-                <div className="mt-4">
-                  <label className="block text-sm font-medium text-gray-900 mb-2">
-                    Характер груза
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.cargoType}
-                    onChange={(e) => setFormData({...formData, cargoType: e.target.value})}
-                    placeholder="Например: Продукты питания"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  />
-                </div>
-              </div>
-
-              <div className="border-t border-gray-200 pt-6">
-                <h4 className="text-sm font-medium text-gray-900 mb-4 flex items-center gap-2">
-                  <Icon name="MapPin" size={18} className="text-gray-600" />
-                  Погрузка
-                </h4>
-                
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-900 mb-2">
-                      Дата погрузки <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="date"
-                      value={formData.loadingDate}
-                      onChange={(e) => setFormData({...formData, loadingDate: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-900 mb-2">
-                      Контактное лицо
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.loadingContact}
-                      onChange={(e) => setFormData({...formData, loadingContact: e.target.value})}
-                      placeholder="ФИО, телефон"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                    />
-                  </div>
-                </div>
-
-                <div className="mt-4">
-                  <label className="block text-sm font-medium text-gray-900 mb-2">
-                    Адрес погрузки
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.loadingAddress}
-                    onChange={(e) => setFormData({...formData, loadingAddress: e.target.value})}
-                    placeholder="Полный адрес"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  />
-                </div>
-              </div>
-
-              <div className="border-t border-gray-200 pt-6">
-                <h4 className="text-sm font-medium text-gray-900 mb-4 flex items-center gap-2">
-                  <Icon name="MapPinOff" size={18} className="text-gray-600" />
-                  Разгрузка
-                </h4>
-                
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-900 mb-2">
-                      Дата разгрузки <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="date"
-                      value={formData.unloadingDate}
-                      onChange={(e) => setFormData({...formData, unloadingDate: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-900 mb-2">
-                      Контактное лицо
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.unloadingContact}
-                      onChange={(e) => setFormData({...formData, unloadingContact: e.target.value})}
-                      placeholder="ФИО, телефон"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                    />
-                  </div>
-                </div>
-
-                <div className="mt-4">
-                  <label className="block text-sm font-medium text-gray-900 mb-2">
-                    Адрес разгрузки
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.unloadingAddress}
-                    onChange={(e) => setFormData({...formData, unloadingAddress: e.target.value})}
-                    placeholder="Полный адрес"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  />
-                </div>
-              </div>
-
-              <div className="border-t border-gray-200 pt-6">
-                <h4 className="text-sm font-medium text-gray-900 mb-4 flex items-center gap-2">
-                  <Icon name="Banknote" size={18} className="text-gray-600" />
-                  Оплата
-                </h4>
-                
-                <div className="grid grid-cols-3 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-900 mb-2">
-                      Сумма фрахта
-                    </label>
-                    <input
-                      type="number"
-                      value={formData.freightAmount}
-                      onChange={(e) => setFormData({...formData, freightAmount: e.target.value})}
-                      placeholder="0"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-900 mb-2">
-                      Форма оплаты
-                    </label>
-                    <select 
-                      value={formData.paymentForm}
-                      onChange={(e) => setFormData({...formData, paymentForm: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white"
-                    >
-                      <option value="" disabled className="text-gray-400">Выберите</option>
-                      <option value="cash">Наличные</option>
-                      <option value="cashless">Безналичный</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-900 mb-2">
-                      НДС
-                    </label>
-                    <select 
-                      value={formData.vatType}
-                      onChange={(e) => setFormData({...formData, vatType: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white"
-                    >
-                      <option value="" disabled className="text-gray-400">Выберите</option>
-                      <option value="with">С НДС</option>
-                      <option value="without">Без НДС</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div className="border-t border-gray-200 pt-6">
-                <h4 className="text-sm font-medium text-gray-900 mb-4 flex items-center gap-2">
-                  <Icon name="Users" size={18} className="text-gray-600" />
-                  Назначение
-                </h4>
-                
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="relative">
-                    <label className="block text-sm font-medium text-gray-900 mb-2">
-                      Водитель
-                    </label>
-                    <input
-                      type="text"
-                      value={searchDriver}
-                      onChange={(e) => {
-                        setSearchDriver(e.target.value);
-                        setShowDriverDropdown(true);
-                      }}
-                      onFocus={() => setShowDriverDropdown(true)}
-                      onBlur={() => setTimeout(() => setShowDriverDropdown(false), 200)}
-                      placeholder="Введите ФИО или выберите из списка"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                    />
-                    
-                    {showDriverDropdown && (
-                      <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setSearchDriver('');
-                            setFormData({...formData, driverId: ''});
-                            setShowDriverDropdown(false);
-                          }}
-                          className="w-full text-left px-3 py-2 hover:bg-primary/5 transition-colors text-sm text-gray-500 italic border-b border-gray-200"
-                        >
-                          Без водителя
-                        </button>
-                        
-                        {drivers
-                          .filter(d => d.full_name.toLowerCase().includes(searchDriver.toLowerCase()))
-                          .map(driver => (
-                            <button
-                              key={driver.id}
-                              type="button"
-                              onClick={() => {
-                                setSearchDriver(driver.full_name);
-                                setFormData({...formData, driverId: driver.id.toString()});
-                                setShowDriverDropdown(false);
-                              }}
-                              className="w-full text-left px-3 py-2 hover:bg-primary/5 transition-colors text-sm text-gray-900"
-                            >
-                              {driver.full_name}
-                            </button>
-                          ))}
-                        
-                        {drivers.filter(d => d.full_name.toLowerCase().includes(searchDriver.toLowerCase())).length === 0 && (
-                          <div className="px-3 py-2 text-sm text-gray-500">
-                            Нет подходящих водителей
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="relative">
-                    <label className="block text-sm font-medium text-gray-900 mb-2">
-                      Автомобиль
-                    </label>
-                    <input
-                      type="text"
-                      value={searchVehicle}
-                      onChange={(e) => {
-                        setSearchVehicle(e.target.value);
-                        setShowVehicleDropdown(true);
-                      }}
-                      onFocus={() => setShowVehicleDropdown(true)}
-                      onBlur={() => setTimeout(() => setShowVehicleDropdown(false), 200)}
-                      placeholder="Введите марку или госномер"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                    />
-                    
-                    {showVehicleDropdown && (
-                      <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setSearchVehicle('');
-                            setFormData({...formData, vehicleId: ''});
-                            setShowVehicleDropdown(false);
-                          }}
-                          className="w-full text-left px-3 py-2 hover:bg-primary/5 transition-colors text-sm text-gray-500 italic border-b border-gray-200"
-                        >
-                          Без автомобиля
-                        </button>
-                        
-                        {vehicles
-                          .filter(v => 
-                            v.brand.toLowerCase().includes(searchVehicle.toLowerCase()) ||
-                            v.license_plate.toLowerCase().includes(searchVehicle.toLowerCase())
-                          )
-                          .map(vehicle => (
-                            <button
-                              key={vehicle.id}
-                              type="button"
-                              onClick={() => {
-                                setSearchVehicle(`${vehicle.brand} ${vehicle.license_plate}`);
-                                setFormData({...formData, vehicleId: vehicle.id.toString()});
-                                setShowVehicleDropdown(false);
-                              }}
-                              className="w-full text-left px-3 py-2 hover:bg-primary/5 transition-colors text-sm text-gray-900"
-                            >
-                              {vehicle.brand} {vehicle.license_plate}
-                            </button>
-                          ))}
-                        
-                        {vehicles.filter(v => 
-                          v.brand.toLowerCase().includes(searchVehicle.toLowerCase()) ||
-                          v.license_plate.toLowerCase().includes(searchVehicle.toLowerCase())
-                        ).length === 0 && (
-                          <div className="px-3 py-2 text-sm text-gray-500">
-                            Нет подходящих автомобилей
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
+              <ContractApplicationPaymentAssignmentSection
+                formData={formData}
+                setFormData={setFormData}
+                searchDriver={searchDriver}
+                setSearchDriver={setSearchDriver}
+                showDriverDropdown={showDriverDropdown}
+                setShowDriverDropdown={setShowDriverDropdown}
+                searchVehicle={searchVehicle}
+                setSearchVehicle={setSearchVehicle}
+                showVehicleDropdown={showVehicleDropdown}
+                setShowVehicleDropdown={setShowVehicleDropdown}
+                drivers={drivers}
+                vehicles={vehicles}
+              />
             </div>
 
             <ModalFooter 
