@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, FormEvent } from 'react';
 import Icon from '@/components/ui/icon';
 import ConfirmDialog from './ConfirmDialog';
 import ModalFooter from './ModalFooter';
@@ -15,6 +15,21 @@ const DriverModal = ({ isOpen, onClose }: DriverModalProps) => {
   const [licenseIssueDate, setLicenseIssueDate] = useState('');
   const [showPassport, setShowPassport] = useState(false);
   const [showLicense, setShowLicense] = useState(false);
+  const [loading, setLoading] = useState(false);
+  
+  const [formData, setFormData] = useState({
+    lastName: '',
+    firstName: '',
+    middleName: '',
+    phone: '',
+    passportSeries: '',
+    passportNumber: '',
+    passportIssuedBy: '',
+    passportIssuedDate: '',
+    licenseSeries: '',
+    licenseNumber: '',
+    licenseCategory: ''
+  });
 
   const handleCancel = () => {
     setShowCancelConfirm(true);
@@ -25,9 +40,58 @@ const DriverModal = ({ isOpen, onClose }: DriverModalProps) => {
     onClose();
   };
 
-  const handleSave = () => {
-    console.log('Сохранение водителя');
-    onClose();
+  const handleSave = async () => {
+    setLoading(true);
+    
+    try {
+      const fullName = `${formData.lastName} ${formData.firstName} ${formData.middleName}`.trim();
+      
+      const response = await fetch('https://functions.poehali.dev/ffb2fa8e-9b1c-430d-887b-d0205d275b7e', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          full_name: fullName,
+          phone: formData.phone,
+          passport_series: formData.passportSeries || null,
+          passport_number: formData.passportNumber || null,
+          passport_issued_by: formData.passportIssuedBy || null,
+          passport_issued_date: formData.passportIssuedDate || null,
+          license_series: formData.licenseSeries || null,
+          license_number: formData.licenseNumber || null,
+          license_category: formData.licenseCategory || null
+        })
+      });
+      
+      if (!response.ok) {
+        throw new Error('Ошибка при сохранении водителя');
+      }
+      
+      const data = await response.json();
+      console.log('Водитель сохранён:', data);
+      
+      setFormData({
+        lastName: '',
+        firstName: '',
+        middleName: '',
+        phone: '',
+        passportSeries: '',
+        passportNumber: '',
+        passportIssuedBy: '',
+        passportIssuedDate: '',
+        licenseSeries: '',
+        licenseNumber: '',
+        licenseCategory: ''
+      });
+      
+      onClose();
+    } catch (error) {
+      console.error('Ошибка при сохранении:', error);
+      alert('Не удалось сохранить водителя. Проверьте заполнение всех обязательных полей.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (!isOpen) return null;
@@ -65,6 +129,8 @@ const DriverModal = ({ isOpen, onClose }: DriverModalProps) => {
                 </label>
                 <input
                   type="text"
+                  value={formData.lastName}
+                  onChange={(e) => setFormData({...formData, lastName: e.target.value})}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                 />
               </div>
@@ -74,6 +140,8 @@ const DriverModal = ({ isOpen, onClose }: DriverModalProps) => {
                 </label>
                 <input
                   type="text"
+                  value={formData.firstName}
+                  onChange={(e) => setFormData({...formData, firstName: e.target.value})}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                 />
               </div>
@@ -83,6 +151,8 @@ const DriverModal = ({ isOpen, onClose }: DriverModalProps) => {
                 </label>
                 <input
                   type="text"
+                  value={formData.middleName}
+                  onChange={(e) => setFormData({...formData, middleName: e.target.value})}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                 />
               </div>
@@ -143,6 +213,8 @@ const DriverModal = ({ isOpen, onClose }: DriverModalProps) => {
                       <input
                         type="text"
                         placeholder="1234"
+                        value={formData.passportSeries}
+                        onChange={(e) => setFormData({...formData, passportSeries: e.target.value})}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                       />
                     </div>
@@ -153,13 +225,15 @@ const DriverModal = ({ isOpen, onClose }: DriverModalProps) => {
                       <input
                         type="text"
                         placeholder="567890"
+                        value={formData.passportNumber}
+                        onChange={(e) => setFormData({...formData, passportNumber: e.target.value})}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                       />
                     </div>
                     <RulesInput
                       type="date"
-                      value={passportIssueDate}
-                      onChange={setPassportIssueDate}
+                      value={formData.passportIssuedDate}
+                      onChange={(value) => setFormData({...formData, passportIssuedDate: value})}
                       label="Дата выдачи"
                       maxDate="today"
                     />
@@ -210,6 +284,8 @@ const DriverModal = ({ isOpen, onClose }: DriverModalProps) => {
                       <input
                         type="text"
                         placeholder="77 АА"
+                        value={formData.licenseSeries}
+                        onChange={(e) => setFormData({...formData, licenseSeries: e.target.value})}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                       />
                     </div>
@@ -220,33 +296,32 @@ const DriverModal = ({ isOpen, onClose }: DriverModalProps) => {
                       <input
                         type="text"
                         placeholder="123456"
+                        value={formData.licenseNumber}
+                        onChange={(e) => setFormData({...formData, licenseNumber: e.target.value})}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                       />
                     </div>
-                    <RulesInput
-                      type="date"
-                      value={licenseIssueDate}
-                      onChange={setLicenseIssueDate}
-                      label="Дата выдачи"
-                      maxDate="today"
-                    />
+                    <div>
+                      <label className="block text-sm font-medium text-gray-900 mb-2">
+                        Категория
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="CE"
+                        value={formData.licenseCategory}
+                        onChange={(e) => setFormData({...formData, licenseCategory: e.target.value})}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      />
+                    </div>
                   </div>
 
-                  <div className="mt-4 mb-6">
-                    <label className="block text-sm font-medium text-gray-900 mb-2">
-                      Кем выдан
-                    </label>
-                    <input
-                      type="text"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                    />
-                  </div>
+
                 </>
               )}
             </div>
           </div>
 
-          <ModalFooter onCancel={handleCancel} onSave={handleSave} />
+          <ModalFooter onCancel={handleCancel} onSave={handleSave} disabled={loading} />
         </div>
         </div>
       </div>

@@ -1,4 +1,5 @@
 {
+  "drivers": "https://functions.poehali.dev/ffb2fa8e-9b1c-430d-887b-d0205d275b7e",
   "parse-pdf": "https://functions.poehali.dev/8eb81581-d997-4368-abcd-924530939855",
   "parse-excel": "https://functions.poehali.dev/d0a75746-9032-496b-a8ae-5ce4ce7f0b54"
 }
