@@ -278,6 +278,141 @@ def handle_templates(method: str, event: Dict[str, Any], conn, cursor) -> Dict[s
             'isBase64Encoded': False
         }
 
+def handle_vehicles(method: str, event: Dict[str, Any], conn, cursor) -> Dict[str, Any]:
+    if method == 'GET':
+        cursor.execute('''
+            SELECT id, vehicle_name, brand, license_plate, trailer, 
+                   body_type, transport_company, driver_id,
+                   created_at, updated_at
+            FROM vehicles 
+            ORDER BY brand
+        ''')
+        vehicles = cursor.fetchall()
+        result = [dict_to_json(dict(v)) for v in vehicles]
+        
+        return {
+            'statusCode': 200,
+            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'vehicles': result}),
+            'isBase64Encoded': False
+        }
+    
+    elif method == 'POST':
+        body = json.loads(event.get('body', '{}'))
+        
+        vehicle_name = f"{body.get('brand')} {body.get('license_plate')}"
+        
+        cursor.execute('''
+            INSERT INTO vehicles 
+            (vehicle_name, brand, license_plate, trailer, body_type, 
+             transport_company, driver_id)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+            RETURNING id, vehicle_name, brand, license_plate, trailer, 
+                      body_type, transport_company, driver_id,
+                      created_at, updated_at
+        ''', (
+            vehicle_name,
+            body.get('brand'),
+            body.get('license_plate'),
+            body.get('trailer'),
+            body.get('body_type'),
+            body.get('transport_company'),
+            body.get('driver_id')
+        ))
+        
+        vehicle = cursor.fetchone()
+        conn.commit()
+        
+        return {
+            'statusCode': 201,
+            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'vehicle': dict_to_json(dict(vehicle))}),
+            'isBase64Encoded': False
+        }
+    
+    elif method == 'PUT':
+        body = json.loads(event.get('body', '{}'))
+        vehicle_id = body.get('id')
+        
+        if not vehicle_id:
+            return {
+                'statusCode': 400,
+                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                'body': json.dumps({'error': 'Vehicle ID is required'}),
+                'isBase64Encoded': False
+            }
+        
+        vehicle_name = f"{body.get('brand')} {body.get('license_plate')}"
+        
+        cursor.execute('''
+            UPDATE vehicles 
+            SET vehicle_name = %s, brand = %s, license_plate = %s, 
+                trailer = %s, body_type = %s, transport_company = %s, 
+                driver_id = %s, updated_at = CURRENT_TIMESTAMP
+            WHERE id = %s
+            RETURNING id, vehicle_name, brand, license_plate, trailer,
+                      body_type, transport_company, driver_id,
+                      created_at, updated_at
+        ''', (
+            vehicle_name,
+            body.get('brand'),
+            body.get('license_plate'),
+            body.get('trailer'),
+            body.get('body_type'),
+            body.get('transport_company'),
+            body.get('driver_id'),
+            vehicle_id
+        ))
+        
+        vehicle = cursor.fetchone()
+        conn.commit()
+        
+        if not vehicle:
+            return {
+                'statusCode': 404,
+                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                'body': json.dumps({'error': 'Vehicle not found'}),
+                'isBase64Encoded': False
+            }
+        
+        return {
+            'statusCode': 200,
+            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'vehicle': dict_to_json(dict(vehicle))}),
+            'isBase64Encoded': False
+        }
+    
+    elif method == 'DELETE':
+        body = json.loads(event.get('body', '{}'))
+        vehicle_id = body.get('id')
+        
+        if not vehicle_id:
+            return {
+                'statusCode': 400,
+                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                'body': json.dumps({'error': 'Vehicle ID is required'}),
+                'isBase64Encoded': False
+            }
+        
+        cursor.execute('DELETE FROM vehicles WHERE id = %s RETURNING id', (vehicle_id,))
+        deleted = cursor.fetchone()
+        conn.commit()
+        
+        if not deleted:
+            return {
+                'statusCode': 404,
+                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                'body': json.dumps({'error': 'Vehicle not found'}),
+                'isBase64Encoded': False
+            }
+        
+        return {
+            'statusCode': 200,
+            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'message': 'Vehicle deleted successfully'}),
+            'isBase64Encoded': False
+        }
+
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
     Единая API для всех справочников: водители, автомобили, контрагенты, заказы, шаблоны
@@ -311,6 +446,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     try:
         if resource == 'drivers':
             return handle_drivers(method, event, conn, cursor)
+        elif resource == 'vehicles':
+            return handle_vehicles(method, event, conn, cursor)
         elif resource == 'templates':
             return handle_templates(method, event, conn, cursor)
         else:

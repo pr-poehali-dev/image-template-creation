@@ -21,6 +21,19 @@ interface Driver {
   updated_at: string;
 }
 
+interface Vehicle {
+  id: number;
+  vehicle_name: string;
+  brand: string;
+  license_plate: string;
+  trailer: string;
+  body_type: string;
+  transport_company: string;
+  driver_id: number;
+  created_at: string;
+  updated_at: string;
+}
+
 interface MenuItem {
   id: string;
   label: string;
@@ -40,9 +53,11 @@ interface MainContentProps {
   setIsDriverModalOpen: (open: boolean) => void;
   setEditingDriver: (driver: any) => void;
   setIsVehicleModalOpen: (open: boolean) => void;
+  setEditingVehicle: (vehicle: any) => void;
   setIsCustomerModalOpen: (open: boolean) => void;
   setIsOrderModalOpen: (open: boolean) => void;
   refreshDrivers: number;
+  refreshVehicles: number;
 }
 
 const MainContent = ({
@@ -53,18 +68,28 @@ const MainContent = ({
   setIsDriverModalOpen,
   setEditingDriver,
   setIsVehicleModalOpen,
+  setEditingVehicle,
   setIsCustomerModalOpen,
   setIsOrderModalOpen,
-  refreshDrivers
+  refreshDrivers,
+  refreshVehicles
 }: MainContentProps) => {
   const [drivers, setDrivers] = useState<Driver[]>([]);
   const [loadingDrivers, setLoadingDrivers] = useState(false);
+  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const [loadingVehicles, setLoadingVehicles] = useState(false);
 
   useEffect(() => {
     if (activeSection === 'drivers') {
       loadDrivers();
     }
   }, [activeSection, refreshDrivers]);
+
+  useEffect(() => {
+    if (activeSection === 'vehicles') {
+      loadVehicles();
+    }
+  }, [activeSection, refreshVehicles]);
 
   const loadDrivers = async () => {
     setLoadingDrivers(true);
@@ -76,6 +101,19 @@ const MainContent = ({
       console.error('Ошибка загрузки водителей:', error);
     } finally {
       setLoadingDrivers(false);
+    }
+  };
+
+  const loadVehicles = async () => {
+    setLoadingVehicles(true);
+    try {
+      const response = await fetch('https://functions.poehali.dev/7a16d5d7-0e5e-41bc-b0a7-53decbe50532?resource=vehicles');
+      const data = await response.json();
+      setVehicles(data.vehicles || []);
+    } catch (error) {
+      console.error('Ошибка загрузки автомобилей:', error);
+    } finally {
+      setLoadingVehicles(false);
     }
   };
 
@@ -97,6 +135,27 @@ const MainContent = ({
     } catch (error) {
       console.error('Ошибка удаления:', error);
       alert('Ошибка удаления водителя');
+    }
+  };
+
+  const handleDeleteVehicle = async (id: number) => {
+    if (!confirm('Удалить этот автомобиль?')) return;
+    
+    try {
+      const response = await fetch(`https://functions.poehali.dev/7a16d5d7-0e5e-41bc-b0a7-53decbe50532?resource=vehicles`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      });
+      
+      if (response.ok) {
+        await loadVehicles();
+      } else {
+        alert('Ошибка удаления автомобиля');
+      }
+    } catch (error) {
+      console.error('Ошибка удаления:', error);
+      alert('Ошибка удаления автомобиля');
     }
   };
   return (
@@ -318,31 +377,52 @@ const MainContent = ({
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200">
-                    {[
-                      { brand: 'КамАЗ 5490', number: 'А123БВ77', trailer: 'АВ123477', company: 'ТК Логистик' },
-                      { brand: 'Volvo FH13', number: 'В456ГД77', trailer: 'ГД456777', company: 'ТК Экспресс' },
-                      { brand: 'Scania R450', number: 'С789ЕЖ77', trailer: 'ЕЖ789077', company: 'ТК Транзит' },
-                    ].map((vehicle, index) => (
-                      <tr key={index} className="hover:bg-gray-50 transition-colors">
-                        <td className="px-4 py-3 text-sm text-gray-900">{vehicle.brand}</td>
-                        <td className="px-4 py-3 text-sm text-gray-900">{vehicle.number}</td>
-                        <td className="px-4 py-3 text-sm text-gray-900">{vehicle.trailer}</td>
-                        <td className="px-4 py-3 text-sm text-gray-900">{vehicle.company}</td>
-                        <td className="px-4 py-3">
-                          <div className="flex items-center gap-2">
-                            <button className="p-1 hover:bg-gray-100 rounded transition-colors" title="Просмотр">
-                              <Icon name="Eye" size={18} className="text-gray-600" />
-                            </button>
-                            <button className="p-1 hover:bg-gray-100 rounded transition-colors" title="Редактировать">
-                              <Icon name="Edit" size={18} className="text-gray-600" />
-                            </button>
-                            <button className="p-1 hover:bg-gray-100 rounded transition-colors" title="Удалить">
-                              <Icon name="Trash2" size={18} className="text-red-600" />
-                            </button>
+                    {loadingVehicles ? (
+                      <tr>
+                        <td colSpan={5} className="px-4 py-8 text-center text-gray-500">
+                          <div className="flex items-center justify-center gap-2">
+                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary"></div>
+                            <span>Загрузка...</span>
                           </div>
                         </td>
                       </tr>
-                    ))}
+                    ) : vehicles.length === 0 ? (
+                      <tr>
+                        <td colSpan={5} className="px-4 py-8 text-center text-gray-500">
+                          Нет автомобилей
+                        </td>
+                      </tr>
+                    ) : (
+                      vehicles.map((vehicle) => (
+                        <tr key={vehicle.id} className="hover:bg-gray-50 transition-colors">
+                          <td className="px-4 py-3 text-sm text-gray-900">{vehicle.brand}</td>
+                          <td className="px-4 py-3 text-sm text-gray-900">{vehicle.license_plate}</td>
+                          <td className="px-4 py-3 text-sm text-gray-900">{vehicle.trailer || '-'}</td>
+                          <td className="px-4 py-3 text-sm text-gray-900">{vehicle.transport_company}</td>
+                          <td className="px-4 py-3">
+                            <div className="flex items-center gap-2">
+                              <button 
+                                onClick={() => {
+                                  setEditingVehicle(vehicle);
+                                  setIsVehicleModalOpen(true);
+                                }}
+                                className="p-1 hover:bg-gray-100 rounded transition-colors" 
+                                title="Редактировать"
+                              >
+                                <Icon name="Edit" size={18} className="text-gray-600" />
+                              </button>
+                              <button 
+                                onClick={() => handleDeleteVehicle(vehicle.id)}
+                                className="p-1 hover:bg-gray-100 rounded transition-colors" 
+                                title="Удалить"
+                              >
+                                <Icon name="Trash2" size={18} className="text-red-600" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    )}
                   </tbody>
                 </table>
               </div>
