@@ -1,8 +1,24 @@
+import { useState, useEffect } from 'react';
 import Icon from '@/components/ui/icon';
 import ReferenceDashboard from './ReferenceDashboard';
 import DocumentsDashboard from './DocumentsDashboard';
 import TemplatesDashboard from './TemplatesDashboard';
 import SettingsDashboard from './SettingsDashboard';
+
+interface Driver {
+  id: number;
+  full_name: string;
+  phone: string;
+  passport_series: string;
+  passport_number: string;
+  passport_issued_by: string;
+  passport_issued_date: string;
+  license_series: string;
+  license_number: string;
+  license_category: string;
+  created_at: string;
+  updated_at: string;
+}
 
 interface MenuItem {
   id: string;
@@ -36,6 +52,27 @@ const MainContent = ({
   setIsCustomerModalOpen,
   setIsOrderModalOpen
 }: MainContentProps) => {
+  const [drivers, setDrivers] = useState<Driver[]>([]);
+  const [loadingDrivers, setLoadingDrivers] = useState(false);
+
+  useEffect(() => {
+    if (activeSection === 'drivers') {
+      loadDrivers();
+    }
+  }, [activeSection]);
+
+  const loadDrivers = async () => {
+    setLoadingDrivers(true);
+    try {
+      const response = await fetch('https://functions.poehali.dev/7a16d5d7-0e5e-41bc-b0a7-53decbe50532?resource=drivers');
+      const data = await response.json();
+      setDrivers(data.drivers || []);
+    } catch (error) {
+      console.error('Ошибка загрузки водителей:', error);
+    } finally {
+      setLoadingDrivers(false);
+    }
+  };
   return (
     <main className="flex-1 overflow-auto flex flex-col bg-white w-full">
       <header className="bg-white border-b border-gray-200 px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex items-center justify-between">
@@ -177,30 +214,43 @@ const MainContent = ({
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200">
-                    {[
-                      { name: 'Иванов Иван Иванович', phone: '+7 (999) 123-45-67', license: '77 АА 123456' },
-                      { name: 'Петров Петр Петрович', phone: '+7 (999) 234-56-78', license: '77 ВВ 234567' },
-                      { name: 'Сидоров Сидор Сидорович', phone: '+7 (999) 345-67-89', license: '77 СС 345678' },
-                    ].map((driver, index) => (
-                      <tr key={index} className="hover:bg-gray-50 transition-colors">
-                        <td className="px-4 py-3 text-sm text-gray-900">{driver.name}</td>
-                        <td className="px-4 py-3 text-sm text-gray-900">{driver.phone}</td>
-                        <td className="px-4 py-3 text-sm text-gray-900">{driver.license}</td>
-                        <td className="px-4 py-3">
-                          <div className="flex items-center gap-2">
-                            <button className="p-1 hover:bg-gray-100 rounded transition-colors" title="Просмотр">
-                              <Icon name="Eye" size={18} className="text-gray-600" />
-                            </button>
-                            <button className="p-1 hover:bg-gray-100 rounded transition-colors" title="Редактировать">
-                              <Icon name="Edit" size={18} className="text-gray-600" />
-                            </button>
-                            <button className="p-1 hover:bg-gray-100 rounded transition-colors" title="Удалить">
-                              <Icon name="Trash2" size={18} className="text-red-600" />
-                            </button>
+                    {loadingDrivers ? (
+                      <tr>
+                        <td colSpan={4} className="px-4 py-8 text-center text-gray-500">
+                          <div className="flex items-center justify-center gap-2">
+                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary"></div>
+                            <span>Загрузка...</span>
                           </div>
                         </td>
                       </tr>
-                    ))}
+                    ) : drivers.length === 0 ? (
+                      <tr>
+                        <td colSpan={4} className="px-4 py-8 text-center text-gray-500">
+                          Нет водителей
+                        </td>
+                      </tr>
+                    ) : (
+                      drivers.map((driver) => (
+                        <tr key={driver.id} className="hover:bg-gray-50 transition-colors">
+                          <td className="px-4 py-3 text-sm text-gray-900">{driver.full_name}</td>
+                          <td className="px-4 py-3 text-sm text-gray-900">{driver.phone}</td>
+                          <td className="px-4 py-3 text-sm text-gray-900">{driver.license_series} {driver.license_number}</td>
+                          <td className="px-4 py-3">
+                            <div className="flex items-center gap-2">
+                              <button className="p-1 hover:bg-gray-100 rounded transition-colors" title="Просмотр">
+                                <Icon name="Eye" size={18} className="text-gray-600" />
+                              </button>
+                              <button className="p-1 hover:bg-gray-100 rounded transition-colors" title="Редактировать">
+                                <Icon name="Edit" size={18} className="text-gray-600" />
+                              </button>
+                              <button className="p-1 hover:bg-gray-100 rounded transition-colors" title="Удалить">
+                                <Icon name="Trash2" size={18} className="text-red-600" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    )}
                   </tbody>
                 </table>
               </div>
