@@ -8,6 +8,7 @@ import OrdersTable from './tables/OrdersTable';
 import DriversTable from './tables/DriversTable';
 import VehiclesTable from './tables/VehiclesTable';
 import CustomersTable from './tables/CustomersTable';
+import ContractApplicationTable from './tables/ContractApplicationTable';
 
 interface MenuItem {
   id: string;
@@ -32,6 +33,8 @@ interface MainContentProps {
   setIsCustomerModalOpen: (open: boolean) => void;
   setEditingCustomer: (customer: any) => void;
   setIsOrderModalOpen: (open: boolean) => void;
+  setIsContractApplicationModalOpen?: (open: boolean) => void;
+  setEditingContractApplication?: (doc: any) => void;
   refreshDrivers: number;
   refreshVehicles: number;
   refreshCustomers: number;
@@ -49,6 +52,8 @@ const MainContent = ({
   setIsCustomerModalOpen,
   setEditingCustomer,
   setIsOrderModalOpen,
+  setIsContractApplicationModalOpen,
+  setEditingContractApplication,
   refreshDrivers,
   refreshVehicles,
   refreshCustomers
@@ -68,13 +73,14 @@ const MainContent = ({
              menuItems.find(item => item.submenu?.some(sub => sub.id === activeSection))?.submenu?.find(sub => sub.id === activeSection)?.label}
           </h2>
         </div>
-        {(activeSection === 'orders' || activeSection === 'drivers' || activeSection === 'vehicles' || activeSection === 'customers') && (
+        {(activeSection === 'orders' || activeSection === 'drivers' || activeSection === 'vehicles' || activeSection === 'customers' || activeSection === 'contract-application') && (
           <button 
             onClick={() => {
               if (activeSection === 'orders') setIsOrderModalOpen(true);
               if (activeSection === 'drivers') setIsDriverModalOpen(true);
               if (activeSection === 'vehicles') setIsVehicleModalOpen(true);
               if (activeSection === 'customers') setIsCustomerModalOpen(true);
+              if (activeSection === 'contract-application' && setIsContractApplicationModalOpen) setIsContractApplicationModalOpen(true);
             }}
             className="bg-primary hover:bg-primary/90 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
           >
@@ -118,6 +124,11 @@ const MainContent = ({
             refreshCustomers={refreshCustomers}
             setEditingCustomer={setEditingCustomer}
             setIsCustomerModalOpen={setIsCustomerModalOpen}
+          />
+        ) : activeSection === 'contract-application' ? (
+          <ContractApplicationTable 
+            setEditingDocument={setEditingContractApplication || (() => {})}
+            setIsDocumentModalOpen={setIsContractApplicationModalOpen || (() => {})}
           />
         ) : (
           <div className="px-4 sm:px-6 lg:px-8 py-6">

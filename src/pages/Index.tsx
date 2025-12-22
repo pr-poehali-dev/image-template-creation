@@ -56,6 +56,8 @@ const Index = () => {
   const [refreshDrivers, setRefreshDrivers] = useState(0);
   const [refreshVehicles, setRefreshVehicles] = useState(0);
   const [refreshCustomers, setRefreshCustomers] = useState(0);
+  const [isContractApplicationModalOpen, setIsContractApplicationModalOpen] = useState(false);
+  const [editingContractApplication, setEditingContractApplication] = useState<any>(null);
   
   const isSubmenuActive = (item: any) => {
     return item.submenu?.some((sub: any) => sub.id === activeSection);
@@ -115,6 +117,8 @@ const Index = () => {
         setIsCustomerModalOpen={setIsCustomerModalOpen}
         setEditingCustomer={setEditingCustomer}
         setIsOrderModalOpen={setIsOrderModalOpen}
+        setIsContractApplicationModalOpen={setIsContractApplicationModalOpen}
+        setEditingContractApplication={setEditingContractApplication}
         refreshDrivers={refreshDrivers}
         refreshVehicles={refreshVehicles}
         refreshCustomers={refreshCustomers}
