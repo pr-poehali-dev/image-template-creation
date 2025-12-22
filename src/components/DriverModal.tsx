@@ -13,6 +13,8 @@ const DriverModal = ({ isOpen, onClose }: DriverModalProps) => {
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
   const [passportIssueDate, setPassportIssueDate] = useState('');
   const [licenseIssueDate, setLicenseIssueDate] = useState('');
+  const [showPassport, setShowPassport] = useState(false);
+  const [showLicense, setShowLicense] = useState(false);
 
   const handleCancel = () => {
     setShowCancelConfirm(true);
@@ -110,99 +112,133 @@ const DriverModal = ({ isOpen, onClose }: DriverModalProps) => {
             </div>
 
             <div className="border-t border-gray-200 pt-4">
-              <div className="flex items-center gap-2 mb-4">
-                <Icon name="CreditCard" size={18} className="text-gray-600" />
-                <span className="text-sm font-medium text-gray-600">Паспорт</span>
-              </div>
-              
-              <div className="grid grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-900 mb-2">
-                    Серия <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="1234"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-900 mb-2">
-                    Номер <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="567890"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  />
-                </div>
-                <RulesInput
-                  type="date"
-                  value={passportIssueDate}
-                  onChange={setPassportIssueDate}
-                  label="Дата выдачи"
-                  maxDate="today"
-                  required
-                />
-              </div>
+              {!showPassport ? (
+                <button
+                  onClick={() => setShowPassport(true)}
+                  className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
+                >
+                  <Icon name="Plus" size={18} />
+                  <span className="text-sm font-medium">Добавить паспорт</span>
+                </button>
+              ) : (
+                <>
+                  <div className="flex items-center gap-2 mb-4">
+                    <Icon name="CreditCard" size={18} className="text-gray-600" />
+                    <span className="text-sm font-medium text-gray-600">Паспорт</span>
+                    <button
+                      onClick={() => setShowPassport(false)}
+                      className="ml-auto text-gray-400 hover:text-red-600 transition-colors"
+                    >
+                      <Icon name="X" size={16} />
+                    </button>
+                  </div>
+                  
+                  <div className="grid grid-cols-3 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-900 mb-2">
+                        Серия
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="1234"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-900 mb-2">
+                        Номер
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="567890"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      />
+                    </div>
+                    <RulesInput
+                      type="date"
+                      value={passportIssueDate}
+                      onChange={setPassportIssueDate}
+                      label="Дата выдачи"
+                      maxDate="today"
+                    />
+                  </div>
 
-              <div className="mt-4">
-                <label className="block text-sm font-medium text-gray-900 mb-2">
-                  Кем выдан <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                />
-              </div>
+                  <div className="mt-4">
+                    <label className="block text-sm font-medium text-gray-900 mb-2">
+                      Кем выдан
+                    </label>
+                    <input
+                      type="text"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    />
+                  </div>
+                </>
+              )}
             </div>
 
             <div className="border-t border-gray-200 pt-4 mt-4">
-              <div className="flex items-center gap-2 mb-4">
-                <Icon name="IdCard" size={18} className="text-gray-600" />
-                <span className="text-sm font-medium text-gray-600">Водительское удостоверение</span>
-              </div>
-              
-              <div className="grid grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-900 mb-2">
-                    Серия <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="77 АА"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-900 mb-2">
-                    Номер <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="123456"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  />
-                </div>
-                <RulesInput
-                  type="date"
-                  value={licenseIssueDate}
-                  onChange={setLicenseIssueDate}
-                  label="Дата выдачи"
-                  maxDate="today"
-                  required
-                />
-              </div>
+              {!showLicense ? (
+                <button
+                  onClick={() => setShowLicense(true)}
+                  className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
+                >
+                  <Icon name="Plus" size={18} />
+                  <span className="text-sm font-medium">Добавить водительское удостоверение</span>
+                </button>
+              ) : (
+                <>
+                  <div className="flex items-center gap-2 mb-4">
+                    <Icon name="IdCard" size={18} className="text-gray-600" />
+                    <span className="text-sm font-medium text-gray-600">Водительское удостоверение</span>
+                    <button
+                      onClick={() => setShowLicense(false)}
+                      className="ml-auto text-gray-400 hover:text-red-600 transition-colors"
+                    >
+                      <Icon name="X" size={16} />
+                    </button>
+                  </div>
+                  
+                  <div className="grid grid-cols-3 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-900 mb-2">
+                        Серия
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="77 АА"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-900 mb-2">
+                        Номер
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="123456"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      />
+                    </div>
+                    <RulesInput
+                      type="date"
+                      value={licenseIssueDate}
+                      onChange={setLicenseIssueDate}
+                      label="Дата выдачи"
+                      maxDate="today"
+                    />
+                  </div>
 
-              <div className="mt-4">
-                <label className="block text-sm font-medium text-gray-900 mb-2">
-                  Кем выдан <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                />
-              </div>
+                  <div className="mt-4">
+                    <label className="block text-sm font-medium text-gray-900 mb-2">
+                      Кем выдан
+                    </label>
+                    <input
+                      type="text"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    />
+                  </div>
+                </>
+              )}
             </div>
           </div>
 
