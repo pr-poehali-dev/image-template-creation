@@ -17,6 +17,8 @@ const VehicleModal = ({ isOpen, onClose, vehicle, onSaved }: VehicleModalProps) 
   const [customers, setCustomers] = useState<Array<{id: number, company_name: string, is_carrier: boolean}>>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [showDropdown, setShowDropdown] = useState(false);
+  const [driverSearchTerm, setDriverSearchTerm] = useState('');
+  const [showDriverDropdown, setShowDriverDropdown] = useState(false);
   
   const [formData, setFormData] = useState({
     brand: '',
@@ -45,6 +47,8 @@ const VehicleModal = ({ isOpen, onClose, vehicle, onSaved }: VehicleModalProps) 
         driverId: vehicle.driver_id?.toString() || ''
       });
       setSearchTerm(vehicle.transport_company || '');
+      const driver = drivers.find(d => d.id === vehicle.driver_id);
+      setDriverSearchTerm(driver?.full_name || '');
     } else {
       setFormData({
         brand: '',
@@ -55,6 +59,7 @@ const VehicleModal = ({ isOpen, onClose, vehicle, onSaved }: VehicleModalProps) 
         driverId: ''
       });
       setSearchTerm('');
+      setDriverSearchTerm('');
     }
   }, [vehicle, isOpen]);
 
@@ -85,6 +90,7 @@ const VehicleModal = ({ isOpen, onClose, vehicle, onSaved }: VehicleModalProps) 
   const confirmCancel = () => {
     setShowCancelConfirm(false);
     setShowDropdown(false);
+    setShowDriverDropdown(false);
     onClose();
   };
 
@@ -128,6 +134,7 @@ const VehicleModal = ({ isOpen, onClose, vehicle, onSaved }: VehicleModalProps) 
       setLoading(false);
       
       setShowDropdown(false);
+      setShowDriverDropdown(false);
       onClose();
       if (onSaved) onSaved();
     } catch (error) {
@@ -151,7 +158,7 @@ const VehicleModal = ({ isOpen, onClose, vehicle, onSaved }: VehicleModalProps) 
         onCancel={() => setShowCancelConfirm(false)}
       />
       
-      <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setShowDropdown(false)}>
+      <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => { setShowDropdown(false); setShowDriverDropdown(false); }}>
         <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
         <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
           <h3 className="text-xl font-bold text-gray-900">{vehicle ? 'Редактировать автомобиль' : 'Добавить автомобиль'}</h3>
@@ -253,7 +260,7 @@ const VehicleModal = ({ isOpen, onClose, vehicle, onSaved }: VehicleModalProps) 
                           setFormData({...formData, transportCompany: customer.company_name});
                           setShowDropdown(false);
                         }}
-                        className="w-full text-left px-3 py-2 hover:bg-primary/5 transition-colors text-sm"
+                        className="w-full text-left px-3 py-2 hover:bg-primary/5 transition-colors text-sm text-gray-900"
                       >
                         {customer.company_name}
                       </button>
@@ -268,22 +275,60 @@ const VehicleModal = ({ isOpen, onClose, vehicle, onSaved }: VehicleModalProps) 
               )}
             </div>
 
-            <div>
+            <div className="relative">
               <label className="block text-sm font-medium text-gray-900 mb-2">
                 Водитель
               </label>
-              <select 
-                value={formData.driverId}
-                onChange={(e) => setFormData({...formData, driverId: e.target.value})}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white"
-              >
-                <option value="">Выберите водителя</option>
-                {drivers.map((driver) => (
-                  <option key={driver.id} value={driver.id}>
-                    {driver.full_name}
-                  </option>
-                ))}
-              </select>
+              <input
+                type="text"
+                value={driverSearchTerm}
+                onChange={(e) => {
+                  setDriverSearchTerm(e.target.value);
+                  setShowDriverDropdown(true);
+                }}
+                onFocus={() => setShowDriverDropdown(true)}
+                placeholder="Введите ФИО или выберите из списка"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              />
+              
+              {showDriverDropdown && (
+                <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setDriverSearchTerm('');
+                      setFormData({...formData, driverId: ''});
+                      setShowDriverDropdown(false);
+                    }}
+                    className="w-full text-left px-3 py-2 hover:bg-primary/5 transition-colors text-sm text-gray-500 italic border-b border-gray-200"
+                  >
+                    Без водителя
+                  </button>
+                  
+                  {drivers
+                    .filter(d => d.full_name.toLowerCase().includes(driverSearchTerm.toLowerCase()))
+                    .map(driver => (
+                      <button
+                        key={driver.id}
+                        type="button"
+                        onClick={() => {
+                          setDriverSearchTerm(driver.full_name);
+                          setFormData({...formData, driverId: driver.id.toString()});
+                          setShowDriverDropdown(false);
+                        }}
+                        className="w-full text-left px-3 py-2 hover:bg-primary/5 transition-colors text-sm text-gray-900"
+                      >
+                        {driver.full_name}
+                      </button>
+                    ))}
+                  
+                  {drivers.filter(d => d.full_name.toLowerCase().includes(driverSearchTerm.toLowerCase())).length === 0 && (
+                    <div className="px-3 py-2 text-sm text-gray-500">
+                      Нет подходящих водителей
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 
