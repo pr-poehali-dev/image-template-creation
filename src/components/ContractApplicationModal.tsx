@@ -17,12 +17,14 @@ interface ContractApplicationModalProps {
 const ContractApplicationModal = ({ isOpen, onClose, document, onSaved }: ContractApplicationModalProps) => {
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [customers, setCustomers] = useState<Array<{id: number, company_name: string, prefix: string, is_seller: boolean}>>([]);
+  const [customers, setCustomers] = useState<Array<{id: number, company_name: string, prefix: string, is_seller: boolean, is_carrier: boolean}>>([]);
   const [drivers, setDrivers] = useState<Array<{id: number, full_name: string}>>([]);
   const [vehicles, setVehicles] = useState<Array<{id: number, vehicle_name: string, brand: string, license_plate: string}>>([]);
   
   const [searchCustomer, setSearchCustomer] = useState('');
   const [showCustomerDropdown, setShowCustomerDropdown] = useState(false);
+  const [searchCarrier, setSearchCarrier] = useState('');
+  const [showCarrierDropdown, setShowCarrierDropdown] = useState(false);
   const [searchDriver, setSearchDriver] = useState('');
   const [showDriverDropdown, setShowDriverDropdown] = useState(false);
   const [searchVehicle, setSearchVehicle] = useState('');
@@ -32,6 +34,7 @@ const ContractApplicationModal = ({ isOpen, onClose, document, onSaved }: Contra
     number: '',
     date: new Date().toISOString().split('T')[0],
     customerId: '',
+    carrierId: '',
     bodyType: '',
     tempFrom: '',
     tempTo: '',
@@ -63,6 +66,7 @@ const ContractApplicationModal = ({ isOpen, onClose, document, onSaved }: Contra
         number: document.number || '',
         date: document.date || new Date().toISOString().split('T')[0],
         customerId: document.customer_id || '',
+        carrierId: document.carrier_id || '',
         bodyType: document.body_type || '',
         tempFrom: document.temp_from || '',
         tempTo: document.temp_to || '',
@@ -83,6 +87,9 @@ const ContractApplicationModal = ({ isOpen, onClose, document, onSaved }: Contra
       const customer = customers.find(c => c.id === document.customer_id);
       setSearchCustomer(customer?.company_name || '');
       
+      const carrier = customers.find(c => c.id === document.carrier_id);
+      setSearchCarrier(carrier?.company_name || '');
+      
       const driver = drivers.find(d => d.id === document.driver_id);
       setSearchDriver(driver?.full_name || '');
       
@@ -93,6 +100,7 @@ const ContractApplicationModal = ({ isOpen, onClose, document, onSaved }: Contra
         number: '',
         date: new Date().toISOString().split('T')[0],
         customerId: '',
+        carrierId: '',
         bodyType: '',
         tempFrom: '',
         tempTo: '',
@@ -110,6 +118,7 @@ const ContractApplicationModal = ({ isOpen, onClose, document, onSaved }: Contra
         vehicleId: ''
       });
       setSearchCustomer('');
+      setSearchCarrier('');
       setSearchDriver('');
       setSearchVehicle('');
     }
@@ -170,6 +179,7 @@ const ContractApplicationModal = ({ isOpen, onClose, document, onSaved }: Contra
   const confirmCancel = () => {
     setShowCancelConfirm(false);
     setShowCustomerDropdown(false);
+    setShowCarrierDropdown(false);
     setShowDriverDropdown(false);
     setShowVehicleDropdown(false);
     onClose();
@@ -190,6 +200,7 @@ const ContractApplicationModal = ({ isOpen, onClose, document, onSaved }: Contra
       
       setLoading(false);
       setShowCustomerDropdown(false);
+      setShowCarrierDropdown(false);
       setShowDriverDropdown(false);
       setShowVehicleDropdown(false);
       onClose();
@@ -215,7 +226,7 @@ const ContractApplicationModal = ({ isOpen, onClose, document, onSaved }: Contra
         onCancel={() => setShowCancelConfirm(false)}
       />
       
-      <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => { setShowCustomerDropdown(false); setShowDriverDropdown(false); setShowVehicleDropdown(false); }}>
+      <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => { setShowCustomerDropdown(false); setShowCarrierDropdown(false); setShowDriverDropdown(false); setShowVehicleDropdown(false); }}>
         <div className="bg-white rounded-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
           <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between z-10">
             <h3 className="text-xl font-bold text-gray-900">{document ? 'Редактировать договор-заявку' : 'Создать договор-заявку'}</h3>
@@ -236,6 +247,10 @@ const ContractApplicationModal = ({ isOpen, onClose, document, onSaved }: Contra
                 setSearchCustomer={setSearchCustomer}
                 showCustomerDropdown={showCustomerDropdown}
                 setShowCustomerDropdown={setShowCustomerDropdown}
+                searchCarrier={searchCarrier}
+                setSearchCarrier={setSearchCarrier}
+                showCarrierDropdown={showCarrierDropdown}
+                setShowCarrierDropdown={setShowCarrierDropdown}
                 customers={customers}
               />
 

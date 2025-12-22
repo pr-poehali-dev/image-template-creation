@@ -3,13 +3,18 @@ interface ContractApplicationHeaderSectionProps {
     number: string;
     date: string;
     customerId: string;
+    carrierId: string;
   };
   setFormData: (data: any) => void;
   searchCustomer: string;
   setSearchCustomer: (value: string) => void;
   showCustomerDropdown: boolean;
   setShowCustomerDropdown: (show: boolean) => void;
-  customers: Array<{id: number, company_name: string, prefix: string, is_seller: boolean}>;
+  searchCarrier: string;
+  setSearchCarrier: (value: string) => void;
+  showCarrierDropdown: boolean;
+  setShowCarrierDropdown: (show: boolean) => void;
+  customers: Array<{id: number, company_name: string, prefix: string, is_seller: boolean, is_carrier: boolean}>;
 }
 
 const ContractApplicationHeaderSection = ({
@@ -19,6 +24,10 @@ const ContractApplicationHeaderSection = ({
   setSearchCustomer,
   showCustomerDropdown,
   setShowCustomerDropdown,
+  searchCarrier,
+  setSearchCarrier,
+  showCarrierDropdown,
+  setShowCarrierDropdown,
   customers
 }: ContractApplicationHeaderSectionProps) => {
   return (
@@ -51,7 +60,7 @@ const ContractApplicationHeaderSection = ({
 
       <div className="relative">
         <label className="block text-sm font-medium text-gray-900 mb-2">
-          Контрагент (Продавец) <span className="text-red-500">*</span>
+          Заказчик <span className="text-red-500">*</span>
         </label>
         <input
           type="text"
@@ -87,7 +96,52 @@ const ContractApplicationHeaderSection = ({
             
             {customers.filter(c => c.is_seller && c.company_name.toLowerCase().includes(searchCustomer.toLowerCase())).length === 0 && (
               <div className="px-3 py-2 text-sm text-gray-500">
-                Нет подходящих продавцов
+                Нет подходящих заказчиков
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      <div className="relative">
+        <label className="block text-sm font-medium text-gray-900 mb-2">
+          Перевозчик <span className="text-red-500">*</span>
+        </label>
+        <input
+          type="text"
+          value={searchCarrier}
+          onChange={(e) => {
+            setSearchCarrier(e.target.value);
+            setShowCarrierDropdown(true);
+          }}
+          onFocus={() => setShowCarrierDropdown(true)}
+          onBlur={() => setTimeout(() => setShowCarrierDropdown(false), 200)}
+          placeholder="Введите название или выберите из списка"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+        />
+        
+        {showCarrierDropdown && (
+          <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+            {customers
+              .filter(c => c.is_carrier && c.company_name.toLowerCase().includes(searchCarrier.toLowerCase()))
+              .map(carrier => (
+                <button
+                  key={carrier.id}
+                  type="button"
+                  onClick={() => {
+                    setSearchCarrier(carrier.company_name);
+                    setFormData({...formData, carrierId: carrier.id.toString()});
+                    setShowCarrierDropdown(false);
+                  }}
+                  className="w-full text-left px-3 py-2 hover:bg-primary/5 transition-colors text-sm text-gray-900"
+                >
+                  {carrier.company_name}
+                </button>
+              ))}
+            
+            {customers.filter(c => c.is_carrier && c.company_name.toLowerCase().includes(searchCarrier.toLowerCase())).length === 0 && (
+              <div className="px-3 py-2 text-sm text-gray-500">
+                Нет подходящих перевозчиков
               </div>
             )}
           </div>
