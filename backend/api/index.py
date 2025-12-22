@@ -140,8 +140,12 @@ def handle_drivers(method: str, event: Dict[str, Any], conn, cursor) -> Dict[str
         }
     
     elif method == 'DELETE':
-        path_params = event.get('pathParams', {})
-        driver_id = path_params.get('id')
+        body = json.loads(event.get('body', '{}'))
+        driver_id = body.get('id')
+        
+        if not driver_id:
+            path_params = event.get('pathParams', {})
+            driver_id = path_params.get('id')
         
         if not driver_id:
             return {

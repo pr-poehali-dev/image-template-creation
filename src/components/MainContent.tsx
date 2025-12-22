@@ -73,6 +73,27 @@ const MainContent = ({
       setLoadingDrivers(false);
     }
   };
+
+  const handleDeleteDriver = async (id: number) => {
+    if (!confirm('Удалить этого водителя?')) return;
+    
+    try {
+      const response = await fetch(`https://functions.poehali.dev/7a16d5d7-0e5e-41bc-b0a7-53decbe50532?resource=drivers`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      });
+      
+      if (response.ok) {
+        await loadDrivers();
+      } else {
+        alert('Ошибка удаления водителя');
+      }
+    } catch (error) {
+      console.error('Ошибка удаления:', error);
+      alert('Ошибка удаления водителя');
+    }
+  };
   return (
     <main className="flex-1 overflow-auto flex flex-col bg-white w-full">
       <header className="bg-white border-b border-gray-200 px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex items-center justify-between">
@@ -237,13 +258,18 @@ const MainContent = ({
                           <td className="px-4 py-3 text-sm text-gray-900">{driver.license_series} {driver.license_number}</td>
                           <td className="px-4 py-3">
                             <div className="flex items-center gap-2">
-                              <button className="p-1 hover:bg-gray-100 rounded transition-colors" title="Просмотр">
-                                <Icon name="Eye" size={18} className="text-gray-600" />
-                              </button>
-                              <button className="p-1 hover:bg-gray-100 rounded transition-colors" title="Редактировать">
+                              <button 
+                                onClick={() => setIsDriverModalOpen(true)}
+                                className="p-1 hover:bg-gray-100 rounded transition-colors" 
+                                title="Редактировать"
+                              >
                                 <Icon name="Edit" size={18} className="text-gray-600" />
                               </button>
-                              <button className="p-1 hover:bg-gray-100 rounded transition-colors" title="Удалить">
+                              <button 
+                                onClick={() => handleDeleteDriver(driver.id)}
+                                className="p-1 hover:bg-gray-100 rounded transition-colors" 
+                                title="Удалить"
+                              >
                                 <Icon name="Trash2" size={18} className="text-red-600" />
                               </button>
                             </div>
