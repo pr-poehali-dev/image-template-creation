@@ -4,6 +4,7 @@ import ReferenceDashboard from './ReferenceDashboard';
 import DocumentsDashboard from './DocumentsDashboard';
 import TemplatesDashboard from './TemplatesDashboard';
 import SettingsDashboard from './SettingsDashboard';
+import AIAssistant from './AIAssistant';
 
 interface Driver {
   id: number;
@@ -142,6 +143,8 @@ const MainContent = ({
           <SettingsDashboard onNavigate={setActiveSection} />
         ) : activeSection === 'templates' ? (
           <TemplatesDashboard />
+        ) : activeSection === 'ai-assistant' ? (
+          <AIAssistant />
         ) : activeSection === 'orders' ? (
           <div className="px-4 sm:px-6 lg:px-8 py-6">
           <div className="space-y-4">

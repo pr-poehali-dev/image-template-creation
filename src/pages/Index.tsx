@@ -32,6 +32,7 @@ const menuItems = [
     icon: 'Settings',
     submenu: [
       { id: 'templates', label: 'Шаблоны', icon: 'FileSpreadsheet' },
+      { id: 'ai-assistant', label: 'AI-помощник', icon: 'Bot' },
     ]
   },
 ];
