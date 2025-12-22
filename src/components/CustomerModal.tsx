@@ -39,6 +39,23 @@ const CustomerModal = ({
   const [postalAddress, setPostalAddress] = useState('');
   const [actualAddress, setActualAddress] = useState('');
   const [sameActualAddress, setSameActualAddress] = useState(false);
+  const [addressContacts, setAddressContacts] = useState<{[key: number]: Array<{id: number}>}>({});
+
+  const addContactToAddress = (addressId: number) => {
+    const currentContacts = addressContacts[addressId] || [];
+    const newId = currentContacts.length > 0 ? Math.max(...currentContacts.map(c => c.id)) + 1 : 1;
+    setAddressContacts({
+      ...addressContacts,
+      [addressId]: [...currentContacts, { id: newId }]
+    });
+  };
+
+  const removeContactFromAddress = (addressId: number, contactId: number) => {
+    setAddressContacts({
+      ...addressContacts,
+      [addressId]: (addressContacts[addressId] || []).filter(c => c.id !== contactId)
+    });
+  };
 
   const handleCancel = () => {
     setShowCancelConfirm(true);
@@ -409,27 +426,64 @@ const CustomerModal = ({
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4 mt-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-900 mb-2">
-                        Контактное лицо
+                  <div className="mt-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <label className="block text-sm font-medium text-gray-900">
+                        Контактные лица
                       </label>
-                      <input
-                        type="text"
-                        placeholder="Петров П.П."
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                      />
+                      <button
+                        type="button"
+                        onClick={() => addContactToAddress(address.id)}
+                        className="p-1 hover:bg-primary/10 rounded transition-colors"
+                        title="Добавить контакт"
+                      >
+                        <Icon name="Plus" size={16} className="text-primary" />
+                      </button>
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-900 mb-2">
-                        Телефон
-                      </label>
-                      <input
-                        type="tel"
-                        placeholder="+7 (999) 123-45-67"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                      />
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <input
+                          type="text"
+                          placeholder="Петров П.П."
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                        />
+                      </div>
+                      <div>
+                        <input
+                          type="tel"
+                          placeholder="+7 (999) 123-45-67"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                        />
+                      </div>
                     </div>
+
+                    {(addressContacts[address.id] || []).map((contact) => (
+                      <div key={contact.id} className="grid grid-cols-2 gap-4 mt-2 relative">
+                        <div>
+                          <input
+                            type="text"
+                            placeholder="Иванов И.И."
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                          />
+                        </div>
+                        <div className="relative">
+                          <input
+                            type="tel"
+                            placeholder="+7 (999) 987-65-43"
+                            className="w-full px-3 py-2 pr-9 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removeContactFromAddress(address.id, contact.id)}
+                            className="absolute right-2 top-1/2 -translate-y-1/2 p-1 hover:bg-red-50 rounded transition-colors"
+                            title="Удалить контакт"
+                          >
+                            <Icon name="X" size={14} className="text-red-500" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               ))}
