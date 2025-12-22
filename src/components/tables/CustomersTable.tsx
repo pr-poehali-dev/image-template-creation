@@ -32,7 +32,7 @@ const CustomersTable = ({ refreshCustomers, setEditingCustomer, setIsCustomerMod
 
   const fetchCustomers = async () => {
     setLoading(true);
-    const response = await fetch('https://functions.poehali.dev/5bc88690-cb17-4309-bf18-4a5d04b41edf');
+    const response = await fetch('https://functions.poehali.dev/7a16d5d7-0e5e-41bc-b0a7-53decbe50532?resource=customers');
     const data = await response.json();
     setCustomers(data.customers || []);
     setLoading(false);
@@ -50,7 +50,7 @@ const CustomersTable = ({ refreshCustomers, setEditingCustomer, setIsCustomerMod
   const handleDelete = async (id: number) => {
     if (!confirm('Вы уверены, что хотите удалить этого контрагента?')) return;
     
-    await fetch('https://functions.poehali.dev/5bc88690-cb17-4309-bf18-4a5d04b41edf', {
+    await fetch('https://functions.poehali.dev/7a16d5d7-0e5e-41bc-b0a7-53decbe50532?resource=customers', {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id })

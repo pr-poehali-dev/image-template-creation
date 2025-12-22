@@ -33,6 +33,44 @@
         }
       },
       "bodyMatcher": "partial"
+    },
+    {
+      "name": "Get all customers",
+      "method": "GET",
+      "path": "/?resource=customers",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "customers": []
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Create new customer",
+      "method": "POST",
+      "path": "/?resource=customers",
+      "body": {
+        "company_name": "ООО Тестовая компания",
+        "prefix": "TST",
+        "is_seller": true,
+        "is_buyer": false,
+        "is_carrier": false,
+        "inn": "1234567890",
+        "kpp": "123456789",
+        "ogrn": "1234567890123",
+        "legal_address": "г. Москва, ул. Тестовая, д. 1",
+        "postal_address": "г. Москва, ул. Тестовая, д. 1",
+        "actual_address": "г. Москва, ул. Тестовая, д. 1",
+        "director_name": "Иванов Иван Иванович",
+        "bank_accounts": [],
+        "delivery_addresses": []
+      },
+      "expectedStatus": 201,
+      "expectedBody": {
+        "customer": {
+          "company_name": "string"
+        }
+      },
+      "bodyMatcher": "partial"
     }
   ]
 }

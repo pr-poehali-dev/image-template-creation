@@ -181,6 +181,165 @@ def handle_drivers(method: str, event: Dict[str, Any], conn, cursor) -> Dict[str
             'isBase64Encoded': False
         }
 
+def handle_customers(method: str, event: Dict[str, Any], conn, cursor) -> Dict[str, Any]:
+    if method == 'GET':
+        cursor.execute('''
+            SELECT 
+                id, company_name, prefix, 
+                is_seller, is_buyer, is_carrier,
+                inn, kpp, ogrn,
+                legal_address, postal_address, actual_address,
+                director_name, bank_accounts, delivery_addresses,
+                created_at, updated_at
+            FROM customers_v2
+            ORDER BY company_name
+        ''')
+        customers = cursor.fetchall()
+        result = [dict_to_json(dict(c)) for c in customers]
+        
+        return {
+            'statusCode': 200,
+            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'customers': result}),
+            'isBase64Encoded': False
+        }
+    
+    elif method == 'POST':
+        body = json.loads(event.get('body', '{}'))
+        
+        bank_accounts_json = json.dumps(body.get('bank_accounts', []))
+        delivery_addresses_json = json.dumps(body.get('delivery_addresses', []))
+        
+        cursor.execute('''
+            INSERT INTO customers_v2 
+            (company_name, prefix, is_seller, is_buyer, is_carrier, 
+             inn, kpp, ogrn, legal_address, postal_address, actual_address, director_name,
+             bank_accounts, delivery_addresses)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            RETURNING id, company_name, prefix, is_seller, is_buyer, is_carrier,
+                      inn, kpp, ogrn, legal_address, postal_address, actual_address,
+                      director_name, bank_accounts, delivery_addresses, created_at, updated_at
+        ''', (
+            body.get('company_name'),
+            body.get('prefix'),
+            body.get('is_seller', False),
+            body.get('is_buyer', False),
+            body.get('is_carrier', False),
+            body.get('inn'),
+            body.get('kpp'),
+            body.get('ogrn'),
+            body.get('legal_address'),
+            body.get('postal_address'),
+            body.get('actual_address'),
+            body.get('director_name'),
+            bank_accounts_json,
+            delivery_addresses_json
+        ))
+        
+        customer = cursor.fetchone()
+        conn.commit()
+        
+        return {
+            'statusCode': 201,
+            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'customer': dict_to_json(dict(customer))}),
+            'isBase64Encoded': False
+        }
+    
+    elif method == 'PUT':
+        body = json.loads(event.get('body', '{}'))
+        customer_id = body.get('id')
+        
+        if not customer_id:
+            return {
+                'statusCode': 400,
+                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                'body': json.dumps({'error': 'Customer ID is required'}),
+                'isBase64Encoded': False
+            }
+        
+        bank_accounts_json = json.dumps(body.get('bank_accounts', []))
+        delivery_addresses_json = json.dumps(body.get('delivery_addresses', []))
+        
+        cursor.execute('''
+            UPDATE customers_v2 
+            SET company_name = %s, prefix = %s, 
+                is_seller = %s, is_buyer = %s, is_carrier = %s,
+                inn = %s, kpp = %s, ogrn = %s,
+                legal_address = %s, postal_address = %s, actual_address = %s,
+                director_name = %s, bank_accounts = %s, delivery_addresses = %s,
+                updated_at = CURRENT_TIMESTAMP
+            WHERE id = %s
+            RETURNING id, company_name, prefix, is_seller, is_buyer, is_carrier,
+                      inn, kpp, ogrn, legal_address, postal_address, actual_address,
+                      director_name, bank_accounts, delivery_addresses, created_at, updated_at
+        ''', (
+            body.get('company_name'),
+            body.get('prefix'),
+            body.get('is_seller', False),
+            body.get('is_buyer', False),
+            body.get('is_carrier', False),
+            body.get('inn'),
+            body.get('kpp'),
+            body.get('ogrn'),
+            body.get('legal_address'),
+            body.get('postal_address'),
+            body.get('actual_address'),
+            body.get('director_name'),
+            bank_accounts_json,
+            delivery_addresses_json,
+            customer_id
+        ))
+        
+        customer = cursor.fetchone()
+        conn.commit()
+        
+        if not customer:
+            return {
+                'statusCode': 404,
+                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                'body': json.dumps({'error': 'Customer not found'}),
+                'isBase64Encoded': False
+            }
+        
+        return {
+            'statusCode': 200,
+            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'customer': dict_to_json(dict(customer))}),
+            'isBase64Encoded': False
+        }
+    
+    elif method == 'DELETE':
+        body = json.loads(event.get('body', '{}'))
+        customer_id = body.get('id')
+        
+        if not customer_id:
+            return {
+                'statusCode': 400,
+                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                'body': json.dumps({'error': 'Customer ID is required'}),
+                'isBase64Encoded': False
+            }
+        
+        cursor.execute('DELETE FROM customers_v2 WHERE id = %s RETURNING id', (customer_id,))
+        deleted = cursor.fetchone()
+        conn.commit()
+        
+        if not deleted:
+            return {
+                'statusCode': 404,
+                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                'body': json.dumps({'error': 'Customer not found'}),
+                'isBase64Encoded': False
+            }
+        
+        return {
+            'statusCode': 200,
+            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'message': 'Customer deleted successfully'}),
+            'isBase64Encoded': False
+        }
+
 def handle_templates(method: str, event: Dict[str, Any], conn, cursor) -> Dict[str, Any]:
     if method == 'GET':
         cursor.execute('''
@@ -419,8 +578,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     Маршруты:
     - /drivers - управление водителями
     - /vehicles - управление автомобилями
-    - /counterparties - управление контрагентами
-    - /orders - управление заказами
+    - /customers - управление контрагентами
     - /templates - управление шаблонами PDF
     '''
     method: str = event.get('httpMethod', 'GET')
@@ -448,6 +606,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             return handle_drivers(method, event, conn, cursor)
         elif resource == 'vehicles':
             return handle_vehicles(method, event, conn, cursor)
+        elif resource == 'customers':
+            return handle_customers(method, event, conn, cursor)
         elif resource == 'templates':
             return handle_templates(method, event, conn, cursor)
         else:

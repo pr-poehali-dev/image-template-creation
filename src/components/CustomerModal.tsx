@@ -124,7 +124,7 @@ const CustomerModal = ({
       delivery_addresses: deliveryAddressesData
     };
 
-    await fetch('https://functions.poehali.dev/5bc88690-cb17-4309-bf18-4a5d04b41edf', {
+    await fetch('https://functions.poehali.dev/7a16d5d7-0e5e-41bc-b0a7-53decbe50532?resource=customers', {
       method: customer?.id ? 'PUT' : 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(customerData)
