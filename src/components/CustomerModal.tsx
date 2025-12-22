@@ -34,6 +34,7 @@ const CustomerModal = ({
 }: CustomerModalProps) => {
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
   const [isSeller, setIsSeller] = useState(false);
+  const [isBuyer, setIsBuyer] = useState(false);
 
   const handleCancel = () => {
     setShowCancelConfirm(true);
@@ -133,6 +134,8 @@ const CustomerModal = ({
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
+                    checked={isBuyer}
+                    onChange={(e) => setIsBuyer(e.target.checked)}
                     className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-2 focus:ring-primary"
                   />
                   <span className="text-sm text-gray-900">Покупатель</span>
@@ -318,6 +321,7 @@ const CustomerModal = ({
               </button>
             </div>
 
+            {isBuyer && (
             <div className="border-t border-gray-200 pt-4">
               <div className="flex items-center gap-2 mb-4">
                 <Icon name="MapPin" size={18} className="text-gray-600" />
@@ -394,6 +398,7 @@ const CustomerModal = ({
                 Добавить адрес
               </button>
             </div>
+            )}
           </div>
 
           <ModalFooter onCancel={handleCancel} onSave={handleSave} />
