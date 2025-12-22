@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Icon from '@/components/ui/icon';
 
 interface CompanyInfoSectionProps {
@@ -61,6 +62,44 @@ const CompanyInfoSection = ({
   sameActualAddress,
   setSameActualAddress
 }: CompanyInfoSectionProps) => {
+  const [loading, setLoading] = useState(false);
+
+  const searchByInn = async (innValue: string) => {
+    if (innValue.length < 10) return;
+    
+    setLoading(true);
+    const response = await fetch('https://functions.poehali.dev/7a16d5d7-0e5e-41bc-b0a7-53decbe50532?resource=dadata', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: 'inn', query: innValue })
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      if (data.company_name) setCompanyName(data.company_name);
+      if (data.inn) setInn(data.inn);
+      if (data.kpp) setKpp(data.kpp);
+      if (data.ogrn) setOgrn(data.ogrn);
+      if (data.legal_address) setLegalAddress(data.legal_address);
+      if (data.director_name) setDirectorName(data.director_name);
+    }
+    setLoading(false);
+  };
+
+  const handleCompanyNameChange = async (value: string) => {
+    setCompanyName(value);
+    if (/^\d{10,12}$/.test(value)) {
+      await searchByInn(value);
+    }
+  };
+
+  const handleInnChange = async (value: string) => {
+    setInn(value);
+    if (value.length >= 10) {
+      await searchByInn(value);
+    }
+  };
+
   return (
     <>
       <div className={isSeller ? "grid grid-cols-[1fr_120px] gap-4" : ""}>
@@ -68,13 +107,20 @@ const CompanyInfoSection = ({
           <label className="block text-sm font-medium text-gray-900 mb-2">
             Название компании <span className="text-red-500">*</span>
           </label>
-          <input
-            type="text"
-            value={companyName}
-            onChange={(e) => setCompanyName(e.target.value)}
-            placeholder='ООО "Название компании"'
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-          />
+          <div className="relative">
+            <input
+              type="text"
+              value={companyName}
+              onChange={(e) => handleCompanyNameChange(e.target.value)}
+              placeholder='ООО "Название компании" или ИНН'
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            />
+            {loading && (
+              <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                <Icon name="Loader2" size={18} className="animate-spin text-primary" />
+              </div>
+            )}
+          </div>
         </div>
         {isSeller && (
           <div>
@@ -139,13 +185,20 @@ const CompanyInfoSection = ({
             <label className="block text-sm font-medium text-gray-900 mb-2">
               ИНН
             </label>
-            <input
-              type="text"
-              value={inn}
-              onChange={(e) => setInn(e.target.value)}
-              placeholder="1234567890"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-            />
+            <div className="relative">
+              <input
+                type="text"
+                value={inn}
+                onChange={(e) => handleInnChange(e.target.value)}
+                placeholder="1234567890"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              />
+              {loading && (
+                <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                  <Icon name="Loader2" size={18} className="animate-spin text-primary" />
+                </div>
+              )}
+            </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-900 mb-2">

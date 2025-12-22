@@ -5,6 +5,8 @@ from typing import Dict, Any
 import psycopg2
 from psycopg2.extras import RealDictCursor
 import boto3
+import urllib.request
+import urllib.parse
 
 _db_connection = None
 
@@ -34,6 +36,85 @@ def dict_to_json(data):
     elif isinstance(data, list):
         return [dict_to_json(item) for item in data]
     return serialize_dates(data)
+
+def dadata_request(url: str, query: str) -> Dict[str, Any]:
+    api_key = os.environ.get('DADATA_API_KEY', '')
+    secret_key = os.environ.get('DADATA_SECRET_KEY', '')
+    
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': f'Token {api_key}',
+        'X-Secret': secret_key
+    }
+    
+    data = json.dumps({'query': query}).encode('utf-8')
+    req = urllib.request.Request(url, data=data, headers=headers)
+    
+    with urllib.request.urlopen(req) as response:
+        return json.loads(response.read().decode('utf-8'))
+
+def handle_dadata(method: str, event: Dict[str, Any]) -> Dict[str, Any]:
+    if method != 'POST':
+        return {
+            'statusCode': 405,
+            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'error': 'Method not allowed'}),
+            'isBase64Encoded': False
+        }
+    
+    body = json.loads(event.get('body', '{}'))
+    search_type = body.get('type')
+    query = body.get('query', '')
+    
+    if not query:
+        return {
+            'statusCode': 400,
+            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'error': 'Query is required'}),
+            'isBase64Encoded': False
+        }
+    
+    if search_type == 'inn':
+        result = dadata_request('https://suggestions.dadata.ru/suggestions/api/4_1/rs/findById/party', query)
+        
+        if result.get('suggestions'):
+            org = result['suggestions'][0]['data']
+            return {
+                'statusCode': 200,
+                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                'body': json.dumps({
+                    'company_name': org.get('name', {}).get('short_with_opf', ''),
+                    'inn': org.get('inn', ''),
+                    'kpp': org.get('kpp', ''),
+                    'ogrn': org.get('ogrn', ''),
+                    'legal_address': org.get('address', {}).get('value', ''),
+                    'director_name': org.get('management', {}).get('name', '')
+                }),
+                'isBase64Encoded': False
+            }
+    
+    elif search_type == 'bik':
+        result = dadata_request('https://suggestions.dadata.ru/suggestions/api/4_1/rs/findById/bank', query)
+        
+        if result.get('suggestions'):
+            bank = result['suggestions'][0]['data']
+            return {
+                'statusCode': 200,
+                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                'body': json.dumps({
+                    'bank_name': bank.get('name', {}).get('payment', ''),
+                    'bik': bank.get('bik', ''),
+                    'corr_account': bank.get('correspondent_account', '')
+                }),
+                'isBase64Encoded': False
+            }
+    
+    return {
+        'statusCode': 404,
+        'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+        'body': json.dumps({'error': 'Not found'}),
+        'isBase64Encoded': False
+    }
 
 def handle_drivers(method: str, event: Dict[str, Any], conn, cursor) -> Dict[str, Any]:
     if method == 'GET':
@@ -597,6 +678,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'body': '',
             'isBase64Encoded': False
         }
+    
+    if resource == 'dadata':
+        return handle_dadata(method, event)
     
     conn = get_db_connection()
     cursor = conn.cursor(cursor_factory=RealDictCursor)
