@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Icon from '@/components/ui/icon';
 import ConfirmDialog from './ConfirmDialog';
 import ModalFooter from './ModalFooter';
@@ -54,6 +54,61 @@ const CustomerModal = ({
   const [actualAddress, setActualAddress] = useState(customer?.actual_address || '');
   const [sameActualAddress, setSameActualAddress] = useState(false);
   const [addressContacts, setAddressContacts] = useState<{[key: number]: Array<{id: number}>}>({});
+
+  useEffect(() => {
+    if (customer && isOpen) {
+      setIsSeller(customer.is_seller || false);
+      setIsBuyer(customer.is_buyer || false);
+      setIsCarrier(customer.is_carrier || false);
+      setCompanyName(customer.company_name || '');
+      setPrefix(customer.prefix || '');
+      setInn(customer.inn || '');
+      setKpp(customer.kpp || '');
+      setOgrn(customer.ogrn || '');
+      setDirectorName(customer.director_name || '');
+      setLegalAddress(customer.legal_address || '');
+      setPostalAddress(customer.postal_address || '');
+      setActualAddress(customer.actual_address || '');
+      
+      if (customer.bank_accounts && Array.isArray(customer.bank_accounts)) {
+        const accounts = customer.bank_accounts.map((ba: any, index: number) => ({
+          id: index + 1,
+          bankName: ba.bank_name || '',
+          accountNumber: ba.account_number || '',
+          bik: ba.bik || '',
+          corrAccount: ba.corr_account || ''
+        }));
+        setBankAccounts(accounts);
+      }
+      
+      if (customer.delivery_addresses && Array.isArray(customer.delivery_addresses)) {
+        const addresses = customer.delivery_addresses.map((da: any, index: number) => ({
+          id: index + 1,
+          name: da.name || '',
+          address: da.address || '',
+          contact: da.contacts?.[0]?.contact_name || '',
+          phone: da.contacts?.[0]?.phone || '',
+          isMain: da.is_main || false
+        }));
+        setDeliveryAddresses(addresses);
+      }
+    } else if (!customer && isOpen) {
+      setIsSeller(false);
+      setIsBuyer(false);
+      setIsCarrier(false);
+      setCompanyName('');
+      setPrefix('');
+      setInn('');
+      setKpp('');
+      setOgrn('');
+      setDirectorName('');
+      setLegalAddress('');
+      setPostalAddress('');
+      setActualAddress('');
+      setBankAccounts([]);
+      setDeliveryAddresses([]);
+    }
+  }, [customer, isOpen]);
 
   const addContactToAddress = (addressId: number) => {
     const currentContacts = addressContacts[addressId] || [];
