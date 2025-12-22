@@ -101,32 +101,32 @@ const CustomerModal = ({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-900 mb-3">
+              <label className="block text-sm font-medium text-gray-900 mb-2">
                 Роль <span className="text-red-500">*</span>
               </label>
-              <div className="grid grid-cols-2 gap-3">
-                <label className="flex items-center gap-2 cursor-pointer p-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+              <div className="flex gap-4 flex-wrap">
+                <label className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
                     className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-2 focus:ring-primary"
                   />
                   <span className="text-sm text-gray-900">Продавец</span>
                 </label>
-                <label className="flex items-center gap-2 cursor-pointer p-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                <label className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
                     className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-2 focus:ring-primary"
                   />
                   <span className="text-sm text-gray-900">Покупатель</span>
                 </label>
-                <label className="flex items-center gap-2 cursor-pointer p-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                <label className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
                     className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-2 focus:ring-primary"
                   />
                   <span className="text-sm text-gray-900">Перевозчик</span>
                 </label>
-                <label className="flex items-center gap-2 cursor-pointer p-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                <label className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
                     className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-2 focus:ring-primary"
