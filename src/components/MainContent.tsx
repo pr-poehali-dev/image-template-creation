@@ -37,6 +37,7 @@ interface MainContentProps {
   setActiveSection: (section: string) => void;
   setIsMobileMenuOpen: (open: boolean) => void;
   setIsDriverModalOpen: (open: boolean) => void;
+  setEditingDriver: (driver: any) => void;
   setIsVehicleModalOpen: (open: boolean) => void;
   setIsCustomerModalOpen: (open: boolean) => void;
   setIsOrderModalOpen: (open: boolean) => void;
@@ -48,6 +49,7 @@ const MainContent = ({
   setActiveSection,
   setIsMobileMenuOpen,
   setIsDriverModalOpen,
+  setEditingDriver,
   setIsVehicleModalOpen,
   setIsCustomerModalOpen,
   setIsOrderModalOpen
@@ -259,7 +261,10 @@ const MainContent = ({
                           <td className="px-4 py-3">
                             <div className="flex items-center gap-2">
                               <button 
-                                onClick={() => setIsDriverModalOpen(true)}
+                                onClick={() => {
+                                  setEditingDriver(driver);
+                                  setIsDriverModalOpen(true);
+                                }}
                                 className="p-1 hover:bg-gray-100 rounded transition-colors" 
                                 title="Редактировать"
                               >

@@ -5,6 +5,7 @@ import OrderModal from './OrderModal';
 
 interface ModalsProps {
   isDriverModalOpen: boolean;
+  editingDriver?: any;
   isVehicleModalOpen: boolean;
   isCustomerModalOpen: boolean;
   isOrderModalOpen: boolean;
@@ -12,6 +13,7 @@ interface ModalsProps {
   deliveryAddresses: Array<{id: number, name: string, address: string, contact: string, phone: string, isMain: boolean}>;
   bankAccounts: Array<{id: number, bankName: string, accountNumber: string, bik: string, corrAccount: string}>;
   setIsDriverModalOpen: (open: boolean) => void;
+  setEditingDriver?: (driver: any) => void;
   setIsVehicleModalOpen: (open: boolean) => void;
   setIsCustomerModalOpen: (open: boolean) => void;
   setIsOrderModalOpen: (open: boolean) => void;
@@ -26,6 +28,7 @@ interface ModalsProps {
 
 const Modals = ({
   isDriverModalOpen,
+  editingDriver,
   isVehicleModalOpen,
   isCustomerModalOpen,
   isOrderModalOpen,
@@ -33,6 +36,7 @@ const Modals = ({
   deliveryAddresses,
   bankAccounts,
   setIsDriverModalOpen,
+  setEditingDriver,
   setIsVehicleModalOpen,
   setIsCustomerModalOpen,
   setIsOrderModalOpen,
@@ -48,7 +52,11 @@ const Modals = ({
     <>
       <DriverModal 
         isOpen={isDriverModalOpen}
-        onClose={() => setIsDriverModalOpen(false)}
+        driver={editingDriver}
+        onClose={() => {
+          setIsDriverModalOpen(false);
+          if (setEditingDriver) setEditingDriver(null);
+        }}
       />
 
       <VehicleModal 

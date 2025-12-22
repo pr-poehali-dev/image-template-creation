@@ -40,6 +40,7 @@ const Index = () => {
   const [activeSection, setActiveSection] = useState('orders');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDriverModalOpen, setIsDriverModalOpen] = useState(false);
+  const [editingDriver, setEditingDriver] = useState<any>(null);
   const [isVehicleModalOpen, setIsVehicleModalOpen] = useState(false);
   const [isCustomerModalOpen, setIsCustomerModalOpen] = useState(false);
   const [sameAddress, setSameAddress] = useState(false);
@@ -102,6 +103,7 @@ const Index = () => {
         setActiveSection={setActiveSection}
         setIsMobileMenuOpen={setIsMobileMenuOpen}
         setIsDriverModalOpen={setIsDriverModalOpen}
+        setEditingDriver={setEditingDriver}
         setIsVehicleModalOpen={setIsVehicleModalOpen}
         setIsCustomerModalOpen={setIsCustomerModalOpen}
         setIsOrderModalOpen={setIsOrderModalOpen}
@@ -109,6 +111,7 @@ const Index = () => {
 
       <Modals
         isDriverModalOpen={isDriverModalOpen}
+        editingDriver={editingDriver}
         isVehicleModalOpen={isVehicleModalOpen}
         isCustomerModalOpen={isCustomerModalOpen}
         isOrderModalOpen={isOrderModalOpen}
@@ -116,6 +119,7 @@ const Index = () => {
         deliveryAddresses={deliveryAddresses}
         bankAccounts={bankAccounts}
         setIsDriverModalOpen={setIsDriverModalOpen}
+        setEditingDriver={setEditingDriver}
         setIsVehicleModalOpen={setIsVehicleModalOpen}
         setIsCustomerModalOpen={setIsCustomerModalOpen}
         setIsOrderModalOpen={setIsOrderModalOpen}

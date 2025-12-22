@@ -1,4 +1,4 @@
-import { useState, FormEvent } from 'react';
+import { useState, useEffect, FormEvent } from 'react';
 import Icon from '@/components/ui/icon';
 import ConfirmDialog from './ConfirmDialog';
 import ModalFooter from './ModalFooter';
@@ -7,9 +7,10 @@ import RulesInput from './RulesInput';
 interface DriverModalProps {
   isOpen: boolean;
   onClose: () => void;
+  driver?: any;
 }
 
-const DriverModal = ({ isOpen, onClose }: DriverModalProps) => {
+const DriverModal = ({ isOpen, onClose, driver }: DriverModalProps) => {
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
   const [passportIssueDate, setPassportIssueDate] = useState('');
   const [licenseIssueDate, setLicenseIssueDate] = useState('');
@@ -32,6 +33,49 @@ const DriverModal = ({ isOpen, onClose }: DriverModalProps) => {
     licenseIssuedBy: ''
   });
 
+  useEffect(() => {
+    if (driver) {
+      const nameParts = driver.full_name?.split(' ') || ['', '', ''];
+      setFormData({
+        lastName: nameParts[0] || '',
+        firstName: nameParts[1] || '',
+        middleName: nameParts[2] || '',
+        phone: driver.phone || '',
+        passportSeries: driver.passport_series || '',
+        passportNumber: driver.passport_number || '',
+        passportIssuedBy: driver.passport_issued_by || '',
+        passportIssuedDate: driver.passport_issued_date || '',
+        licenseSeries: driver.license_series || '',
+        licenseNumber: driver.license_number || '',
+        licenseIssuedDate: '',
+        licenseIssuedBy: ''
+      });
+      if (driver.passport_series || driver.passport_number) {
+        setShowPassport(true);
+      }
+      if (driver.license_series || driver.license_number) {
+        setShowLicense(true);
+      }
+    } else {
+      setFormData({
+        lastName: '',
+        firstName: '',
+        middleName: '',
+        phone: '',
+        passportSeries: '',
+        passportNumber: '',
+        passportIssuedBy: '',
+        passportIssuedDate: '',
+        licenseSeries: '',
+        licenseNumber: '',
+        licenseIssuedDate: '',
+        licenseIssuedBy: ''
+      });
+      setShowPassport(false);
+      setShowLicense(false);
+    }
+  }, [driver, isOpen]);
+
   const handleCancel = () => {
     setShowCancelConfirm(true);
   };
@@ -47,12 +91,18 @@ const DriverModal = ({ isOpen, onClose }: DriverModalProps) => {
     try {
       const fullName = `${formData.lastName} ${formData.firstName} ${formData.middleName}`.trim();
       
-      const response = await fetch('https://functions.poehali.dev/7a16d5d7-0e5e-41bc-b0a7-53decbe50532?resource=drivers', {
-        method: 'POST',
+      const isEditing = !!driver;
+      const url = isEditing 
+        ? `https://functions.poehali.dev/7a16d5d7-0e5e-41bc-b0a7-53decbe50532?resource=drivers`
+        : 'https://functions.poehali.dev/7a16d5d7-0e5e-41bc-b0a7-53decbe50532?resource=drivers';
+      
+      const response = await fetch(url, {
+        method: isEditing ? 'PUT' : 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
+          ...(isEditing && { id: driver.id }),
           full_name: fullName,
           phone: formData.phone,
           passport_series: formData.passportSeries || null,
@@ -61,7 +111,7 @@ const DriverModal = ({ isOpen, onClose }: DriverModalProps) => {
           passport_issued_date: formData.passportIssuedDate || null,
           license_series: formData.licenseSeries || null,
           license_number: formData.licenseNumber || null,
-          license_category: formData.licenseCategory || null
+          license_category: null
         })
       });
       
@@ -113,7 +163,7 @@ const DriverModal = ({ isOpen, onClose }: DriverModalProps) => {
       <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
         <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-          <h3 className="text-xl font-bold text-gray-900">Создать</h3>
+          <h3 className="text-xl font-bold text-gray-900">{driver ? 'Редактировать' : 'Создать'}</h3>
           <button 
             onClick={onClose}
             className="p-1 hover:bg-gray-100 rounded transition-colors"
