@@ -221,7 +221,7 @@ const VehicleModal = ({ isOpen, onClose, vehicle, onSaved }: VehicleModalProps) 
                   onChange={(e) => setFormData({...formData, bodyType: e.target.value})}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white"
                 >
-                  <option value="">Выберите тип</option>
+                  <option value="" disabled className="text-gray-400">Выберите тип</option>
                   <option value="tent">Тентованный</option>
                   <option value="ref">Рефрижератор</option>
                   <option value="isoterm">Изотермический</option>
