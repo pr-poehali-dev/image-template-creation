@@ -55,7 +55,10 @@ export default function ReferenceDashboard({ onNavigate }: ReferenceDashboardPro
             
             <h3 className="text-xl font-bold text-gray-900 mb-2">{card.title}</h3>
             <p className="text-gray-600 text-sm mb-3">{card.description}</p>
-            <p className="text-sm font-medium text-primary">{card.count}</p>
+            <div className="flex items-center gap-2 text-primary">
+              <Icon name="Plus" size={16} />
+              <span className="text-sm font-medium">Добавить</span>
+            </div>
           </button>
         ))}
       </div>
