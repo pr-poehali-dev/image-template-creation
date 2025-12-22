@@ -22,99 +22,25 @@ export interface ReportTemplate {
   pdfMappings?: FieldMapping[];
 }
 
-const STORAGE_KEY = 'poehali_templates';
-const FILE_CACHE_KEY = 'poehali_template_files';
-
-interface StoredTemplate extends Omit<ReportTemplate, 'pdfFile'> {
-  pdfFileId?: string;
-  pdfMappings?: FieldMapping[];
-}
+const API_URL = 'https://functions.poehali.dev/0cc25e88-bc86-4179-a8ed-40a35746f993';
 
 export default function TemplatesDashboard() {
   const [templates, setTemplates] = useState<ReportTemplate[]>([]);
-  const [fileCache] = useState<Map<string, File>>(new Map());
 
-  useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    
-    if (stored) {
-      try {
-        const storedTemplates: StoredTemplate[] = JSON.parse(stored);
-        
-        Promise.all(
-          storedTemplates.map(async (st) => {
-            const template: ReportTemplate = {
-              id: st.id,
-              name: st.name,
-              description: st.description,
-              createdAt: st.createdAt,
-              fields: st.fields,
-              templateType: st.templateType,
-              pdfPreviewUrl: st.pdfPreviewUrl,
-              pdfMappings: st.pdfMappings
-            };
-            
-            if (st.pdfPreviewUrl && st.pdfPreviewUrl.startsWith('data:')) {
-              try {
-                const res = await fetch(st.pdfPreviewUrl);
-                const blob = await res.blob();
-                const file = new File([blob], `${st.name}.pdf`, { type: 'application/pdf' });
-                template.pdfFile = file;
-              } catch (err) {
-                console.error('Ошибка восстановления PDF файла:', err);
-              }
-            }
-            
-            return template;
-          })
-        ).then((restored) => {
-          setTemplates(restored);
-        });
-      } catch (e) {
-        console.error('Ошибка загрузки шаблонов:', e);
-        setTemplates([]);
-      }
-    } else {
-      const defaultTemplate: ReportTemplate = {
-        id: '1',
-        name: 'Договор-заявка на перевозку',
-        description: 'Стандартный шаблон договора-заявки для транспортных компаний',
-        createdAt: '2025-12-21',
-        templateType: 'pdf',
-        fields: [
-          { name: 'number', label: 'Номер договора', type: 'text', required: true, section: 'Основное' },
-          { name: 'date', label: 'Дата', type: 'date', required: true, section: 'Основное' },
-          { name: 'customerName', label: 'Заказчик', type: 'text', required: true, section: 'Заказчик' },
-          { name: 'customerInn', label: 'ИНН', type: 'text', required: true, section: 'Заказчик' },
-          { name: 'carrierName', label: 'Перевозчик', type: 'text', required: true, section: 'Перевозчик' },
-          { name: 'cargoName', label: 'Груз', type: 'text', required: true, section: 'Груз' },
-          { name: 'amount', label: 'Сумма', type: 'text', required: true, section: 'Оплата' }
-        ]
-      };
-      setTemplates([defaultTemplate]);
+  const loadTemplates = async () => {
+    try {
+      const response = await fetch(API_URL);
+      const data = await response.json();
+      setTemplates(data.templates || []);
+    } catch (error) {
+      console.error('Ошибка загрузки шаблонов:', error);
+      setTemplates([]);
     }
-  }, []);
+  };
 
   useEffect(() => {
-    const toStore: StoredTemplate[] = templates.map(t => {
-      const stored: StoredTemplate = {
-        id: t.id,
-        name: t.name,
-        description: t.description,
-        createdAt: t.createdAt,
-        fields: t.fields,
-        templateType: t.templateType,
-        pdfPreviewUrl: t.pdfPreviewUrl,
-        pdfMappings: t.pdfMappings
-      };
-      if (t.pdfFile) {
-        stored.pdfFileId = t.id + '_pdf';
-        fileCache.set(stored.pdfFileId, t.pdfFile);
-      }
-      return stored;
-    });
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(toStore));
-  }, [templates]);
+    loadTemplates();
+  }, []);
 
   const [isLoading, setIsLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -135,13 +61,13 @@ export default function TemplatesDashboard() {
         const base64 = event.target?.result as string;
         const base64Data = base64.split(',')[1];
 
-        const response = await fetch('https://functions.poehali.dev/8eb81581-d997-4368-abcd-924530939855', {
+        const recognizeResponse = await fetch('https://functions.poehali.dev/8eb81581-d997-4368-abcd-924530939855', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ file: base64Data })
         });
 
-        const result = await response.json();
+        const result = await recognizeResponse.json();
         
         if (result.success && result.data) {
           const detectedFields: TemplateField[] = [];
@@ -168,19 +94,24 @@ export default function TemplatesDashboard() {
             }
           });
 
-          const newTemplate: ReportTemplate = {
-            id: Date.now().toString(),
-            name: `Шаблон ${file.name.replace('.pdf', '')}`,
-            description: `Автоматически распознан из PDF`,
-            createdAt: new Date().toISOString().split('T')[0],
-            fields: detectedFields,
-            pdfPreviewUrl: base64,
-            pdfFile: file,
-            templateType: 'pdf'
-          };
+          const saveResponse = await fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              name: `Шаблон ${file.name.replace('.pdf', '')}`,
+              description: 'Автоматически распознан из PDF',
+              templateType: 'pdf',
+              fields: detectedFields,
+              pdfBase64: base64
+            })
+          });
 
-          setTemplates([...templates, newTemplate]);
-          alert(`Шаблон успешно создан! Распознано полей: ${detectedFields.length}`);
+          if (saveResponse.ok) {
+            await loadTemplates();
+            alert(`Шаблон успешно создан! Распознано полей: ${detectedFields.length}`);
+          } else {
+            alert('Ошибка сохранения шаблона');
+          }
         } else {
           alert('Не удалось распознать шаблон из PDF');
         }
@@ -197,9 +128,19 @@ export default function TemplatesDashboard() {
     }
   };
 
-  const handleDeleteTemplate = (id: string) => {
+  const handleDeleteTemplate = async (id: string) => {
     if (confirm('Удалить этот шаблон?')) {
-      setTemplates(templates.filter(t => t.id !== id));
+      try {
+        const response = await fetch(`${API_URL}?id=${id}`, { method: 'DELETE' });
+        if (response.ok) {
+          await loadTemplates();
+        } else {
+          alert('Ошибка удаления шаблона');
+        }
+      } catch (error) {
+        console.error('Ошибка удаления:', error);
+        alert('Ошибка удаления шаблона');
+      }
     }
   };
 
