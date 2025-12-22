@@ -40,32 +40,36 @@ export default function TemplatesDashboard() {
     if (stored) {
       try {
         const storedTemplates: StoredTemplate[] = JSON.parse(stored);
-        const restored: ReportTemplate[] = storedTemplates.map(st => {
-          const template: ReportTemplate = {
-            id: st.id,
-            name: st.name,
-            description: st.description,
-            createdAt: st.createdAt,
-            fields: st.fields,
-            templateType: st.templateType,
-            pdfPreviewUrl: st.pdfPreviewUrl,
-            pdfMappings: st.pdfMappings
-          };
-          
-          if (st.pdfPreviewUrl) {
-            fetch(st.pdfPreviewUrl)
-              .then(res => res.blob())
-              .then(blob => {
+        
+        Promise.all(
+          storedTemplates.map(async (st) => {
+            const template: ReportTemplate = {
+              id: st.id,
+              name: st.name,
+              description: st.description,
+              createdAt: st.createdAt,
+              fields: st.fields,
+              templateType: st.templateType,
+              pdfPreviewUrl: st.pdfPreviewUrl,
+              pdfMappings: st.pdfMappings
+            };
+            
+            if (st.pdfPreviewUrl && st.pdfPreviewUrl.startsWith('data:')) {
+              try {
+                const res = await fetch(st.pdfPreviewUrl);
+                const blob = await res.blob();
                 const file = new File([blob], `${st.name}.pdf`, { type: 'application/pdf' });
-                fileCache.set(st.id, file);
                 template.pdfFile = file;
-              })
-              .catch(err => console.error('Ошибка восстановления PDF файла:', err));
-          }
-          
-          return template;
+              } catch (err) {
+                console.error('Ошибка восстановления PDF файла:', err);
+              }
+            }
+            
+            return template;
+          })
+        ).then((restored) => {
+          setTemplates(restored);
         });
-        setTemplates(restored);
       } catch (e) {
         console.error('Ошибка загрузки шаблонов:', e);
         setTemplates([]);
