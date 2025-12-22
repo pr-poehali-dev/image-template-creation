@@ -28,7 +28,8 @@ const DriverModal = ({ isOpen, onClose }: DriverModalProps) => {
     passportIssuedDate: '',
     licenseSeries: '',
     licenseNumber: '',
-    licenseCategory: ''
+    licenseCategory: '',
+    licenseIssuedBy: ''
   });
 
   const handleCancel = () => {
@@ -82,7 +83,8 @@ const DriverModal = ({ isOpen, onClose }: DriverModalProps) => {
         passportIssuedDate: '',
         licenseSeries: '',
         licenseNumber: '',
-        licenseCategory: ''
+        licenseCategory: '',
+        licenseIssuedBy: ''
       });
       
       onClose();
@@ -315,7 +317,18 @@ const DriverModal = ({ isOpen, onClose }: DriverModalProps) => {
                     </div>
                   </div>
 
-
+                  <div className="mt-4">
+                    <label className="block text-sm font-medium text-gray-900 mb-2">
+                      Кем выдано
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="ГАИ Минской области"
+                      value={formData.licenseIssuedBy}
+                      onChange={(e) => setFormData({...formData, licenseIssuedBy: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    />
+                  </div>
                 </>
               )}
             </div>
