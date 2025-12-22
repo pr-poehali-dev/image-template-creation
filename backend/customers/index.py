@@ -55,44 +55,18 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     if method == 'GET':
         cursor.execute('''
             SELECT 
-                c.id, c.company_name, c.prefix, 
-                c.is_seller, c.is_buyer, c.is_carrier,
-                c.inn, c.kpp, c.ogrn,
-                c.legal_address, c.postal_address, c.actual_address,
-                c.director_name, c.created_at, c.updated_at
-            FROM customers c
-            ORDER BY c.company_name
+                id, company_name, prefix, 
+                is_seller, is_buyer, is_carrier,
+                inn, kpp, ogrn,
+                legal_address, postal_address, actual_address,
+                director_name, bank_accounts, delivery_addresses,
+                created_at, updated_at
+            FROM customers_v2
+            ORDER BY company_name
         ''')
         customers = cursor.fetchall()
         
-        result = []
-        for customer in customers:
-            customer_dict = dict_to_json(dict(customer))
-            
-            cursor.execute('''
-                SELECT id, bank_name, account_number, bik, corr_account
-                FROM customer_bank_accounts
-                WHERE customer_id = %s
-            ''', (customer['id'],))
-            customer_dict['bank_accounts'] = [dict(ba) for ba in cursor.fetchall()]
-            
-            cursor.execute('''
-                SELECT id, name, address, is_main
-                FROM customer_delivery_addresses
-                WHERE customer_id = %s
-            ''', (customer['id'],))
-            delivery_addresses = cursor.fetchall()
-            
-            for addr in delivery_addresses:
-                cursor.execute('''
-                    SELECT id, contact_name, phone
-                    FROM delivery_address_contacts
-                    WHERE delivery_address_id = %s
-                ''', (addr['id'],))
-                addr['contacts'] = [dict(c) for c in cursor.fetchall()]
-            
-            customer_dict['delivery_addresses'] = [dict(da) for da in delivery_addresses]
-            result.append(customer_dict)
+        result = [dict_to_json(dict(c)) for c in customers]
         
         cursor.close()
         return {
@@ -105,14 +79,18 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     elif method == 'POST':
         body = json.loads(event.get('body', '{}'))
         
+        bank_accounts_json = json.dumps(body.get('bank_accounts', []))
+        delivery_addresses_json = json.dumps(body.get('delivery_addresses', []))
+        
         cursor.execute('''
-            INSERT INTO customers 
+            INSERT INTO customers_v2 
             (company_name, prefix, is_seller, is_buyer, is_carrier, 
-             inn, kpp, ogrn, legal_address, postal_address, actual_address, director_name)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+             inn, kpp, ogrn, legal_address, postal_address, actual_address, director_name,
+             bank_accounts, delivery_addresses)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             RETURNING id, company_name, prefix, is_seller, is_buyer, is_carrier,
                       inn, kpp, ogrn, legal_address, postal_address, actual_address,
-                      director_name, created_at, updated_at
+                      director_name, bank_accounts, delivery_addresses, created_at, updated_at
         ''', (
             body.get('company_name'),
             body.get('prefix'),
@@ -125,40 +103,12 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             body.get('legal_address'),
             body.get('postal_address'),
             body.get('actual_address'),
-            body.get('director_name')
+            body.get('director_name'),
+            bank_accounts_json,
+            delivery_addresses_json
         ))
         
         customer = cursor.fetchone()
-        customer_id = customer['id']
-        
-        bank_accounts = body.get('bank_accounts', [])
-        for ba in bank_accounts:
-            cursor.execute('''
-                INSERT INTO customer_bank_accounts 
-                (customer_id, bank_name, account_number, bik, corr_account)
-                VALUES (%s, %s, %s, %s, %s)
-            ''', (customer_id, ba.get('bank_name'), ba.get('account_number'), 
-                  ba.get('bik'), ba.get('corr_account')))
-        
-        delivery_addresses = body.get('delivery_addresses', [])
-        for da in delivery_addresses:
-            cursor.execute('''
-                INSERT INTO customer_delivery_addresses 
-                (customer_id, name, address, is_main)
-                VALUES (%s, %s, %s, %s)
-                RETURNING id
-            ''', (customer_id, da.get('name'), da.get('address'), da.get('is_main', False)))
-            
-            address_id = cursor.fetchone()['id']
-            
-            contacts = da.get('contacts', [])
-            for contact in contacts:
-                cursor.execute('''
-                    INSERT INTO delivery_address_contacts 
-                    (delivery_address_id, contact_name, phone)
-                    VALUES (%s, %s, %s)
-                ''', (address_id, contact.get('contact_name'), contact.get('phone')))
-        
         conn.commit()
         cursor.close()
         
@@ -182,17 +132,21 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'isBase64Encoded': False
             }
         
+        bank_accounts_json = json.dumps(body.get('bank_accounts', []))
+        delivery_addresses_json = json.dumps(body.get('delivery_addresses', []))
+        
         cursor.execute('''
-            UPDATE customers 
+            UPDATE customers_v2 
             SET company_name = %s, prefix = %s, 
                 is_seller = %s, is_buyer = %s, is_carrier = %s,
                 inn = %s, kpp = %s, ogrn = %s,
                 legal_address = %s, postal_address = %s, actual_address = %s,
-                director_name = %s, updated_at = CURRENT_TIMESTAMP
+                director_name = %s, bank_accounts = %s, delivery_addresses = %s,
+                updated_at = CURRENT_TIMESTAMP
             WHERE id = %s
             RETURNING id, company_name, prefix, is_seller, is_buyer, is_carrier,
                       inn, kpp, ogrn, legal_address, postal_address, actual_address,
-                      director_name, created_at, updated_at
+                      director_name, bank_accounts, delivery_addresses, created_at, updated_at
         ''', (
             body.get('company_name'),
             body.get('prefix'),
@@ -206,6 +160,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             body.get('postal_address'),
             body.get('actual_address'),
             body.get('director_name'),
+            bank_accounts_json,
+            delivery_addresses_json,
             customer_id
         ))
         
@@ -220,38 +176,6 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'body': json.dumps({'error': 'Customer not found'}),
                 'isBase64Encoded': False
             }
-        
-        cursor.execute('DELETE FROM customer_bank_accounts WHERE customer_id = %s', (customer_id,))
-        cursor.execute('DELETE FROM delivery_address_contacts WHERE delivery_address_id IN (SELECT id FROM customer_delivery_addresses WHERE customer_id = %s)', (customer_id,))
-        cursor.execute('DELETE FROM customer_delivery_addresses WHERE customer_id = %s', (customer_id,))
-        
-        bank_accounts = body.get('bank_accounts', [])
-        for ba in bank_accounts:
-            cursor.execute('''
-                INSERT INTO customer_bank_accounts 
-                (customer_id, bank_name, account_number, bik, corr_account)
-                VALUES (%s, %s, %s, %s, %s)
-            ''', (customer_id, ba.get('bank_name'), ba.get('account_number'), 
-                  ba.get('bik'), ba.get('corr_account')))
-        
-        delivery_addresses = body.get('delivery_addresses', [])
-        for da in delivery_addresses:
-            cursor.execute('''
-                INSERT INTO customer_delivery_addresses 
-                (customer_id, name, address, is_main)
-                VALUES (%s, %s, %s, %s)
-                RETURNING id
-            ''', (customer_id, da.get('name'), da.get('address'), da.get('is_main', False)))
-            
-            address_id = cursor.fetchone()['id']
-            
-            contacts = da.get('contacts', [])
-            for contact in contacts:
-                cursor.execute('''
-                    INSERT INTO delivery_address_contacts 
-                    (delivery_address_id, contact_name, phone)
-                    VALUES (%s, %s, %s)
-                ''', (address_id, contact.get('contact_name'), contact.get('phone')))
         
         conn.commit()
         cursor.close()
@@ -276,10 +200,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'isBase64Encoded': False
             }
         
-        cursor.execute('DELETE FROM delivery_address_contacts WHERE delivery_address_id IN (SELECT id FROM customer_delivery_addresses WHERE customer_id = %s)', (customer_id,))
-        cursor.execute('DELETE FROM customer_delivery_addresses WHERE customer_id = %s', (customer_id,))
-        cursor.execute('DELETE FROM customer_bank_accounts WHERE customer_id = %s', (customer_id,))
-        cursor.execute('DELETE FROM customers WHERE id = %s RETURNING id', (customer_id,))
+        cursor.execute('DELETE FROM customers_v2 WHERE id = %s RETURNING id', (customer_id,))
         deleted = cursor.fetchone()
         
         conn.commit()
