@@ -62,41 +62,34 @@ const CompanyInfoSection = ({
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-900 mb-2">
+        <label className="block text-sm font-medium text-gray-900 mb-3">
           Роль <span className="text-red-500">*</span>
         </label>
-        <div className="flex gap-4 flex-wrap">
-          <label className="flex items-center gap-2 cursor-pointer">
+        <div className="grid grid-cols-3 gap-3">
+          <label className="relative flex items-center gap-3 cursor-pointer p-3 border-2 border-gray-200 rounded-lg hover:border-primary/50 transition-all group">
             <input
               type="checkbox"
               checked={isSeller}
               onChange={(e) => setIsSeller(e.target.checked)}
-              className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-2 focus:ring-primary"
+              className="w-5 h-5 text-primary border-gray-300 rounded focus:ring-2 focus:ring-primary"
             />
-            <span className="text-sm text-gray-900">Продавец</span>
+            <span className="text-sm font-medium text-gray-900 group-hover:text-primary transition-colors">Продавец</span>
           </label>
-          <label className="flex items-center gap-2 cursor-pointer">
+          <label className="relative flex items-center gap-3 cursor-pointer p-3 border-2 border-gray-200 rounded-lg hover:border-primary/50 transition-all group">
             <input
               type="checkbox"
               checked={isBuyer}
               onChange={(e) => setIsBuyer(e.target.checked)}
-              className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-2 focus:ring-primary"
+              className="w-5 h-5 text-primary border-gray-300 rounded focus:ring-2 focus:ring-primary"
             />
-            <span className="text-sm text-gray-900">Покупатель</span>
+            <span className="text-sm font-medium text-gray-900 group-hover:text-primary transition-colors">Покупатель</span>
           </label>
-          <label className="flex items-center gap-2 cursor-pointer">
+          <label className="relative flex items-center gap-3 cursor-pointer p-3 border-2 border-gray-200 rounded-lg hover:border-primary/50 transition-all group">
             <input
               type="checkbox"
-              className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-2 focus:ring-primary"
+              className="w-5 h-5 text-primary border-gray-300 rounded focus:ring-2 focus:ring-primary"
             />
-            <span className="text-sm text-gray-900">Перевозчик</span>
-          </label>
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="checkbox"
-              className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-2 focus:ring-primary"
-            />
-            <span className="text-sm text-gray-900">Экспедитор</span>
+            <span className="text-sm font-medium text-gray-900 group-hover:text-primary transition-colors">Перевозчик</span>
           </label>
         </div>
       </div>
