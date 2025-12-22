@@ -14,6 +14,9 @@ const VehicleModal = ({ isOpen, onClose, vehicle, onSaved }: VehicleModalProps) 
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
   const [loading, setLoading] = useState(false);
   const [drivers, setDrivers] = useState<Array<{id: number, full_name: string}>>([]);
+  const [customers, setCustomers] = useState<Array<{id: number, company_name: string, is_carrier: boolean}>>([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [showDropdown, setShowDropdown] = useState(false);
   
   const [formData, setFormData] = useState({
     brand: '',
@@ -27,6 +30,7 @@ const VehicleModal = ({ isOpen, onClose, vehicle, onSaved }: VehicleModalProps) 
   useEffect(() => {
     if (isOpen) {
       loadDrivers();
+      loadCustomers();
     }
   }, [isOpen]);
 
@@ -40,6 +44,7 @@ const VehicleModal = ({ isOpen, onClose, vehicle, onSaved }: VehicleModalProps) 
         transportCompany: vehicle.transport_company || '',
         driverId: vehicle.driver_id?.toString() || ''
       });
+      setSearchTerm(vehicle.transport_company || '');
     } else {
       setFormData({
         brand: '',
@@ -49,6 +54,7 @@ const VehicleModal = ({ isOpen, onClose, vehicle, onSaved }: VehicleModalProps) 
         transportCompany: '',
         driverId: ''
       });
+      setSearchTerm('');
     }
   }, [vehicle, isOpen]);
 
@@ -62,12 +68,23 @@ const VehicleModal = ({ isOpen, onClose, vehicle, onSaved }: VehicleModalProps) 
     }
   };
 
+  const loadCustomers = async () => {
+    try {
+      const response = await fetch('https://functions.poehali.dev/7a16d5d7-0e5e-41bc-b0a7-53decbe50532?resource=customers');
+      const data = await response.json();
+      setCustomers(data.customers || []);
+    } catch (error) {
+      console.error('Ошибка загрузки контрагентов:', error);
+    }
+  };
+
   const handleCancel = () => {
     setShowCancelConfirm(true);
   };
 
   const confirmCancel = () => {
     setShowCancelConfirm(false);
+    setShowDropdown(false);
     onClose();
   };
 
@@ -110,6 +127,7 @@ const VehicleModal = ({ isOpen, onClose, vehicle, onSaved }: VehicleModalProps) 
       
       setLoading(false);
       
+      setShowDropdown(false);
       onClose();
       if (onSaved) onSaved();
     } catch (error) {
@@ -133,8 +151,8 @@ const VehicleModal = ({ isOpen, onClose, vehicle, onSaved }: VehicleModalProps) 
         onCancel={() => setShowCancelConfirm(false)}
       />
       
-      <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+      <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setShowDropdown(false)}>
+        <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
         <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
           <h3 className="text-xl font-bold text-gray-900">{vehicle ? 'Редактировать автомобиль' : 'Добавить автомобиль'}</h3>
           <button 
@@ -205,17 +223,49 @@ const VehicleModal = ({ isOpen, onClose, vehicle, onSaved }: VehicleModalProps) 
               </div>
             </div>
 
-            <div>
+            <div className="relative">
               <label className="block text-sm font-medium text-gray-900 mb-2">
                 Фирма ТК <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
-                value={formData.transportCompany}
-                onChange={(e) => setFormData({...formData, transportCompany: e.target.value})}
-                placeholder="ТК Логистик"
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setFormData({...formData, transportCompany: e.target.value});
+                  setShowDropdown(true);
+                }}
+                onFocus={() => setShowDropdown(true)}
+                placeholder="Введите название или выберите из списка"
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               />
+              
+              {showDropdown && (
+                <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                  {customers
+                    .filter(c => c.is_carrier && c.company_name.toLowerCase().includes(searchTerm.toLowerCase()))
+                    .map(customer => (
+                      <button
+                        key={customer.id}
+                        type="button"
+                        onClick={() => {
+                          setSearchTerm(customer.company_name);
+                          setFormData({...formData, transportCompany: customer.company_name});
+                          setShowDropdown(false);
+                        }}
+                        className="w-full text-left px-3 py-2 hover:bg-primary/5 transition-colors text-sm"
+                      >
+                        {customer.company_name}
+                      </button>
+                    ))}
+                  
+                  {customers.filter(c => c.is_carrier && c.company_name.toLowerCase().includes(searchTerm.toLowerCase())).length === 0 && (
+                    <div className="px-3 py-2 text-sm text-gray-500">
+                      Нет подходящих перевозчиков
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             <div>
