@@ -115,10 +115,10 @@ const DriverModal = ({ isOpen, onClose }: DriverModalProps) => {
               {!showPassport ? (
                 <button
                   onClick={() => setShowPassport(true)}
-                  className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
+                  className="w-full border-2 border-dashed border-gray-300 rounded-lg py-4 flex items-center justify-center gap-2 text-[#00A6E5] hover:border-[#00A6E5] hover:bg-blue-50 transition-all"
                 >
-                  <Icon name="Plus" size={18} />
-                  <span className="text-sm font-medium">Добавить паспорт</span>
+                  <Icon name="Plus" size={20} />
+                  <span className="font-medium">Добавить паспорт</span>
                 </button>
               ) : (
                 <>
@@ -180,10 +180,10 @@ const DriverModal = ({ isOpen, onClose }: DriverModalProps) => {
               {!showLicense ? (
                 <button
                   onClick={() => setShowLicense(true)}
-                  className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
+                  className="w-full border-2 border-dashed border-gray-300 rounded-lg py-4 flex items-center justify-center gap-2 text-[#00A6E5] hover:border-[#00A6E5] hover:bg-blue-50 transition-all"
                 >
-                  <Icon name="Plus" size={18} />
-                  <span className="text-sm font-medium">Добавить водительское удостоверение</span>
+                  <Icon name="Plus" size={20} />
+                  <span className="font-medium">Добавить водительское удостоверение</span>
                 </button>
               ) : (
                 <>
