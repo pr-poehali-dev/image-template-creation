@@ -100,7 +100,7 @@ const CustomerModal = ({
       
       <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
         <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between z-10">
           <h3 className="text-xl font-bold text-gray-900">Создать</h3>
           <button 
             onClick={handleClose}
@@ -110,7 +110,7 @@ const CustomerModal = ({
           </button>
         </div>
         
-        <div className="p-6">
+        <div className="p-6 relative">
           <div className="space-y-4">
             <div className={isSeller ? "grid grid-cols-[1fr_120px] gap-4" : ""}>
               <div>
