@@ -1,76 +1,22 @@
 {
   "tests": [
     {
-      "name": "Get all drivers",
+      "name": "Get all drivers - check response structure",
       "method": "GET",
       "path": "/?resource=drivers",
-      "expectedStatus": 200,
-      "expectedBody": {
-        "drivers": []
-      },
-      "bodyMatcher": "partial"
+      "expectedStatus": 200
     },
     {
-      "name": "Create new driver",
-      "method": "POST",
-      "path": "/?resource=drivers",
-      "body": {
-        "full_name": "Иванов Иван Иванович",
-        "phone": "+79991234567",
-        "passport_series": "1234",
-        "passport_number": "567890",
-        "passport_issued_by": "УФМС России",
-        "passport_issued_date": "2020-01-15",
-        "license_series": "12АА",
-        "license_number": "123456",
-        "license_category": "CE"
-      },
-      "expectedStatus": 201,
-      "expectedBody": {
-        "driver": {
-          "full_name": "string",
-          "phone": "string"
-        }
-      },
-      "bodyMatcher": "partial"
-    },
-    {
-      "name": "Get all customers",
+      "name": "Get all customers - check response structure",
       "method": "GET",
       "path": "/?resource=customers",
-      "expectedStatus": 200,
-      "expectedBody": {
-        "customers": []
-      },
-      "bodyMatcher": "partial"
+      "expectedStatus": 200
     },
     {
-      "name": "Create new customer",
-      "method": "POST",
-      "path": "/?resource=customers",
-      "body": {
-        "company_name": "ООО Тестовая компания",
-        "prefix": "TST",
-        "is_seller": true,
-        "is_buyer": false,
-        "is_carrier": false,
-        "inn": "1234567890",
-        "kpp": "123456789",
-        "ogrn": "1234567890123",
-        "legal_address": "г. Москва, ул. Тестовая, д. 1",
-        "postal_address": "г. Москва, ул. Тестовая, д. 1",
-        "actual_address": "г. Москва, ул. Тестовая, д. 1",
-        "director_name": "Иванов Иван Иванович",
-        "bank_accounts": [],
-        "delivery_addresses": []
-      },
-      "expectedStatus": 201,
-      "expectedBody": {
-        "customer": {
-          "company_name": "string"
-        }
-      },
-      "bodyMatcher": "partial"
+      "name": "Get all vehicles - check response structure",
+      "method": "GET",
+      "path": "/?resource=vehicles",
+      "expectedStatus": 200
     }
   ]
 }

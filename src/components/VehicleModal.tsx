@@ -243,6 +243,7 @@ const VehicleModal = ({ isOpen, onClose, vehicle, onSaved }: VehicleModalProps) 
                   setShowDropdown(true);
                 }}
                 onFocus={() => setShowDropdown(true)}
+                onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
                 placeholder="Введите название или выберите из списка"
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               />
@@ -287,6 +288,7 @@ const VehicleModal = ({ isOpen, onClose, vehicle, onSaved }: VehicleModalProps) 
                   setShowDriverDropdown(true);
                 }}
                 onFocus={() => setShowDriverDropdown(true)}
+                onBlur={() => setTimeout(() => setShowDriverDropdown(false), 200)}
                 placeholder="Введите ФИО или выберите из списка"
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               />
