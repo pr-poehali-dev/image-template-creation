@@ -90,8 +90,8 @@ const CustomerModal = ({
         
         <div className="p-6">
           <div className="space-y-4">
-            <div className="grid grid-cols-4 gap-4">
-              <div className="col-span-3">
+            <div className={isSeller ? "grid grid-cols-[1fr_120px] gap-4" : ""}>
+              <div>
                 <label className="block text-sm font-medium text-gray-900 mb-2">
                   Название компании <span className="text-red-500">*</span>
                 </label>
@@ -108,9 +108,9 @@ const CustomerModal = ({
                   </label>
                   <input
                     type="text"
-                    placeholder="ПРФ"
-                    maxLength={5}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent uppercase"
+                    placeholder="ABC"
+                    maxLength={3}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent uppercase text-center"
                   />
                 </div>
               )}
