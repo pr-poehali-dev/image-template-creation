@@ -112,6 +112,10 @@ const DriverModal = ({ isOpen, onClose }: DriverModalProps) => {
             </div>
 
             <div className="border-t border-gray-200 pt-4 mb-6">
+              <div className="flex items-center gap-2 mb-3">
+                <Icon name="CreditCard" size={18} className="text-gray-600" />
+                <span className="text-sm font-medium text-gray-600">Паспорт</span>
+              </div>
               {!showPassport ? (
                 <button
                   onClick={() => setShowPassport(true)}
@@ -122,12 +126,10 @@ const DriverModal = ({ isOpen, onClose }: DriverModalProps) => {
                 </button>
               ) : (
                 <>
-                  <div className="flex items-center gap-2 mb-4">
-                    <Icon name="CreditCard" size={18} className="text-gray-600" />
-                    <span className="text-sm font-medium text-gray-600">Паспорт</span>
+                  <div className="flex items-center justify-end mb-4">
                     <button
                       onClick={() => setShowPassport(false)}
-                      className="ml-auto text-gray-400 hover:text-red-600 transition-colors"
+                      className="text-gray-400 hover:text-red-600 transition-colors"
                     >
                       <Icon name="X" size={16} />
                     </button>
@@ -177,6 +179,10 @@ const DriverModal = ({ isOpen, onClose }: DriverModalProps) => {
             </div>
 
             <div className="border-t border-gray-200 pt-4 mb-6">
+              <div className="flex items-center gap-2 mb-3">
+                <Icon name="IdCard" size={18} className="text-gray-600" />
+                <span className="text-sm font-medium text-gray-600">Водительское удостоверение</span>
+              </div>
               {!showLicense ? (
                 <button
                   onClick={() => setShowLicense(true)}
@@ -187,12 +193,10 @@ const DriverModal = ({ isOpen, onClose }: DriverModalProps) => {
                 </button>
               ) : (
                 <>
-                  <div className="flex items-center gap-2 mb-4">
-                    <Icon name="IdCard" size={18} className="text-gray-600" />
-                    <span className="text-sm font-medium text-gray-600">Водительское удостоверение</span>
+                  <div className="flex items-center justify-end mb-4">
                     <button
                       onClick={() => setShowLicense(false)}
-                      className="ml-auto text-gray-400 hover:text-red-600 transition-colors"
+                      className="text-gray-400 hover:text-red-600 transition-colors"
                     >
                       <Icon name="X" size={16} />
                     </button>
