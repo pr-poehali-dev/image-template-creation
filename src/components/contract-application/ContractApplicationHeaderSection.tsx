@@ -4,6 +4,7 @@ interface ContractApplicationHeaderSectionProps {
     date: string;
     customerId: string;
     carrierId: string;
+    isShipper: boolean;
   };
   setFormData: (data: any) => void;
   searchCustomer: string;
@@ -101,6 +102,19 @@ const ContractApplicationHeaderSection = ({
             )}
           </div>
         )}
+      </div>
+
+      <div className="flex items-center gap-2 mt-2">
+        <input
+          type="checkbox"
+          id="isShipper"
+          checked={formData.isShipper}
+          onChange={(e) => setFormData({...formData, isShipper: e.target.checked})}
+          className="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary focus:ring-2"
+        />
+        <label htmlFor="isShipper" className="text-sm text-gray-900 cursor-pointer">
+          Грузоотправитель
+        </label>
       </div>
 
       <div className="relative">
