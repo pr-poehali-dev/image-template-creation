@@ -51,9 +51,18 @@ export default function TemplatesDashboard() {
             pdfPreviewUrl: st.pdfPreviewUrl,
             pdfMappings: st.pdfMappings
           };
-          if (st.pdfFileId && fileCache.has(st.pdfFileId)) {
-            template.pdfFile = fileCache.get(st.pdfFileId);
+          
+          if (st.pdfPreviewUrl) {
+            fetch(st.pdfPreviewUrl)
+              .then(res => res.blob())
+              .then(blob => {
+                const file = new File([blob], `${st.name}.pdf`, { type: 'application/pdf' });
+                fileCache.set(st.id, file);
+                template.pdfFile = file;
+              })
+              .catch(err => console.error('Ошибка восстановления PDF файла:', err));
           }
+          
           return template;
         });
         setTemplates(restored);
@@ -351,26 +360,37 @@ export default function TemplatesDashboard() {
                     <td className="px-4 py-3 text-sm text-gray-900">{template.fields.length}</td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
+                        {(template.pdfFile || template.pdfPreviewUrl) && (
+                          <>
+                            <button 
+                              onClick={() => handleEditTemplate(template)}
+                              className="p-1 hover:bg-gray-100 rounded transition-colors" 
+                              title="Редактор"
+                            >
+                              <Icon name="Edit" size={18} className="text-gray-600" />
+                            </button>
+                            <button 
+                              onClick={() => handlePrintTemplate(template)}
+                              className="p-1 hover:bg-gray-100 rounded transition-colors" 
+                              title="Печать"
+                            >
+                              <Icon name="Printer" size={18} className="text-gray-600" />
+                            </button>
+                            <button 
+                              onClick={() => handleDownloadTemplate(template)}
+                              className="p-1 hover:bg-gray-100 rounded transition-colors" 
+                              title="Скачать"
+                            >
+                              <Icon name="Download" size={18} className="text-gray-600" />
+                            </button>
+                          </>
+                        )}
                         <button 
-                          onClick={() => handleEditTemplate(template)}
+                          onClick={() => handleViewTemplate(template)}
                           className="p-1 hover:bg-gray-100 rounded transition-colors" 
-                          title="Редактор"
+                          title="Просмотр"
                         >
-                          <Icon name="Edit" size={18} className="text-gray-600" />
-                        </button>
-                        <button 
-                          onClick={() => handlePrintTemplate(template)}
-                          className="p-1 hover:bg-gray-100 rounded transition-colors" 
-                          title="Печать"
-                        >
-                          <Icon name="Printer" size={18} className="text-gray-600" />
-                        </button>
-                        <button 
-                          onClick={() => handleDownloadTemplate(template)}
-                          className="p-1 hover:bg-gray-100 rounded transition-colors" 
-                          title="Скачать"
-                        >
-                          <Icon name="Download" size={18} className="text-gray-600" />
+                          <Icon name="Eye" size={18} className="text-gray-600" />
                         </button>
                         <button 
                           onClick={() => handleDeleteTemplate(template.id)}
