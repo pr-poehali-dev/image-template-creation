@@ -4,7 +4,7 @@ import ReferenceDashboard from './ReferenceDashboard';
 import DocumentsDashboard from './DocumentsDashboard';
 import TemplatesDashboard from './TemplatesDashboard';
 import SettingsDashboard from './SettingsDashboard';
-import VehiclesDashboard from './VehiclesDashboard';
+import AIAssistant from './AIAssistant';
 
 interface Driver {
   id: number;
@@ -40,11 +40,9 @@ interface MainContentProps {
   setIsDriverModalOpen: (open: boolean) => void;
   setEditingDriver: (driver: any) => void;
   setIsVehicleModalOpen: (open: boolean) => void;
-  setEditingVehicle: (vehicle: any) => void;
   setIsCustomerModalOpen: (open: boolean) => void;
   setIsOrderModalOpen: (open: boolean) => void;
   refreshDrivers: number;
-  refreshVehicles: number;
 }
 
 const MainContent = ({
@@ -55,11 +53,9 @@ const MainContent = ({
   setIsDriverModalOpen,
   setEditingDriver,
   setIsVehicleModalOpen,
-  setEditingVehicle,
   setIsCustomerModalOpen,
   setIsOrderModalOpen,
-  refreshDrivers,
-  refreshVehicles
+  refreshDrivers
 }: MainContentProps) => {
   const [drivers, setDrivers] = useState<Driver[]>([]);
   const [loadingDrivers, setLoadingDrivers] = useState(false);
@@ -147,6 +143,8 @@ const MainContent = ({
           <SettingsDashboard onNavigate={setActiveSection} />
         ) : activeSection === 'templates' ? (
           <TemplatesDashboard />
+        ) : activeSection === 'ai-assistant' ? (
+          <AIAssistant />
         ) : activeSection === 'orders' ? (
           <div className="px-4 sm:px-6 lg:px-8 py-6">
           <div className="space-y-4">
@@ -296,11 +294,61 @@ const MainContent = ({
           </div>
           </div>
         ) : activeSection === 'vehicles' ? (
-          <VehiclesDashboard 
-            refreshVehicles={refreshVehicles}
-            setIsVehicleModalOpen={setIsVehicleModalOpen}
-            setEditingVehicle={setEditingVehicle}
-          />
+          <div className="px-4 sm:px-6 lg:px-8 py-6">
+          <div className="space-y-4">
+            <div className="relative">
+              <Icon name="Search" size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Поиск автомобиля..."
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              />
+            </div>
+
+            <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-50 border-b border-gray-200">
+                    <tr>
+                      <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">Марка ТС</th>
+                      <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">Номер ТС</th>
+                      <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">Прицеп</th>
+                      <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">Фирма ТК</th>
+                      <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">Действия</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    {[
+                      { brand: 'КамАЗ 5490', number: 'А123БВ77', trailer: 'АВ123477', company: 'ТК Логистик' },
+                      { brand: 'Volvo FH13', number: 'В456ГД77', trailer: 'ГД456777', company: 'ТК Экспресс' },
+                      { brand: 'Scania R450', number: 'С789ЕЖ77', trailer: 'ЕЖ789077', company: 'ТК Транзит' },
+                    ].map((vehicle, index) => (
+                      <tr key={index} className="hover:bg-gray-50 transition-colors">
+                        <td className="px-4 py-3 text-sm text-gray-900">{vehicle.brand}</td>
+                        <td className="px-4 py-3 text-sm text-gray-900">{vehicle.number}</td>
+                        <td className="px-4 py-3 text-sm text-gray-900">{vehicle.trailer}</td>
+                        <td className="px-4 py-3 text-sm text-gray-900">{vehicle.company}</td>
+                        <td className="px-4 py-3">
+                          <div className="flex items-center gap-2">
+                            <button className="p-1 hover:bg-gray-100 rounded transition-colors" title="Просмотр">
+                              <Icon name="Eye" size={18} className="text-gray-600" />
+                            </button>
+                            <button className="p-1 hover:bg-gray-100 rounded transition-colors" title="Редактировать">
+                              <Icon name="Edit" size={18} className="text-gray-600" />
+                            </button>
+                            <button className="p-1 hover:bg-gray-100 rounded transition-colors" title="Удалить">
+                              <Icon name="Trash2" size={18} className="text-red-600" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          </div>
         ) : activeSection === 'customers' ? (
           <div className="px-4 sm:px-6 lg:px-8 py-6">
           <div className="space-y-4">

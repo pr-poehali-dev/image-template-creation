@@ -14,6 +14,15 @@ const SettingsDashboard = ({ onNavigate }: SettingsDashboardProps) => {
       color: 'bg-purple-50',
       iconColor: 'text-purple-600',
       hoverColor: 'hover:bg-purple-100'
+    },
+    {
+      id: 'ai-assistant',
+      title: 'AI-помощник',
+      description: 'Умный помощник для работы с данными',
+      icon: 'Bot',
+      color: 'bg-blue-50',
+      iconColor: 'text-blue-600',
+      hoverColor: 'hover:bg-blue-100'
     }
   ];
 
