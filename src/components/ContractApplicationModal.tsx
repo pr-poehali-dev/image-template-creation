@@ -224,7 +224,7 @@ const ContractApplicationModal = ({ isOpen, onClose, document, onSaved }: Contra
           </div>
           
           <div className="p-6">
-            <div className="space-y-6">
+            <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-900 mb-2">
@@ -235,7 +235,7 @@ const ContractApplicationModal = ({ isOpen, onClose, document, onSaved }: Contra
                     value={formData.number}
                     readOnly
                     placeholder="Выберите контрагента"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-600"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-900"
                   />
                 </div>
                 <div>
@@ -296,7 +296,7 @@ const ContractApplicationModal = ({ isOpen, onClose, document, onSaved }: Contra
                 )}
               </div>
 
-              <div className="border-t border-gray-200 pt-4">
+              <div className="border-t border-gray-200 pt-6">
                 <h4 className="text-sm font-medium text-gray-900 mb-4 flex items-center gap-2">
                   <Icon name="Truck" size={18} className="text-gray-600" />
                   Транспорт и груз
@@ -356,7 +356,7 @@ const ContractApplicationModal = ({ isOpen, onClose, document, onSaved }: Contra
                 </div>
               </div>
 
-              <div className="border-t border-gray-200 pt-4">
+              <div className="border-t border-gray-200 pt-6">
                 <h4 className="text-sm font-medium text-gray-900 mb-4 flex items-center gap-2">
                   <Icon name="MapPin" size={18} className="text-gray-600" />
                   Погрузка
@@ -402,7 +402,7 @@ const ContractApplicationModal = ({ isOpen, onClose, document, onSaved }: Contra
                 </div>
               </div>
 
-              <div className="border-t border-gray-200 pt-4">
+              <div className="border-t border-gray-200 pt-6">
                 <h4 className="text-sm font-medium text-gray-900 mb-4 flex items-center gap-2">
                   <Icon name="MapPinOff" size={18} className="text-gray-600" />
                   Разгрузка
@@ -448,7 +448,7 @@ const ContractApplicationModal = ({ isOpen, onClose, document, onSaved }: Contra
                 </div>
               </div>
 
-              <div className="border-t border-gray-200 pt-4">
+              <div className="border-t border-gray-200 pt-6">
                 <h4 className="text-sm font-medium text-gray-900 mb-4 flex items-center gap-2">
                   <Icon name="Banknote" size={18} className="text-gray-600" />
                   Оплата
@@ -498,7 +498,7 @@ const ContractApplicationModal = ({ isOpen, onClose, document, onSaved }: Contra
                 </div>
               </div>
 
-              <div className="border-t border-gray-200 pt-4">
+              <div className="border-t border-gray-200 pt-6">
                 <h4 className="text-sm font-medium text-gray-900 mb-4 flex items-center gap-2">
                   <Icon name="Users" size={18} className="text-gray-600" />
                   Назначение
