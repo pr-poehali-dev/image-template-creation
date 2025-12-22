@@ -6,8 +6,13 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 import boto3
 
+_db_connection = None
+
 def get_db_connection():
-    return psycopg2.connect(os.environ['DATABASE_URL'])
+    global _db_connection
+    if _db_connection is None or _db_connection.closed:
+        _db_connection = psycopg2.connect(os.environ['DATABASE_URL'])
+    return _db_connection
 
 def get_s3_client():
     return boto3.client('s3',
