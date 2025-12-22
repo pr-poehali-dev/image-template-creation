@@ -35,6 +35,8 @@ const CustomerModal = ({
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
   const [isSeller, setIsSeller] = useState(false);
   const [isBuyer, setIsBuyer] = useState(false);
+  const [legalAddress, setLegalAddress] = useState('');
+  const [postalAddress, setPostalAddress] = useState('');
 
   const handleCancel = () => {
     setShowCancelConfirm(true);
@@ -202,29 +204,37 @@ const CustomerModal = ({
                 </label>
                 <input
                   type="text"
+                  value={legalAddress}
+                  onChange={(e) => setLegalAddress(e.target.value)}
                   placeholder="123456, г. Москва, ул. Примерная, д. 1"
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                 />
               </div>
 
               <div className="mt-4">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={sameAddress}
-                    onChange={(e) => setSameAddress(e.target.checked)}
-                    className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-2 focus:ring-primary"
-                  />
-                  <span className="text-sm text-gray-700">Почтовый адрес совпадает с юридическим</span>
-                </label>
-              </div>
-
-              <div className="mt-4">
-                <label className="block text-sm font-medium text-gray-900 mb-2">
-                  Почтовый адрес
-                </label>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-sm font-medium text-gray-900">
+                    Почтовый адрес
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={sameAddress}
+                      onChange={(e) => {
+                        setSameAddress(e.target.checked);
+                        if (e.target.checked) {
+                          setPostalAddress(legalAddress);
+                        }
+                      }}
+                      className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-2 focus:ring-primary"
+                    />
+                    <span className="text-xs text-gray-600">Совпадает с юридическим</span>
+                  </label>
+                </div>
                 <input
                   type="text"
+                  value={postalAddress}
+                  onChange={(e) => setPostalAddress(e.target.value)}
                   placeholder="123456, г. Москва, ул. Примерная, д. 1"
                   disabled={sameAddress}
                   className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent ${
