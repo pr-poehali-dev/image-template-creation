@@ -7,6 +7,7 @@ interface ModalsProps {
   isDriverModalOpen: boolean;
   editingDriver?: any;
   isVehicleModalOpen: boolean;
+  editingVehicle?: any;
   isCustomerModalOpen: boolean;
   isOrderModalOpen: boolean;
   sameAddress: boolean;
@@ -15,6 +16,7 @@ interface ModalsProps {
   setIsDriverModalOpen: (open: boolean) => void;
   setEditingDriver?: (driver: any) => void;
   setIsVehicleModalOpen: (open: boolean) => void;
+  setEditingVehicle?: (vehicle: any) => void;
   setIsCustomerModalOpen: (open: boolean) => void;
   setIsOrderModalOpen: (open: boolean) => void;
   setSameAddress: (same: boolean) => void;
@@ -25,12 +27,14 @@ interface ModalsProps {
   addBankAccount: () => void;
   removeBankAccount: (id: number) => void;
   onDriverSaved?: () => void;
+  onVehicleSaved?: () => void;
 }
 
 const Modals = ({
   isDriverModalOpen,
   editingDriver,
   isVehicleModalOpen,
+  editingVehicle,
   isCustomerModalOpen,
   isOrderModalOpen,
   sameAddress,
@@ -39,6 +43,7 @@ const Modals = ({
   setIsDriverModalOpen,
   setEditingDriver,
   setIsVehicleModalOpen,
+  setEditingVehicle,
   setIsCustomerModalOpen,
   setIsOrderModalOpen,
   setSameAddress,
@@ -48,7 +53,8 @@ const Modals = ({
   removeDeliveryAddress,
   addBankAccount,
   removeBankAccount,
-  onDriverSaved
+  onDriverSaved,
+  onVehicleSaved
 }: ModalsProps) => {
   return (
     <>
@@ -64,7 +70,12 @@ const Modals = ({
 
       <VehicleModal 
         isOpen={isVehicleModalOpen}
-        onClose={() => setIsVehicleModalOpen(false)}
+        vehicle={editingVehicle}
+        onClose={() => {
+          setIsVehicleModalOpen(false);
+          if (setEditingVehicle) setEditingVehicle(null);
+        }}
+        onSaved={onVehicleSaved}
       />
 
       <CustomerModal 

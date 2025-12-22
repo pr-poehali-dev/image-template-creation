@@ -42,6 +42,7 @@ const Index = () => {
   const [isDriverModalOpen, setIsDriverModalOpen] = useState(false);
   const [editingDriver, setEditingDriver] = useState<any>(null);
   const [isVehicleModalOpen, setIsVehicleModalOpen] = useState(false);
+  const [editingVehicle, setEditingVehicle] = useState<any>(null);
   const [isCustomerModalOpen, setIsCustomerModalOpen] = useState(false);
   const [sameAddress, setSameAddress] = useState(false);
   const [deliveryAddresses, setDeliveryAddresses] = useState<Array<{id: number, name: string, address: string, contact: string, phone: string, isMain: boolean}>>([]);
@@ -51,6 +52,7 @@ const Index = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
   const [refreshDrivers, setRefreshDrivers] = useState(0);
+  const [refreshVehicles, setRefreshVehicles] = useState(0);
   
   const isSubmenuActive = (item: any) => {
     return item.submenu?.some((sub: any) => sub.id === activeSection);
@@ -106,15 +108,18 @@ const Index = () => {
         setIsDriverModalOpen={setIsDriverModalOpen}
         setEditingDriver={setEditingDriver}
         setIsVehicleModalOpen={setIsVehicleModalOpen}
+        setEditingVehicle={setEditingVehicle}
         setIsCustomerModalOpen={setIsCustomerModalOpen}
         setIsOrderModalOpen={setIsOrderModalOpen}
         refreshDrivers={refreshDrivers}
+        refreshVehicles={refreshVehicles}
       />
 
       <Modals
         isDriverModalOpen={isDriverModalOpen}
         editingDriver={editingDriver}
         isVehicleModalOpen={isVehicleModalOpen}
+        editingVehicle={editingVehicle}
         isCustomerModalOpen={isCustomerModalOpen}
         isOrderModalOpen={isOrderModalOpen}
         sameAddress={sameAddress}
@@ -123,6 +128,7 @@ const Index = () => {
         setIsDriverModalOpen={setIsDriverModalOpen}
         setEditingDriver={setEditingDriver}
         setIsVehicleModalOpen={setIsVehicleModalOpen}
+        setEditingVehicle={setEditingVehicle}
         setIsCustomerModalOpen={setIsCustomerModalOpen}
         setIsOrderModalOpen={setIsOrderModalOpen}
         setSameAddress={setSameAddress}
@@ -133,6 +139,7 @@ const Index = () => {
         addBankAccount={addBankAccount}
         removeBankAccount={removeBankAccount}
         onDriverSaved={() => setRefreshDrivers(prev => prev + 1)}
+        onVehicleSaved={() => setRefreshVehicles(prev => prev + 1)}
       />
 
 
