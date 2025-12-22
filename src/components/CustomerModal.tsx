@@ -37,6 +37,8 @@ const CustomerModal = ({
   const [isBuyer, setIsBuyer] = useState(false);
   const [legalAddress, setLegalAddress] = useState('');
   const [postalAddress, setPostalAddress] = useState('');
+  const [actualAddress, setActualAddress] = useState('');
+  const [sameActualAddress, setSameActualAddress] = useState(false);
 
   const handleCancel = () => {
     setShowCancelConfirm(true);
@@ -239,6 +241,38 @@ const CustomerModal = ({
                   disabled={sameAddress}
                   className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent ${
                     sameAddress ? 'bg-gray-50 text-gray-500' : ''
+                  }`}
+                />
+              </div>
+
+              <div className="mt-4">
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-sm font-medium text-gray-900">
+                    Фактический адрес
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={sameActualAddress}
+                      onChange={(e) => {
+                        setSameActualAddress(e.target.checked);
+                        if (e.target.checked) {
+                          setActualAddress(legalAddress);
+                        }
+                      }}
+                      className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-2 focus:ring-primary"
+                    />
+                    <span className="text-xs text-gray-600">Совпадает с юридическим</span>
+                  </label>
+                </div>
+                <input
+                  type="text"
+                  value={actualAddress}
+                  onChange={(e) => setActualAddress(e.target.value)}
+                  placeholder="123456, г. Москва, ул. Примерная, д. 1"
+                  disabled={sameActualAddress}
+                  className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent ${
+                    sameActualAddress ? 'bg-gray-50 text-gray-500' : ''
                   }`}
                 />
               </div>
