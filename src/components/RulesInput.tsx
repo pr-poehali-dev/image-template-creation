@@ -27,7 +27,6 @@ export default function RulesInput({
   iconName
 }: RulesInputProps) {
   const [error, setError] = useState<string>('');
-  const [showError, setShowError] = useState(false);
 
   const isLeapYear = (year: number): boolean => {
     return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
@@ -39,14 +38,14 @@ export default function RulesInput({
     return daysInMonth[month - 1];
   };
 
-  const validateDate = (dateStr: string): { valid: boolean; message: string } => {
+  const validateAndFixDate = (dateStr: string): string => {
     if (!dateStr || dateStr.length < 10) {
-      return { valid: false, message: 'Неполная дата' };
+      return dateStr;
     }
 
     const parts = dateStr.split('-');
     if (parts.length !== 3) {
-      return { valid: false, message: 'Неверный формат даты' };
+      return dateStr;
     }
 
     const day = parseInt(parts[0], 10);
@@ -54,20 +53,23 @@ export default function RulesInput({
     const year = parseInt(parts[2], 10);
 
     if (isNaN(day) || isNaN(month) || isNaN(year)) {
-      return { valid: false, message: 'Неверный ввод даты' };
+      return dateStr;
     }
 
     if (year < 1900 || year > 2100) {
-      return { valid: false, message: 'Год должен быть в диапазоне 1900-2100' };
+      setError('Год должен быть в диапазоне 1900-2100');
+      return '';
     }
 
     if (month < 1 || month > 12) {
-      return { valid: false, message: 'Месяц должен быть от 01 до 12' };
+      setError('Месяц должен быть от 01 до 12');
+      return parts[0] + '---' + parts[2];
     }
 
     const maxDay = getDaysInMonth(month, year);
     if (day < 1 || day > maxDay) {
-      return { valid: false, message: `День должен быть от 01 до ${maxDay} для ${month}-го месяца` };
+      setError(`В ${month}-м месяце ${year} года максимум ${maxDay} дней`);
+      return '';
     }
 
     if (maxDate === 'today') {
@@ -76,48 +78,79 @@ export default function RulesInput({
       today.setHours(23, 59, 59, 999);
       
       if (inputDate > today) {
-        return { valid: false, message: 'Дата не может быть больше сегодняшней' };
+        setError('Дата не может быть больше сегодняшней');
+        return '';
       }
     }
 
-    return { valid: true, message: '' };
+    setError('');
+    return dateStr;
   };
 
-  const formatDateInput = (input: string): string => {
+  const formatDateInput = (input: string, currentValue: string): string => {
     const digits = input.replace(/\D/g, '');
     
-    if (digits.length <= 2) return digits;
-    if (digits.length <= 4) return `${digits.slice(0, 2)}-${digits.slice(2)}`;
-    return `${digits.slice(0, 2)}-${digits.slice(2, 4)}-${digits.slice(4, 8)}`;
+    if (digits.length === 0) return '';
+    
+    if (digits.length <= 2) {
+      const day = parseInt(digits, 10);
+      if (day > 31) {
+        setError('День не может быть больше 31');
+        return '';
+      }
+      return digits;
+    }
+    
+    if (digits.length <= 4) {
+      const day = parseInt(digits.slice(0, 2), 10);
+      const month = parseInt(digits.slice(2), 10);
+      
+      if (day > 31) {
+        setError('День не может быть больше 31');
+        return '';
+      }
+      
+      if (digits.length === 4 && month > 12) {
+        setError('Месяц не может быть больше 12');
+        const parts = currentValue.split('-');
+        return parts[0] ? parts[0] + '-' : '';
+      }
+      
+      return `${digits.slice(0, 2)}-${digits.slice(2)}`;
+    }
+    
+    const formatted = `${digits.slice(0, 2)}-${digits.slice(2, 4)}-${digits.slice(4, 8)}`;
+    
+    if (digits.length === 8) {
+      return validateAndFixDate(formatted);
+    }
+    
+    return formatted;
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     let newValue = e.target.value;
 
     if (type === 'date') {
-      newValue = formatDateInput(e.target.value);
+      newValue = formatDateInput(newValue, value);
     }
 
     onChange(newValue);
-    
-    if (error) setError('');
   };
 
   const handleBlur = (e: FocusEvent<HTMLInputElement>) => {
     const val = e.target.value;
-    if (!val) return;
+    if (!val) {
+      setError('');
+      return;
+    }
 
-    if (type === 'date') {
-      const validation = validateDate(val);
-      if (!validation.valid) {
-        setError(validation.message);
-        setShowError(true);
+    if (type === 'date' && val.length === 10) {
+      const validated = validateAndFixDate(val);
+      if (validated !== val) {
+        onChange(validated);
       }
     }
-  };
-
-  const handleErrorClose = () => {
-    setShowError(false);
   };
 
   const getPlaceholder = () => {
@@ -140,56 +173,33 @@ export default function RulesInput({
   const icon = getIcon();
 
   return (
-    <>
-      {showError && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[70] p-4">
-          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-6">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
-                <Icon name="AlertCircle" size={24} className="text-red-600" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900">Ошибка ввода</h3>
-            </div>
-            
-            <p className="text-gray-600 mb-6 ml-15">{error}</p>
-
-            <div className="flex justify-end">
-              <button
-                onClick={handleErrorClose}
-                className="px-6 py-2.5 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-medium"
-              >
-                OK
-              </button>
-            </div>
-          </div>
-        </div>
+    <div className={className}>
+      {label && (
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          {label} {required && <span className="text-red-600">*</span>}
+        </label>
       )}
-
-      <div className={className}>
-        {label && (
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            {label} {required && <span className="text-red-600">*</span>}
-          </label>
-        )}
-        <div className="relative">
-          <input
-            type="text"
-            value={value}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            placeholder={getPlaceholder()}
-            maxLength={getMaxLength()}
-            className={`w-full px-3 py-2 border ${error ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent ${icon ? 'pr-10' : ''} bg-white`}
+      <div className="relative">
+        <input
+          type="text"
+          value={value}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          placeholder={getPlaceholder()}
+          maxLength={getMaxLength()}
+          className={`w-full px-3 py-2 border ${error ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent ${icon ? 'pr-10' : ''} bg-white`}
+        />
+        {icon && (
+          <Icon 
+            name={icon} 
+            size={18} 
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" 
           />
-          {icon && (
-            <Icon 
-              name={icon} 
-              size={18} 
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" 
-            />
-          )}
-        </div>
+        )}
       </div>
-    </>
+      {error && (
+        <p className="mt-1 text-sm text-red-600">{error}</p>
+      )}
+    </div>
   );
 }
