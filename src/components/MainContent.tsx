@@ -41,6 +41,7 @@ interface MainContentProps {
   setIsVehicleModalOpen: (open: boolean) => void;
   setIsCustomerModalOpen: (open: boolean) => void;
   setIsOrderModalOpen: (open: boolean) => void;
+  refreshDrivers: number;
 }
 
 const MainContent = ({
@@ -52,7 +53,8 @@ const MainContent = ({
   setEditingDriver,
   setIsVehicleModalOpen,
   setIsCustomerModalOpen,
-  setIsOrderModalOpen
+  setIsOrderModalOpen,
+  refreshDrivers
 }: MainContentProps) => {
   const [drivers, setDrivers] = useState<Driver[]>([]);
   const [loadingDrivers, setLoadingDrivers] = useState(false);
@@ -61,7 +63,7 @@ const MainContent = ({
     if (activeSection === 'drivers') {
       loadDrivers();
     }
-  }, [activeSection]);
+  }, [activeSection, refreshDrivers]);
 
   const loadDrivers = async () => {
     setLoadingDrivers(true);

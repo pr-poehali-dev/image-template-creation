@@ -8,9 +8,10 @@ interface DriverModalProps {
   isOpen: boolean;
   onClose: () => void;
   driver?: any;
+  onSaved?: () => void;
 }
 
-const DriverModal = ({ isOpen, onClose, driver }: DriverModalProps) => {
+const DriverModal = ({ isOpen, onClose, driver, onSaved }: DriverModalProps) => {
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
   const [passportIssueDate, setPassportIssueDate] = useState('');
   const [licenseIssueDate, setLicenseIssueDate] = useState('');
@@ -126,7 +127,7 @@ const DriverModal = ({ isOpen, onClose, driver }: DriverModalProps) => {
       setLoading(false);
       
       onClose();
-      window.location.reload();
+      if (onSaved) onSaved();
     } catch (error) {
       console.error('Ошибка при сохранении:', error);
       alert('Не удалось сохранить водителя. Проверьте заполнение всех обязательных полей.');

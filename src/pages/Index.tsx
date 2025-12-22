@@ -50,6 +50,7 @@ const Index = () => {
   const [isDocumentsOpen, setIsDocumentsOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
+  const [refreshDrivers, setRefreshDrivers] = useState(0);
   
   const isSubmenuActive = (item: any) => {
     return item.submenu?.some((sub: any) => sub.id === activeSection);
@@ -107,6 +108,7 @@ const Index = () => {
         setIsVehicleModalOpen={setIsVehicleModalOpen}
         setIsCustomerModalOpen={setIsCustomerModalOpen}
         setIsOrderModalOpen={setIsOrderModalOpen}
+        refreshDrivers={refreshDrivers}
       />
 
       <Modals
@@ -130,6 +132,7 @@ const Index = () => {
         removeDeliveryAddress={removeDeliveryAddress}
         addBankAccount={addBankAccount}
         removeBankAccount={removeBankAccount}
+        onDriverSaved={() => setRefreshDrivers(prev => prev + 1)}
       />
 
 

@@ -24,6 +24,7 @@ interface ModalsProps {
   removeDeliveryAddress: (id: number) => void;
   addBankAccount: () => void;
   removeBankAccount: (id: number) => void;
+  onDriverSaved?: () => void;
 }
 
 const Modals = ({
@@ -46,7 +47,8 @@ const Modals = ({
   addDeliveryAddress,
   removeDeliveryAddress,
   addBankAccount,
-  removeBankAccount
+  removeBankAccount,
+  onDriverSaved
 }: ModalsProps) => {
   return (
     <>
@@ -57,6 +59,7 @@ const Modals = ({
           setIsDriverModalOpen(false);
           if (setEditingDriver) setEditingDriver(null);
         }}
+        onSaved={onDriverSaved}
       />
 
       <VehicleModal 
