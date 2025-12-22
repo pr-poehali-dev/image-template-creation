@@ -301,31 +301,6 @@ const MainContent = ({
             setIsVehicleModalOpen={setIsVehicleModalOpen}
             setEditingVehicle={setEditingVehicle}
           />
-                        <td className="px-4 py-3 text-sm text-gray-900">{vehicle.brand}</td>
-                        <td className="px-4 py-3 text-sm text-gray-900">{vehicle.number}</td>
-                        <td className="px-4 py-3 text-sm text-gray-900">{vehicle.trailer}</td>
-                        <td className="px-4 py-3 text-sm text-gray-900">{vehicle.company}</td>
-                        <td className="px-4 py-3">
-                          <div className="flex items-center gap-2">
-                            <button className="p-1 hover:bg-gray-100 rounded transition-colors" title="Просмотр">
-                              <Icon name="Eye" size={18} className="text-gray-600" />
-                            </button>
-                            <button className="p-1 hover:bg-gray-100 rounded transition-colors" title="Редактировать">
-                              <Icon name="Edit" size={18} className="text-gray-600" />
-                            </button>
-                            <button className="p-1 hover:bg-gray-100 rounded transition-colors" title="Удалить">
-                              <Icon name="Trash2" size={18} className="text-red-600" />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-          </div>
         ) : activeSection === 'customers' ? (
           <div className="px-4 sm:px-6 lg:px-8 py-6">
           <div className="space-y-4">
