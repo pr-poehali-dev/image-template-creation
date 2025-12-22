@@ -30,6 +30,7 @@ interface MainContentProps {
   setIsVehicleModalOpen: (open: boolean) => void;
   setEditingVehicle: (vehicle: any) => void;
   setIsCustomerModalOpen: (open: boolean) => void;
+  setEditingCustomer: (customer: any) => void;
   setIsOrderModalOpen: (open: boolean) => void;
   refreshDrivers: number;
   refreshVehicles: number;
@@ -46,6 +47,7 @@ const MainContent = ({
   setIsVehicleModalOpen,
   setEditingVehicle,
   setIsCustomerModalOpen,
+  setEditingCustomer,
   setIsOrderModalOpen,
   refreshDrivers,
   refreshVehicles,
@@ -112,7 +114,11 @@ const MainContent = ({
             refreshVehicles={refreshVehicles}
           />
         ) : activeSection === 'customers' ? (
-          <CustomersTable refreshCustomers={refreshCustomers} />
+          <CustomersTable 
+            refreshCustomers={refreshCustomers}
+            setEditingCustomer={setEditingCustomer}
+            setIsCustomerModalOpen={setIsCustomerModalOpen}
+          />
         ) : (
           <div className="px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-center h-full">

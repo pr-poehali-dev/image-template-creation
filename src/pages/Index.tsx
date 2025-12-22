@@ -45,6 +45,7 @@ const Index = () => {
   const [isVehicleModalOpen, setIsVehicleModalOpen] = useState(false);
   const [editingVehicle, setEditingVehicle] = useState<any>(null);
   const [isCustomerModalOpen, setIsCustomerModalOpen] = useState(false);
+  const [editingCustomer, setEditingCustomer] = useState<any>(null);
   const [sameAddress, setSameAddress] = useState(false);
   const [deliveryAddresses, setDeliveryAddresses] = useState<Array<{id: number, name: string, address: string, contact: string, phone: string, isMain: boolean}>>([]);
   const [bankAccounts, setBankAccounts] = useState<Array<{id: number, bankName: string, accountNumber: string, bik: string, corrAccount: string}>>([]);
@@ -112,6 +113,7 @@ const Index = () => {
         setIsVehicleModalOpen={setIsVehicleModalOpen}
         setEditingVehicle={setEditingVehicle}
         setIsCustomerModalOpen={setIsCustomerModalOpen}
+        setEditingCustomer={setEditingCustomer}
         setIsOrderModalOpen={setIsOrderModalOpen}
         refreshDrivers={refreshDrivers}
         refreshVehicles={refreshVehicles}
@@ -124,6 +126,7 @@ const Index = () => {
         isVehicleModalOpen={isVehicleModalOpen}
         editingVehicle={editingVehicle}
         isCustomerModalOpen={isCustomerModalOpen}
+        editingCustomer={editingCustomer}
         isOrderModalOpen={isOrderModalOpen}
         sameAddress={sameAddress}
         deliveryAddresses={deliveryAddresses}
@@ -133,6 +136,7 @@ const Index = () => {
         setIsVehicleModalOpen={setIsVehicleModalOpen}
         setEditingVehicle={setEditingVehicle}
         setIsCustomerModalOpen={setIsCustomerModalOpen}
+        setEditingCustomer={setEditingCustomer}
         setIsOrderModalOpen={setIsOrderModalOpen}
         setSameAddress={setSameAddress}
         setDeliveryAddresses={setDeliveryAddresses}

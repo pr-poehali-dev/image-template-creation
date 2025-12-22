@@ -1,10 +1,24 @@
 import Icon from '@/components/ui/icon';
 
 interface CompanyInfoSectionProps {
+  companyName: string;
+  setCompanyName: (value: string) => void;
+  prefix: string;
+  setPrefix: (value: string) => void;
+  inn: string;
+  setInn: (value: string) => void;
+  kpp: string;
+  setKpp: (value: string) => void;
+  ogrn: string;
+  setOgrn: (value: string) => void;
+  directorName: string;
+  setDirectorName: (value: string) => void;
   isSeller: boolean;
   setIsSeller: (value: boolean) => void;
   isBuyer: boolean;
   setIsBuyer: (value: boolean) => void;
+  isCarrier: boolean;
+  setIsCarrier: (value: boolean) => void;
   legalAddress: string;
   setLegalAddress: (value: string) => void;
   postalAddress: string;
@@ -18,10 +32,24 @@ interface CompanyInfoSectionProps {
 }
 
 const CompanyInfoSection = ({
+  companyName,
+  setCompanyName,
+  prefix,
+  setPrefix,
+  inn,
+  setInn,
+  kpp,
+  setKpp,
+  ogrn,
+  setOgrn,
+  directorName,
+  setDirectorName,
   isSeller,
   setIsSeller,
   isBuyer,
   setIsBuyer,
+  isCarrier,
+  setIsCarrier,
   legalAddress,
   setLegalAddress,
   postalAddress,
@@ -42,6 +70,8 @@ const CompanyInfoSection = ({
           </label>
           <input
             type="text"
+            value={companyName}
+            onChange={(e) => setCompanyName(e.target.value)}
             placeholder='ООО "Название компании"'
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
           />
@@ -53,6 +83,8 @@ const CompanyInfoSection = ({
             </label>
             <input
               type="text"
+              value={prefix}
+              onChange={(e) => setPrefix(e.target.value)}
               placeholder="ABC"
               maxLength={3}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent uppercase text-center"
@@ -87,6 +119,8 @@ const CompanyInfoSection = ({
           <label className="relative flex items-center gap-3 cursor-pointer p-3 border-2 border-gray-200 rounded-lg hover:border-primary/50 transition-all group">
             <input
               type="checkbox"
+              checked={isCarrier}
+              onChange={(e) => setIsCarrier(e.target.checked)}
               className="w-5 h-5 text-primary border-gray-300 rounded focus:ring-2 focus:ring-primary"
             />
             <span className="text-sm font-medium text-gray-900 group-hover:text-primary transition-colors">Перевозчик</span>
@@ -107,6 +141,8 @@ const CompanyInfoSection = ({
             </label>
             <input
               type="text"
+              value={inn}
+              onChange={(e) => setInn(e.target.value)}
               placeholder="1234567890"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             />
@@ -117,6 +153,8 @@ const CompanyInfoSection = ({
             </label>
             <input
               type="text"
+              value={kpp}
+              onChange={(e) => setKpp(e.target.value)}
               placeholder="123456789"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             />
@@ -127,6 +165,8 @@ const CompanyInfoSection = ({
             </label>
             <input
               type="text"
+              value={ogrn}
+              onChange={(e) => setOgrn(e.target.value)}
               placeholder="1234567890123"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             />
@@ -216,6 +256,8 @@ const CompanyInfoSection = ({
           </label>
           <input
             type="text"
+            value={directorName}
+            onChange={(e) => setDirectorName(e.target.value)}
             placeholder="Иванов Иван Иванович"
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
           />

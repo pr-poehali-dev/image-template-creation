@@ -9,6 +9,7 @@ interface ModalsProps {
   isVehicleModalOpen: boolean;
   editingVehicle?: any;
   isCustomerModalOpen: boolean;
+  editingCustomer?: any;
   isOrderModalOpen: boolean;
   sameAddress: boolean;
   deliveryAddresses: Array<{id: number, name: string, address: string, contact: string, phone: string, isMain: boolean}>;
@@ -18,6 +19,7 @@ interface ModalsProps {
   setIsVehicleModalOpen: (open: boolean) => void;
   setEditingVehicle?: (vehicle: any) => void;
   setIsCustomerModalOpen: (open: boolean) => void;
+  setEditingCustomer?: (customer: any) => void;
   setIsOrderModalOpen: (open: boolean) => void;
   setSameAddress: (same: boolean) => void;
   setDeliveryAddresses: (addresses: Array<{id: number, name: string, address: string, contact: string, phone: string, isMain: boolean}>) => void;
@@ -37,6 +39,7 @@ const Modals = ({
   isVehicleModalOpen,
   editingVehicle,
   isCustomerModalOpen,
+  editingCustomer,
   isOrderModalOpen,
   sameAddress,
   deliveryAddresses,
@@ -46,6 +49,7 @@ const Modals = ({
   setIsVehicleModalOpen,
   setEditingVehicle,
   setIsCustomerModalOpen,
+  setEditingCustomer,
   setIsOrderModalOpen,
   setSameAddress,
   setDeliveryAddresses,
@@ -82,7 +86,11 @@ const Modals = ({
 
       <CustomerModal 
         isOpen={isCustomerModalOpen}
-        onClose={() => setIsCustomerModalOpen(false)}
+        customer={editingCustomer}
+        onClose={() => {
+          setIsCustomerModalOpen(false);
+          if (setEditingCustomer) setEditingCustomer(null);
+        }}
         sameAddress={sameAddress}
         setSameAddress={setSameAddress}
         deliveryAddresses={deliveryAddresses}

@@ -8,6 +8,7 @@ import DeliveryAddressesSection from './customer/DeliveryAddressesSection';
 
 interface CustomerModalProps {
   isOpen: boolean;
+  customer?: any;
   onClose: () => void;
   sameAddress: boolean;
   setSameAddress: (same: boolean) => void;
@@ -24,6 +25,7 @@ interface CustomerModalProps {
 
 const CustomerModal = ({
   isOpen,
+  customer,
   onClose,
   sameAddress,
   setSameAddress,
@@ -38,11 +40,18 @@ const CustomerModal = ({
   onSaved
 }: CustomerModalProps) => {
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
-  const [isSeller, setIsSeller] = useState(false);
-  const [isBuyer, setIsBuyer] = useState(false);
-  const [legalAddress, setLegalAddress] = useState('');
-  const [postalAddress, setPostalAddress] = useState('');
-  const [actualAddress, setActualAddress] = useState('');
+  const [isSeller, setIsSeller] = useState(customer?.is_seller || false);
+  const [isBuyer, setIsBuyer] = useState(customer?.is_buyer || false);
+  const [isCarrier, setIsCarrier] = useState(customer?.is_carrier || false);
+  const [companyName, setCompanyName] = useState(customer?.company_name || '');
+  const [prefix, setPrefix] = useState(customer?.prefix || '');
+  const [inn, setInn] = useState(customer?.inn || '');
+  const [kpp, setKpp] = useState(customer?.kpp || '');
+  const [ogrn, setOgrn] = useState(customer?.ogrn || '');
+  const [directorName, setDirectorName] = useState(customer?.director_name || '');
+  const [legalAddress, setLegalAddress] = useState(customer?.legal_address || '');
+  const [postalAddress, setPostalAddress] = useState(customer?.postal_address || '');
+  const [actualAddress, setActualAddress] = useState(customer?.actual_address || '');
   const [sameActualAddress, setSameActualAddress] = useState(false);
   const [addressContacts, setAddressContacts] = useState<{[key: number]: Array<{id: number}>}>({});
 
@@ -98,24 +107,25 @@ const CustomerModal = ({
     });
 
     const customerData = {
-      company_name: '',
-      prefix: isSeller ? '' : null,
+      ...(customer?.id && { id: customer.id }),
+      company_name: companyName,
+      prefix: isSeller ? prefix : null,
       is_seller: isSeller,
       is_buyer: isBuyer,
-      is_carrier: false,
-      inn: '',
-      kpp: '',
-      ogrn: '',
+      is_carrier: isCarrier,
+      inn: inn,
+      kpp: kpp,
+      ogrn: ogrn,
       legal_address: legalAddress,
       postal_address: postalAddress,
       actual_address: actualAddress,
-      director_name: '',
+      director_name: directorName,
       bank_accounts: bankAccountsData,
       delivery_addresses: deliveryAddressesData
     };
 
     await fetch('https://functions.poehali.dev/5bc88690-cb17-4309-bf18-4a5d04b41edf', {
-      method: 'POST',
+      method: customer?.id ? 'PUT' : 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(customerData)
     });
@@ -151,7 +161,7 @@ const CustomerModal = ({
       <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
         <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between z-10">
-          <h3 className="text-xl font-bold text-gray-900">Создать</h3>
+          <h3 className="text-xl font-bold text-gray-900">{customer ? 'Редактировать' : 'Создать'}</h3>
           <button 
             onClick={handleClose}
             className="p-1 hover:bg-gray-100 rounded transition-colors"
@@ -163,10 +173,24 @@ const CustomerModal = ({
         <div className="p-6 relative">
           <div className="space-y-4">
             <CompanyInfoSection
+              companyName={companyName}
+              setCompanyName={setCompanyName}
+              prefix={prefix}
+              setPrefix={setPrefix}
+              inn={inn}
+              setInn={setInn}
+              kpp={kpp}
+              setKpp={setKpp}
+              ogrn={ogrn}
+              setOgrn={setOgrn}
+              directorName={directorName}
+              setDirectorName={setDirectorName}
               isSeller={isSeller}
               setIsSeller={setIsSeller}
               isBuyer={isBuyer}
               setIsBuyer={setIsBuyer}
+              isCarrier={isCarrier}
+              setIsCarrier={setIsCarrier}
               legalAddress={legalAddress}
               setLegalAddress={setLegalAddress}
               postalAddress={postalAddress}

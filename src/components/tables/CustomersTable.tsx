@@ -21,9 +21,11 @@ interface Customer {
 
 interface CustomersTableProps {
   refreshCustomers: number;
+  setEditingCustomer: (customer: any) => void;
+  setIsCustomerModalOpen: (open: boolean) => void;
 }
 
-const CustomersTable = ({ refreshCustomers }: CustomersTableProps) => {
+const CustomersTable = ({ refreshCustomers, setEditingCustomer, setIsCustomerModalOpen }: CustomersTableProps) => {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -39,6 +41,11 @@ const CustomersTable = ({ refreshCustomers }: CustomersTableProps) => {
   useEffect(() => {
     fetchCustomers();
   }, [refreshCustomers]);
+
+  const handleEdit = (customer: Customer) => {
+    setEditingCustomer(customer);
+    setIsCustomerModalOpen(true);
+  };
 
   const handleDelete = async (id: number) => {
     if (!confirm('Вы уверены, что хотите удалить этого контрагента?')) return;
@@ -119,10 +126,11 @@ const CustomersTable = ({ refreshCustomers }: CustomersTableProps) => {
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
-                          <button className="p-1 hover:bg-gray-100 rounded transition-colors" title="Просмотр">
-                            <Icon name="Eye" size={18} className="text-gray-600" />
-                          </button>
-                          <button className="p-1 hover:bg-gray-100 rounded transition-colors" title="Редактировать">
+                          <button 
+                            onClick={() => handleEdit(customer)}
+                            className="p-1 hover:bg-gray-100 rounded transition-colors" 
+                            title="Редактировать"
+                          >
                             <Icon name="Edit" size={18} className="text-gray-600" />
                           </button>
                           <button 
