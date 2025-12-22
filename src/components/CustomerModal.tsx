@@ -33,6 +33,7 @@ const CustomerModal = ({
   removeBankAccount
 }: CustomerModalProps) => {
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+  const [isSeller, setIsSeller] = useState(false);
 
   const handleCancel = () => {
     setShowCancelConfirm(true);
@@ -89,15 +90,30 @@ const CustomerModal = ({
         
         <div className="p-6">
           <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-900 mb-2">
-                Название компании <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                placeholder='ООО "Название компании"'
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-              />
+            <div className="grid grid-cols-4 gap-4">
+              <div className="col-span-3">
+                <label className="block text-sm font-medium text-gray-900 mb-2">
+                  Название компании <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder='ООО "Название компании"'
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                />
+              </div>
+              {isSeller && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-900 mb-2">
+                    Префикс
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="ПРФ"
+                    maxLength={5}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent uppercase"
+                  />
+                </div>
+              )}
             </div>
 
             <div>
@@ -108,6 +124,8 @@ const CustomerModal = ({
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
+                    checked={isSeller}
+                    onChange={(e) => setIsSeller(e.target.checked)}
                     className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-2 focus:ring-primary"
                   />
                   <span className="text-sm text-gray-900">Продавец</span>
