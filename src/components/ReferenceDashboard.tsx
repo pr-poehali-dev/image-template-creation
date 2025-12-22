@@ -2,9 +2,10 @@ import Icon from './ui/icon';
 
 interface ReferenceDashboardProps {
   onNavigate: (section: string) => void;
+  setIsDriverModalOpen?: (open: boolean) => void;
 }
 
-export default function ReferenceDashboard({ onNavigate }: ReferenceDashboardProps) {
+export default function ReferenceDashboard({ onNavigate, setIsDriverModalOpen }: ReferenceDashboardProps) {
   const cards = [
     {
       id: 'drivers',
@@ -41,25 +42,34 @@ export default function ReferenceDashboard({ onNavigate }: ReferenceDashboardPro
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {cards.map((card) => (
-          <button
-            key={card.id}
-            onClick={() => onNavigate(card.id)}
-            className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-all hover:border-primary group text-left"
-          >
-            <div className="flex items-start justify-between mb-4">
-              <div className={`w-12 h-12 ${card.color} rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform`}>
-                <Icon name={card.icon} size={24} className="text-white" />
+          <div key={card.id} className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-all hover:border-primary group">
+            <button
+              onClick={() => onNavigate(card.id)}
+              className="w-full text-left"
+            >
+              <div className="flex items-start justify-between mb-4">
+                <div className={`w-12 h-12 ${card.color} rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform`}>
+                  <Icon name={card.icon} size={24} className="text-white" />
+                </div>
+                <Icon name="ArrowRight" size={20} className="text-gray-400 group-hover:text-primary group-hover:translate-x-1 transition-all" />
               </div>
-              <Icon name="ArrowRight" size={20} className="text-gray-400 group-hover:text-primary group-hover:translate-x-1 transition-all" />
-            </div>
+              
+              <h3 className="text-xl font-bold text-gray-900 mb-2">{card.title}</h3>
+              <p className="text-gray-600 text-sm mb-3">{card.description}</p>
+            </button>
             
-            <h3 className="text-xl font-bold text-gray-900 mb-2">{card.title}</h3>
-            <p className="text-gray-600 text-sm mb-3">{card.description}</p>
-            <div className="flex items-center gap-2 text-primary">
+            <button 
+              onClick={() => {
+                if (card.id === 'drivers' && setIsDriverModalOpen) {
+                  setIsDriverModalOpen(true);
+                }
+              }}
+              className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
+            >
               <Icon name="Plus" size={16} />
               <span className="text-sm font-medium">Добавить</span>
-            </div>
-          </button>
+            </button>
+          </div>
         ))}
       </div>
 

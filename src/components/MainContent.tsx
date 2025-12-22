@@ -68,7 +68,10 @@ const MainContent = ({
       </header>
       <div className="flex-1 bg-white">
         {activeSection === 'reference' ? (
-          <ReferenceDashboard onNavigate={setActiveSection} />
+          <ReferenceDashboard 
+            onNavigate={setActiveSection} 
+            setIsDriverModalOpen={setIsDriverModalOpen}
+          />
         ) : activeSection === 'documents' ? (
           <DocumentsDashboard onNavigate={setActiveSection} />
         ) : activeSection === 'settings' ? (
