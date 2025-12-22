@@ -265,7 +265,7 @@ const CustomerModal = ({
               removeBankAccount={removeBankAccount}
             />
 
-            {isBuyer && (
+            {(isBuyer || isSeller) && (
               <DeliveryAddressesSection
                 deliveryAddresses={deliveryAddresses}
                 addDeliveryAddress={addDeliveryAddress}
