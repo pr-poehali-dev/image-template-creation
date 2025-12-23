@@ -549,7 +549,7 @@ def handle_vehicles(method: str, event: Dict[str, Any], conn, cursor) -> Dict[st
 def handle_templates(method: str, event: Dict[str, Any], conn, cursor) -> Dict[str, Any]:
     if method == 'GET':
         cursor.execute('''
-            SELECT id, name, description, pdf_base64, created_at, updated_at
+            SELECT id, name, description, pdf_base64, fields, created_at, updated_at
             FROM report_templates 
             ORDER BY name
         ''')
@@ -566,19 +566,22 @@ def handle_templates(method: str, event: Dict[str, Any], conn, cursor) -> Dict[s
     elif method == 'POST':
         body = json.loads(event.get('body', '{}'))
         
-        pdf_base64 = body.get('pdf_base64', '')
+        pdf_base64 = body.get('pdfBase64') or body.get('pdf_base64', '')
         if not pdf_base64.startswith('data:'):
             if pdf_base64:
                 pdf_base64 = f"data:application/pdf;base64,{pdf_base64}"
         
+        fields_json = json.dumps(body.get('fields', []))
+        
         cursor.execute('''
-            INSERT INTO report_templates (name, description, pdf_base64)
-            VALUES (%s, %s, %s)
-            RETURNING id, name, description, pdf_base64, created_at, updated_at
+            INSERT INTO report_templates (name, description, pdf_base64, fields)
+            VALUES (%s, %s, %s, %s)
+            RETURNING id, name, description, pdf_base64, fields, created_at, updated_at
         ''', (
             body.get('name', 'Новый шаблон'),
             body.get('description', ''),
-            pdf_base64
+            pdf_base64,
+            fields_json
         ))
         
         template = cursor.fetchone()
@@ -654,8 +657,12 @@ def handle_templates(method: str, event: Dict[str, Any], conn, cursor) -> Dict[s
         }
     
     elif method == 'DELETE':
-        body = json.loads(event.get('body', '{}'))
-        template_id = body.get('id')
+        params = event.get('queryStringParameters', {}) or {}
+        template_id = params.get('id')
+        
+        if not template_id:
+            body = json.loads(event.get('body', '{}'))
+            template_id = body.get('id')
         
         if not template_id:
             path_params = event.get('pathParams', {})
