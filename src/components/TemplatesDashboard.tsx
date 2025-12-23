@@ -22,7 +22,7 @@ export interface ReportTemplate {
   pdfMappings?: FieldMapping[];
 }
 
-const API_URL = 'https://functions.poehali.dev/7a16d5d7-0e5e-41bc-b0a7-53decbe50532?resource=templates';
+const API_URL = 'https://functions.poehali.dev/2e7a5a95-53cf-4ff5-a233-02b96099f766';
 
 export default function TemplatesDashboard() {
   const [templates, setTemplates] = useState<ReportTemplate[]>([]);
@@ -61,59 +61,25 @@ export default function TemplatesDashboard() {
         const base64 = event.target?.result as string;
         const base64Data = base64.split(',')[1];
 
-        const recognizeResponse = await fetch('https://functions.poehali.dev/7a16d5d7-0e5e-41bc-b0a7-53decbe50532?resource=pdf-recognize', {
+        const detectedFields: TemplateField[] = [];
+
+        const saveResponse = await fetch(API_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ file: base64Data })
+          body: JSON.stringify({
+            name: `Шаблон ${file.name.replace('.pdf', '')}`,
+            description: 'PDF шаблон',
+            templateType: 'pdf',
+            fields: detectedFields,
+            pdfBase64: base64
+          })
         });
 
-        const result = await recognizeResponse.json();
-        
-        if (result.success && result.data) {
-          const detectedFields: TemplateField[] = [];
-          
-          Object.keys(result.data).forEach((key) => {
-            if (result.data[key]) {
-              let section = 'Основное';
-              if (key.startsWith('customer')) section = 'Заказчик';
-              else if (key.startsWith('carrier')) section = 'Перевозчик';
-              else if (key.startsWith('cargo') || key.startsWith('body') || key.includes('weight') || key.includes('volume')) section = 'Груз';
-              else if (key.startsWith('loading')) section = 'Погрузка';
-              else if (key.startsWith('unloading')) section = 'Разгрузка';
-              else if (key.startsWith('amount') || key.startsWith('payment')) section = 'Оплата';
-              else if (key.startsWith('driver')) section = 'Водитель';
-              else if (key.startsWith('vehicle') || key.startsWith('trailer')) section = 'ТС';
-              
-              detectedFields.push({
-                name: key,
-                label: key,
-                type: key.includes('date') ? 'date' : key.includes('address') || key.includes('conditions') ? 'textarea' : 'text',
-                required: true,
-                section
-              });
-            }
-          });
-
-          const saveResponse = await fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              name: `Шаблон ${file.name.replace('.pdf', '')}`,
-              description: 'Автоматически распознан из PDF',
-              templateType: 'pdf',
-              fields: detectedFields,
-              pdfBase64: base64
-            })
-          });
-
-          if (saveResponse.ok) {
-            await loadTemplates();
-            alert(`Шаблон успешно создан! Распознано полей: ${detectedFields.length}`);
-          } else {
-            alert('Ошибка сохранения шаблона');
-          }
+        if (saveResponse.ok) {
+          await loadTemplates();
+          alert('Шаблон успешно создан!');
         } else {
-          alert('Не удалось распознать шаблон из PDF');
+          alert('Ошибка сохранения шаблона');
         }
       };
       reader.readAsDataURL(file);

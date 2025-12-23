@@ -1,0 +1,31 @@
+{
+  "tests": [
+    {
+      "name": "GET - получение списка шаблонов",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "templates": "array"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "POST - создание шаблона",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "name": "Тестовый шаблон",
+        "description": "Описание теста",
+        "templateType": "pdf",
+        "pdfBase64": "data:application/pdf;base64,test",
+        "fields": []
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}
