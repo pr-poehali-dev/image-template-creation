@@ -61,7 +61,7 @@ export default function TemplatesDashboard() {
         const base64 = event.target?.result as string;
         const base64Data = base64.split(',')[1];
 
-        const recognizeResponse = await fetch('https://functions.poehali.dev/8eb81581-d997-4368-abcd-924530939855', {
+        const recognizeResponse = await fetch('https://functions.poehali.dev/7a16d5d7-0e5e-41bc-b0a7-53decbe50532?resource=pdf-recognize', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ file: base64Data })
