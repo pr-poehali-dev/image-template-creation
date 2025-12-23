@@ -21,9 +21,17 @@ def serialize_dates(obj):
         return obj.isoformat()
     return obj
 
+def snake_to_camel(snake_str):
+    components = snake_str.split('_')
+    return components[0] + ''.join(x.title() for x in components[1:])
+
 def dict_to_json(data):
     if isinstance(data, dict):
-        return {k: serialize_dates(v) for k, v in data.items()}
+        result = {}
+        for k, v in data.items():
+            camel_key = snake_to_camel(k)
+            result[camel_key] = serialize_dates(v)
+        return result
     elif isinstance(data, list):
         return [dict_to_json(item) for item in data]
     return serialize_dates(data)
