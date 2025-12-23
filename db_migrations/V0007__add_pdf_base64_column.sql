@@ -1,0 +1,1 @@
+ALTER TABLE pdf_templates ADD COLUMN IF NOT EXISTS pdf_base64 TEXT;

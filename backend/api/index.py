@@ -424,7 +424,7 @@ def handle_customers(method: str, event: Dict[str, Any], conn, cursor) -> Dict[s
 def handle_templates(method: str, event: Dict[str, Any], conn, cursor) -> Dict[str, Any]:
     if method == 'GET':
         cursor.execute('''
-            SELECT id, name, description, template_type, pdf_url, 
+            SELECT id, name, description, template_type, pdf_base64, 
                    fields, pdf_mappings, created_at, updated_at
             FROM pdf_templates
             ORDER BY created_at DESC
@@ -438,7 +438,7 @@ def handle_templates(method: str, event: Dict[str, Any], conn, cursor) -> Dict[s
                 'name': t['name'],
                 'description': t['description'],
                 'templateType': t['template_type'],
-                'pdfPreviewUrl': t['pdf_url'],
+                'pdfBase64': t['pdf_base64'],
                 'fields': t['fields'],
                 'pdfMappings': t['pdf_mappings'],
                 'createdAt': t['created_at'].strftime('%Y-%m-%d')
@@ -454,33 +454,18 @@ def handle_templates(method: str, event: Dict[str, Any], conn, cursor) -> Dict[s
     elif method == 'POST':
         body = json.loads(event.get('body', '{}'))
         
-        pdf_url = None
-        if body.get('pdfBase64'):
-            s3 = get_s3_client()
-            timestamp = int(os.times().elapsed * 1000)
-            file_key = f"templates/template_{timestamp}.pdf"
-            pdf_data = base64.b64decode(body['pdfBase64'].split(',')[1] if ',' in body['pdfBase64'] else body['pdfBase64'])
-            
-            s3.put_object(
-                Bucket='files',
-                Key=file_key,
-                Body=pdf_data,
-                ContentType='application/pdf',
-                ACL='public-read'
-            )
-            
-            pdf_url = f"https://cdn.poehali.dev/projects/{os.environ['AWS_ACCESS_KEY_ID']}/bucket/{file_key}"
+        pdf_base64 = body.get('pdfBase64', '')
         
         cursor.execute('''
             INSERT INTO pdf_templates 
-            (name, description, template_type, pdf_url, fields, pdf_mappings)
+            (name, description, template_type, pdf_base64, fields, pdf_mappings)
             VALUES (%s, %s, %s, %s, %s, %s)
             RETURNING id, created_at
         ''', (
             body['name'],
             body.get('description', ''),
             body.get('templateType', 'pdf'),
-            pdf_url,
+            pdf_base64,
             json.dumps(body.get('fields', [])),
             json.dumps(body.get('pdfMappings', []))
         ))

@@ -16,7 +16,7 @@ export interface ReportTemplate {
   description: string;
   createdAt: string;
   fields: TemplateField[];
-  pdfPreviewUrl?: string;
+  pdfBase64?: string;
   pdfFile?: File;
   templateType: 'pdf';
   pdfMappings?: FieldMapping[];
@@ -149,7 +149,7 @@ export default function TemplatesDashboard() {
   };
 
   const handlePrintTemplate = (template: ReportTemplate) => {
-    if (template.pdfPreviewUrl) {
+    if (template.pdfBase64) {
       const printWindow = window.open('', '_blank');
       if (printWindow) {
         printWindow.document.write(`
@@ -162,7 +162,7 @@ export default function TemplatesDashboard() {
               </style>
             </head>
             <body>
-              <embed src="${template.pdfPreviewUrl}" type="application/pdf" />
+              <embed src="${template.pdfBase64}" type="application/pdf" />
             </body>
           </html>
         `);
@@ -175,22 +175,20 @@ export default function TemplatesDashboard() {
   };
 
   const handleDownloadTemplate = (template: ReportTemplate) => {
-    if (template.pdfFile) {
-      const url = URL.createObjectURL(template.pdfFile);
+    if (template.pdfBase64) {
       const a = document.createElement('a');
-      a.href = url;
+      a.href = template.pdfBase64;
       a.download = `${template.name}.pdf`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
-      URL.revokeObjectURL(url);
     } else {
       alert('Файл для скачивания недоступен');
     }
   };
 
   const handleEditTemplate = (template: ReportTemplate) => {
-    if (!template.pdfFile && !template.pdfPreviewUrl) {
+    if (!template.pdfBase64) {
       alert('PDF файл недоступен');
       return;
     }
@@ -198,7 +196,7 @@ export default function TemplatesDashboard() {
       id: template.id,
       name: template.name,
       description: template.description,
-      pdfUrl: template.pdfFile || template.pdfPreviewUrl || '',
+      pdfUrl: template.pdfBase64,
       mappings: template.pdfMappings || []
     });
   };
