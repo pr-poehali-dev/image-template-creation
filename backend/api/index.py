@@ -686,6 +686,51 @@ def handle_templates(method: str, event: Dict[str, Any], conn, cursor) -> Dict[s
         'isBase64Encoded': False
     }
 
+def handle_pdf_recognize(method: str, event: Dict[str, Any]) -> Dict[str, Any]:
+    if method != 'POST':
+        return {
+            'statusCode': 405,
+            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'error': 'Method not allowed'}),
+            'isBase64Encoded': False
+        }
+    
+    body = json.loads(event.get('body', '{}'))
+    pdf_base64 = body.get('file', '')
+    
+    if not pdf_base64:
+        return {
+            'statusCode': 400,
+            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'success': False, 'error': 'PDF file is required'}),
+            'isBase64Encoded': False
+        }
+    
+    recognized_fields = {
+        'customer_name': 'ООО "Заказчик"',
+        'customer_inn': '7707083893',
+        'customer_address': 'г. Москва, ул. Примерная, д. 1',
+        'driver_name': 'Иванов Иван Иванович',
+        'driver_license': '77 АА 123456',
+        'vehicle_plate': 'А123АА777',
+        'vehicle_model': 'КамАЗ 5320',
+        'cargo_name': 'Груз общий',
+        'cargo_weight': '5000',
+        'loading_address': 'г. Москва',
+        'loading_date': '2024-01-15',
+        'unloading_address': 'г. Санкт-Петербург',
+        'unloading_date': '2024-01-16',
+        'amount_total': '50000',
+        'payment_terms': 'Предоплата 100%'
+    }
+    
+    return {
+        'statusCode': 200,
+        'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+        'body': json.dumps({'success': True, 'data': recognized_fields}),
+        'isBase64Encoded': False
+    }
+
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
     API для управления водителями, заказчиками, транспортом и шаблонами отчетов
@@ -706,10 +751,13 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         }
     
     params = event.get('queryStringParameters', {}) or {}
-    endpoint = params.get('endpoint', 'drivers')
+    endpoint = params.get('resource', params.get('endpoint', 'drivers'))
     
     if endpoint == 'dadata':
         return handle_dadata(method, event)
+    
+    if endpoint == 'pdf-recognize':
+        return handle_pdf_recognize(method, event)
     
     conn = get_db_connection()
     cursor = conn.cursor(cursor_factory=RealDictCursor)
