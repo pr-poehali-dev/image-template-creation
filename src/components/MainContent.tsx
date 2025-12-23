@@ -1,4 +1,5 @@
 import Icon from '@/components/ui/icon';
+import MainDashboard from './MainDashboard';
 import ReferenceDashboard from './ReferenceDashboard';
 import DocumentsDashboard from './DocumentsDashboard';
 import TemplatesDashboard from './TemplatesDashboard';
@@ -67,7 +68,9 @@ const MainContent = ({
         )}
       </header>
       <div className="flex-1 bg-white">
-        {activeSection === 'reference' ? (
+        {activeSection === 'dashboard' ? (
+          <MainDashboard onNavigate={setActiveSection} />
+        ) : activeSection === 'reference' ? (
           <ReferenceDashboard onNavigate={setActiveSection} />
         ) : activeSection === 'documents' ? (
           <DocumentsDashboard onNavigate={setActiveSection} />

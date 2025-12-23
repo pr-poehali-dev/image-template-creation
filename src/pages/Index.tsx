@@ -4,6 +4,7 @@ import MainContent from '@/components/MainContent';
 import Modals from '@/components/Modals';
 
 const menuItems = [
+  { id: 'dashboard', label: 'Дашборд', icon: 'LayoutDashboard' },
   { 
     id: 'reference', 
     label: 'Справочники', 
@@ -37,7 +38,7 @@ const menuItems = [
 ];
 
 const Index = () => {
-  const [activeSection, setActiveSection] = useState('orders');
+  const [activeSection, setActiveSection] = useState('dashboard');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDriverModalOpen, setIsDriverModalOpen] = useState(false);
   const [editingDriver, setEditingDriver] = useState<any>(null);
