@@ -74,14 +74,20 @@ const Sidebar = ({
                   onClick={() => {
                     if (item.id === 'reference') {
                       setIsReferenceOpen(!isReferenceOpen);
+                      setIsDocumentsOpen(false);
+                      setIsSettingsOpen(false);
                       setActiveSection('reference');
                       setIsMobileMenuOpen(false);
                     } else if (item.id === 'documents') {
                       setIsDocumentsOpen(!isDocumentsOpen);
+                      setIsReferenceOpen(false);
+                      setIsSettingsOpen(false);
                       setActiveSection('documents');
                       setIsMobileMenuOpen(false);
                     } else if (item.id === 'settings') {
                       setIsSettingsOpen(!isSettingsOpen);
+                      setIsReferenceOpen(false);
+                      setIsDocumentsOpen(false);
                       setActiveSection('settings');
                       setIsMobileMenuOpen(false);
                     }
@@ -122,6 +128,9 @@ const Sidebar = ({
               <button
                 onClick={() => {
                   setActiveSection(item.id);
+                  setIsReferenceOpen(false);
+                  setIsDocumentsOpen(false);
+                  setIsSettingsOpen(false);
                   setIsMobileMenuOpen(false);
                 }}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all ${
