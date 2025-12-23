@@ -68,15 +68,6 @@ const MainDashboard = ({ onNavigate }: MainDashboardProps) => {
       color: 'bg-pink-50',
       iconColor: 'text-pink-600',
       hoverColor: 'hover:bg-pink-100'
-    },
-    {
-      id: 'templates',
-      title: 'Шаблоны',
-      description: 'Управление шаблонами документов',
-      icon: 'FileSpreadsheet',
-      color: 'bg-yellow-50',
-      iconColor: 'text-yellow-600',
-      hoverColor: 'hover:bg-yellow-100'
     }
   ];
 
