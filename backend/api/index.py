@@ -457,7 +457,8 @@ def handle_templates(method: str, event: Dict[str, Any], conn, cursor) -> Dict[s
         pdf_url = None
         if body.get('pdfBase64'):
             s3 = get_s3_client()
-            file_key = f"templates/{body['name']}_{int(os.times().elapsed * 1000)}.pdf"
+            timestamp = int(os.times().elapsed * 1000)
+            file_key = f"templates/template_{timestamp}.pdf"
             pdf_data = base64.b64decode(body['pdfBase64'].split(',')[1] if ',' in body['pdfBase64'] else body['pdfBase64'])
             
             s3.put_object(
