@@ -549,7 +549,7 @@ def handle_vehicles(method: str, event: Dict[str, Any], conn, cursor) -> Dict[st
 def handle_templates(method: str, event: Dict[str, Any], conn, cursor) -> Dict[str, Any]:
     if method == 'GET':
         cursor.execute('''
-            SELECT id, name, description, pdf_base64, fields, created_at, updated_at
+            SELECT id, name, description, pdf_base64, fields, pdf_mappings, created_at, updated_at
             FROM report_templates 
             ORDER BY name
         ''')
@@ -572,16 +572,18 @@ def handle_templates(method: str, event: Dict[str, Any], conn, cursor) -> Dict[s
                 pdf_base64 = f"data:application/pdf;base64,{pdf_base64}"
         
         fields_json = json.dumps(body.get('fields', []))
+        mappings_json = json.dumps(body.get('pdfMappings', []))
         
         cursor.execute('''
-            INSERT INTO report_templates (name, description, pdf_base64, fields)
-            VALUES (%s, %s, %s, %s)
-            RETURNING id, name, description, pdf_base64, fields, created_at, updated_at
+            INSERT INTO report_templates (name, description, pdf_base64, fields, pdf_mappings)
+            VALUES (%s, %s, %s, %s, %s)
+            RETURNING id, name, description, pdf_base64, fields, pdf_mappings, created_at, updated_at
         ''', (
             body.get('name', 'Новый шаблон'),
             body.get('description', ''),
             pdf_base64,
-            fields_json
+            fields_json,
+            mappings_json
         ))
         
         template = cursor.fetchone()
@@ -610,31 +612,38 @@ def handle_templates(method: str, event: Dict[str, Any], conn, cursor) -> Dict[s
                 'isBase64Encoded': False
             }
         
-        pdf_base64 = body.get('pdf_base64')
+        pdf_base64 = body.get('pdfBase64')
         if pdf_base64 and not pdf_base64.startswith('data:'):
             pdf_base64 = f"data:application/pdf;base64,{pdf_base64}"
+        
+        mappings_json = json.dumps(body.get('pdfMappings', []))
+        fields_json = json.dumps(body.get('fields', []))
         
         if pdf_base64:
             cursor.execute('''
                 UPDATE report_templates 
-                SET name = %s, description = %s, pdf_base64 = %s, updated_at = CURRENT_TIMESTAMP
+                SET name = %s, description = %s, pdf_base64 = %s, fields = %s, pdf_mappings = %s, updated_at = CURRENT_TIMESTAMP
                 WHERE id = %s
-                RETURNING id, name, description, pdf_base64, created_at, updated_at
+                RETURNING id, name, description, pdf_base64, fields, pdf_mappings, created_at, updated_at
             ''', (
                 body.get('name'),
                 body.get('description'),
                 pdf_base64,
+                fields_json,
+                mappings_json,
                 template_id
             ))
         else:
             cursor.execute('''
                 UPDATE report_templates 
-                SET name = %s, description = %s, updated_at = CURRENT_TIMESTAMP
+                SET name = %s, description = %s, fields = %s, pdf_mappings = %s, updated_at = CURRENT_TIMESTAMP
                 WHERE id = %s
-                RETURNING id, name, description, pdf_base64, created_at, updated_at
+                RETURNING id, name, description, pdf_base64, fields, pdf_mappings, created_at, updated_at
             ''', (
                 body.get('name'),
                 body.get('description'),
+                fields_json,
+                mappings_json,
                 template_id
             ))
         

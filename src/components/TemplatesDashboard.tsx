@@ -207,29 +207,43 @@ export default function TemplatesDashboard() {
 
 
 
-  const handleSaveMappings = (mappings: FieldMapping[], name: string, description: string) => {
+  const handleSaveMappings = async (mappings: FieldMapping[], name: string, description: string) => {
     if (!editingTemplate) return;
     
-    const updatedTemplates = templates.map(t => {
-      if (t.id === editingTemplate.id) {
-        const fields: TemplateField[] = mappings
-          .filter(m => m.dbField)
-          .map(m => ({
-            name: m.dbField,
-            label: m.label || m.selectedText || 'Поле',
-            type: m.fieldType === 'date' ? 'date' : m.fieldType === 'number' ? 'number' : 'text',
-            required: true,
-            section: m.tableName
-          }));
-        
-        return { ...t, name, description, fields, pdfMappings: mappings };
-      }
-      return t;
-    });
+    const fields: TemplateField[] = mappings
+      .filter(m => m.dbField)
+      .map(m => ({
+        name: m.dbField,
+        label: m.label || m.selectedText || 'Поле',
+        type: m.fieldType === 'date' ? 'date' : m.fieldType === 'number' ? 'number' : 'text',
+        required: true,
+        section: m.tableName
+      }));
     
-    setTemplates(updatedTemplates);
-    alert(`Сохранено ${mappings.filter(m => m.dbField).length} полей`);
-    setEditingTemplate(null);
+    try {
+      const response = await fetch(API_URL, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: editingTemplate.id,
+          name,
+          description,
+          fields,
+          pdfMappings: mappings
+        })
+      });
+
+      if (response.ok) {
+        await loadTemplates();
+        alert(`Сохранено ${mappings.filter(m => m.dbField).length} полей`);
+        setEditingTemplate(null);
+      } else {
+        alert('Ошибка сохранения настроек шаблона');
+      }
+    } catch (error) {
+      console.error('Ошибка сохранения:', error);
+      alert('Ошибка сохранения настроек шаблона');
+    }
   };
 
 
