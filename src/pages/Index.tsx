@@ -1,84 +1,25 @@
 import { useState } from 'react';
 import Sidebar from '@/components/Sidebar';
 import MainContent from '@/components/MainContent';
-import Modals from '@/components/Modals';
 
 const menuItems = [
-  { id: 'orders', label: 'Заказы', icon: 'ClipboardList' },
-  { 
-    id: 'reference', 
-    label: 'Справочник', 
-    icon: 'Book',
-    submenu: [
-      { id: 'drivers', label: 'Водители', icon: 'Users' },
-      { id: 'vehicles', label: 'Автомобили', icon: 'Truck' },
-      { id: 'customers', label: 'Контрагенты', icon: 'Contact' },
-    ]
-  },
-  { 
-    id: 'documents', 
-    label: 'Документы', 
-    icon: 'FileText',
-    submenu: [
-      { id: 'contract-application', label: 'Договор-Заявка', icon: 'FileSignature' },
-      { id: 'ttn', label: 'ТТН', icon: 'FileCheck' },
-      { id: 'upd', label: 'УПД', icon: 'FileBarChart' },
-    ]
-  },
-  { id: 'overview', label: 'Обзор', icon: 'Activity' },
   { 
     id: 'settings', 
     label: 'Настройки', 
     icon: 'Settings',
     submenu: [
       { id: 'templates', label: 'Шаблоны', icon: 'FileSpreadsheet' },
-      { id: 'ai-assistant', label: 'AI-помощник', icon: 'Bot' },
     ]
   },
 ];
 
 const Index = () => {
-  const [activeSection, setActiveSection] = useState('orders');
+  const [activeSection, setActiveSection] = useState('templates');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isDriverModalOpen, setIsDriverModalOpen] = useState(false);
-  const [editingDriver, setEditingDriver] = useState<any>(null);
-  const [isVehicleModalOpen, setIsVehicleModalOpen] = useState(false);
-  const [editingVehicle, setEditingVehicle] = useState<any>(null);
-  const [isCustomerModalOpen, setIsCustomerModalOpen] = useState(false);
-  const [editingCustomer, setEditingCustomer] = useState<any>(null);
-  const [sameAddress, setSameAddress] = useState(false);
-  const [deliveryAddresses, setDeliveryAddresses] = useState<Array<{id: number, name: string, address: string, contact: string, phone: string, isMain: boolean}>>([]);
-  const [bankAccounts, setBankAccounts] = useState<Array<{id: number, bankName: string, accountNumber: string, bik: string, corrAccount: string}>>([]);
-  const [isReferenceOpen, setIsReferenceOpen] = useState(false);
-  const [isDocumentsOpen, setIsDocumentsOpen] = useState(false);
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
-  const [refreshDrivers, setRefreshDrivers] = useState(0);
-  const [refreshVehicles, setRefreshVehicles] = useState(0);
-  const [refreshCustomers, setRefreshCustomers] = useState(0);
-  const [isContractApplicationModalOpen, setIsContractApplicationModalOpen] = useState(false);
-  const [editingContractApplication, setEditingContractApplication] = useState<any>(null);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(true);
   
   const isSubmenuActive = (item: any) => {
     return item.submenu?.some((sub: any) => sub.id === activeSection);
-  };
-
-  const addDeliveryAddress = () => {
-    const newId = Math.max(...deliveryAddresses.map(a => a.id), 0) + 1;
-    setDeliveryAddresses([...deliveryAddresses, { id: newId, name: '', address: '', contact: '', phone: '', isMain: false }]);
-  };
-
-  const removeDeliveryAddress = (id: number) => {
-    setDeliveryAddresses(deliveryAddresses.filter(a => a.id !== id));
-  };
-
-  const addBankAccount = () => {
-    const newId = Math.max(...bankAccounts.map(a => a.id), 0) + 1;
-    setBankAccounts([...bankAccounts, { id: newId, bankName: '', accountNumber: '', bik: '', corrAccount: '' }]);
-  };
-
-  const removeBankAccount = (id: number) => {
-    setBankAccounts(bankAccounts.filter(a => a.id !== id));
   };
 
   return (
@@ -87,13 +28,13 @@ const Index = () => {
         menuItems={menuItems}
         activeSection={activeSection}
         isMobileMenuOpen={isMobileMenuOpen}
-        isReferenceOpen={isReferenceOpen}
-        isDocumentsOpen={isDocumentsOpen}
+        isReferenceOpen={false}
+        isDocumentsOpen={false}
         isSettingsOpen={isSettingsOpen}
         setActiveSection={setActiveSection}
         setIsMobileMenuOpen={setIsMobileMenuOpen}
-        setIsReferenceOpen={setIsReferenceOpen}
-        setIsDocumentsOpen={setIsDocumentsOpen}
+        setIsReferenceOpen={() => {}}
+        setIsDocumentsOpen={() => {}}
         setIsSettingsOpen={setIsSettingsOpen}
         isSubmenuActive={isSubmenuActive}
       />
@@ -110,55 +51,7 @@ const Index = () => {
         activeSection={activeSection}
         setActiveSection={setActiveSection}
         setIsMobileMenuOpen={setIsMobileMenuOpen}
-        setIsDriverModalOpen={setIsDriverModalOpen}
-        setEditingDriver={setEditingDriver}
-        setIsVehicleModalOpen={setIsVehicleModalOpen}
-        setEditingVehicle={setEditingVehicle}
-        setIsCustomerModalOpen={setIsCustomerModalOpen}
-        setEditingCustomer={setEditingCustomer}
-        setIsOrderModalOpen={setIsOrderModalOpen}
-        setIsContractApplicationModalOpen={setIsContractApplicationModalOpen}
-        setEditingContractApplication={setEditingContractApplication}
-        refreshDrivers={refreshDrivers}
-        refreshVehicles={refreshVehicles}
-        refreshCustomers={refreshCustomers}
       />
-
-      <Modals
-        isDriverModalOpen={isDriverModalOpen}
-        editingDriver={editingDriver}
-        isVehicleModalOpen={isVehicleModalOpen}
-        editingVehicle={editingVehicle}
-        isCustomerModalOpen={isCustomerModalOpen}
-        editingCustomer={editingCustomer}
-        isOrderModalOpen={isOrderModalOpen}
-        isContractApplicationModalOpen={isContractApplicationModalOpen}
-        editingContractApplication={editingContractApplication}
-        sameAddress={sameAddress}
-        deliveryAddresses={deliveryAddresses}
-        bankAccounts={bankAccounts}
-        setIsDriverModalOpen={setIsDriverModalOpen}
-        setEditingDriver={setEditingDriver}
-        setIsVehicleModalOpen={setIsVehicleModalOpen}
-        setEditingVehicle={setEditingVehicle}
-        setIsCustomerModalOpen={setIsCustomerModalOpen}
-        setEditingCustomer={setEditingCustomer}
-        setIsOrderModalOpen={setIsOrderModalOpen}
-        setIsContractApplicationModalOpen={setIsContractApplicationModalOpen}
-        setEditingContractApplication={setEditingContractApplication}
-        setSameAddress={setSameAddress}
-        setDeliveryAddresses={setDeliveryAddresses}
-        setBankAccounts={setBankAccounts}
-        addDeliveryAddress={addDeliveryAddress}
-        removeDeliveryAddress={removeDeliveryAddress}
-        addBankAccount={addBankAccount}
-        removeBankAccount={removeBankAccount}
-        onDriverSaved={() => setRefreshDrivers(prev => prev + 1)}
-        onVehicleSaved={() => setRefreshVehicles(prev => prev + 1)}
-        onCustomerSaved={() => setRefreshCustomers(prev => prev + 1)}
-      />
-
-
     </div>
   );
 };

@@ -1,1 +1,0 @@
-ALTER TABLE report_templates ADD COLUMN IF NOT EXISTS pdf_mappings JSONB;

@@ -1,14 +1,6 @@
 import Icon from '@/components/ui/icon';
-import ReferenceDashboard from './ReferenceDashboard';
-import DocumentsDashboard from './DocumentsDashboard';
 import TemplatesDashboard from './TemplatesDashboard';
 import SettingsDashboard from './SettingsDashboard';
-import AIAssistant from './AIAssistant';
-import OrdersTable from './tables/OrdersTable';
-import DriversTable from './tables/DriversTable';
-import VehiclesTable from './tables/VehiclesTable';
-import CustomersTable from './tables/CustomersTable';
-import ContractApplicationTable from './tables/ContractApplicationTable';
 
 interface MenuItem {
   id: string;
@@ -26,37 +18,13 @@ interface MainContentProps {
   activeSection: string;
   setActiveSection: (section: string) => void;
   setIsMobileMenuOpen: (open: boolean) => void;
-  setIsDriverModalOpen: (open: boolean) => void;
-  setEditingDriver: (driver: any) => void;
-  setIsVehicleModalOpen: (open: boolean) => void;
-  setEditingVehicle: (vehicle: any) => void;
-  setIsCustomerModalOpen: (open: boolean) => void;
-  setEditingCustomer: (customer: any) => void;
-  setIsOrderModalOpen: (open: boolean) => void;
-  setIsContractApplicationModalOpen?: (open: boolean) => void;
-  setEditingContractApplication?: (doc: any) => void;
-  refreshDrivers: number;
-  refreshVehicles: number;
-  refreshCustomers: number;
 }
 
 const MainContent = ({
   menuItems,
   activeSection,
   setActiveSection,
-  setIsMobileMenuOpen,
-  setIsDriverModalOpen,
-  setEditingDriver,
-  setIsVehicleModalOpen,
-  setEditingVehicle,
-  setIsCustomerModalOpen,
-  setEditingCustomer,
-  setIsOrderModalOpen,
-  setIsContractApplicationModalOpen,
-  setEditingContractApplication,
-  refreshDrivers,
-  refreshVehicles,
-  refreshCustomers
+  setIsMobileMenuOpen
 }: MainContentProps) => {
   return (
     <main className="flex-1 overflow-auto flex flex-col bg-white w-full">
@@ -73,63 +41,12 @@ const MainContent = ({
              menuItems.find(item => item.submenu?.some(sub => sub.id === activeSection))?.submenu?.find(sub => sub.id === activeSection)?.label}
           </h2>
         </div>
-        {(activeSection === 'orders' || activeSection === 'drivers' || activeSection === 'vehicles' || activeSection === 'customers' || activeSection === 'contract-application') && (
-          <button 
-            onClick={() => {
-              if (activeSection === 'orders') setIsOrderModalOpen(true);
-              if (activeSection === 'drivers') setIsDriverModalOpen(true);
-              if (activeSection === 'vehicles') setIsVehicleModalOpen(true);
-              if (activeSection === 'customers') setIsCustomerModalOpen(true);
-              if (activeSection === 'contract-application' && setIsContractApplicationModalOpen) setIsContractApplicationModalOpen(true);
-            }}
-            className="bg-primary hover:bg-primary/90 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
-          >
-            <Icon name="Plus" size={18} className="sm:w-5 sm:h-5" />
-            <span className="font-medium hidden sm:inline">Добавить</span>
-          </button>
-        )}
       </header>
       <div className="flex-1 bg-white">
-        {activeSection === 'reference' ? (
-          <ReferenceDashboard 
-            onNavigate={setActiveSection} 
-            setIsDriverModalOpen={setIsDriverModalOpen}
-            setIsVehicleModalOpen={setIsVehicleModalOpen}
-            setIsCustomerModalOpen={setIsCustomerModalOpen}
-          />
-        ) : activeSection === 'documents' ? (
-          <DocumentsDashboard onNavigate={setActiveSection} />
-        ) : activeSection === 'settings' ? (
+        {activeSection === 'settings' ? (
           <SettingsDashboard onNavigate={setActiveSection} />
         ) : activeSection === 'templates' ? (
           <TemplatesDashboard />
-        ) : activeSection === 'ai-assistant' ? (
-          <AIAssistant />
-        ) : activeSection === 'orders' ? (
-          <OrdersTable />
-        ) : activeSection === 'drivers' ? (
-          <DriversTable 
-            setEditingDriver={setEditingDriver}
-            setIsDriverModalOpen={setIsDriverModalOpen}
-            refreshDrivers={refreshDrivers}
-          />
-        ) : activeSection === 'vehicles' ? (
-          <VehiclesTable 
-            setEditingVehicle={setEditingVehicle}
-            setIsVehicleModalOpen={setIsVehicleModalOpen}
-            refreshVehicles={refreshVehicles}
-          />
-        ) : activeSection === 'customers' ? (
-          <CustomersTable 
-            refreshCustomers={refreshCustomers}
-            setEditingCustomer={setEditingCustomer}
-            setIsCustomerModalOpen={setIsCustomerModalOpen}
-          />
-        ) : activeSection === 'contract-application' ? (
-          <ContractApplicationTable 
-            setEditingDocument={setEditingContractApplication || (() => {})}
-            setIsDocumentModalOpen={setIsContractApplicationModalOpen || (() => {})}
-          />
         ) : (
           <div className="px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-center h-full">
