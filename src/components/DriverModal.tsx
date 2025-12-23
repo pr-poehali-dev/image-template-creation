@@ -34,6 +34,13 @@ const DriverModal = ({ isOpen, onClose, driver, onSaved }: DriverModalProps) => 
     licenseIssuedBy: ''
   });
 
+  const convertDateFromDB = (dateStr: string): string => {
+    if (!dateStr || dateStr.length < 10) return '';
+    const parts = dateStr.split('-');
+    if (parts.length !== 3) return '';
+    return `${parts[2]}-${parts[1]}-${parts[0]}`;
+  };
+
   useEffect(() => {
     if (driver) {
       const nameParts = driver.full_name?.split(' ') || ['', '', ''];
@@ -45,7 +52,7 @@ const DriverModal = ({ isOpen, onClose, driver, onSaved }: DriverModalProps) => 
         passportSeries: driver.passport_series || '',
         passportNumber: driver.passport_number || '',
         passportIssuedBy: driver.passport_issued_by || '',
-        passportIssuedDate: driver.passport_issued_date || '',
+        passportIssuedDate: convertDateFromDB(driver.passport_issued_date || ''),
         licenseSeries: driver.license_series || '',
         licenseNumber: driver.license_number || '',
         licenseIssuedDate: '',
@@ -86,6 +93,13 @@ const DriverModal = ({ isOpen, onClose, driver, onSaved }: DriverModalProps) => 
     onClose();
   };
 
+  const convertDateFormat = (dateStr: string): string | null => {
+    if (!dateStr || dateStr.length !== 10) return null;
+    const parts = dateStr.split('-');
+    if (parts.length !== 3) return null;
+    return `${parts[2]}-${parts[1]}-${parts[0]}`;
+  };
+
   const handleSave = async () => {
     if (loading) return;
     setLoading(true);
@@ -110,7 +124,7 @@ const DriverModal = ({ isOpen, onClose, driver, onSaved }: DriverModalProps) => 
           passport_series: formData.passportSeries || null,
           passport_number: formData.passportNumber || null,
           passport_issued_by: formData.passportIssuedBy || null,
-          passport_issued_date: formData.passportIssuedDate || null,
+          passport_issued_date: convertDateFormat(formData.passportIssuedDate),
           license_series: formData.licenseSeries || null,
           license_number: formData.licenseNumber || null,
           license_category: null
@@ -206,6 +220,8 @@ const DriverModal = ({ isOpen, onClose, driver, onSaved }: DriverModalProps) => 
                 </label>
                 <input
                   type="tel"
+                  value={formData.phone}
+                  onChange={(e) => setFormData({...formData, phone: e.target.value})}
                   placeholder="+375291234567"
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                 />
@@ -286,6 +302,8 @@ const DriverModal = ({ isOpen, onClose, driver, onSaved }: DriverModalProps) => 
                     </label>
                     <input
                       type="text"
+                      value={formData.passportIssuedBy}
+                      onChange={(e) => setFormData({...formData, passportIssuedBy: e.target.value})}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                     />
                   </div>
