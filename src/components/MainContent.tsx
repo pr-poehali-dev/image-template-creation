@@ -1,4 +1,6 @@
 import Icon from '@/components/ui/icon';
+import ReferenceDashboard from './ReferenceDashboard';
+import DocumentsDashboard from './DocumentsDashboard';
 import TemplatesDashboard from './TemplatesDashboard';
 import SettingsDashboard from './SettingsDashboard';
 
@@ -18,13 +20,21 @@ interface MainContentProps {
   activeSection: string;
   setActiveSection: (section: string) => void;
   setIsMobileMenuOpen: (open: boolean) => void;
+  setIsDriverModalOpen: (open: boolean) => void;
+  setIsVehicleModalOpen: (open: boolean) => void;
+  setIsCustomerModalOpen: (open: boolean) => void;
+  setIsOrderModalOpen: (open: boolean) => void;
 }
 
 const MainContent = ({
   menuItems,
   activeSection,
   setActiveSection,
-  setIsMobileMenuOpen
+  setIsMobileMenuOpen,
+  setIsDriverModalOpen,
+  setIsVehicleModalOpen,
+  setIsCustomerModalOpen,
+  setIsOrderModalOpen
 }: MainContentProps) => {
   return (
     <main className="flex-1 overflow-auto flex flex-col bg-white w-full">
@@ -41,9 +51,27 @@ const MainContent = ({
              menuItems.find(item => item.submenu?.some(sub => sub.id === activeSection))?.submenu?.find(sub => sub.id === activeSection)?.label}
           </h2>
         </div>
+        {(activeSection === 'orders' || activeSection === 'drivers' || activeSection === 'vehicles' || activeSection === 'customers') && (
+          <button 
+            onClick={() => {
+              if (activeSection === 'orders') setIsOrderModalOpen(true);
+              if (activeSection === 'drivers') setIsDriverModalOpen(true);
+              if (activeSection === 'vehicles') setIsVehicleModalOpen(true);
+              if (activeSection === 'customers') setIsCustomerModalOpen(true);
+            }}
+            className="bg-primary hover:bg-primary/90 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+          >
+            <Icon name="Plus" size={18} className="sm:w-5 sm:h-5" />
+            <span className="font-medium hidden sm:inline">Добавить</span>
+          </button>
+        )}
       </header>
       <div className="flex-1 bg-white">
-        {activeSection === 'settings' ? (
+        {activeSection === 'reference' ? (
+          <ReferenceDashboard onNavigate={setActiveSection} />
+        ) : activeSection === 'documents' ? (
+          <DocumentsDashboard onNavigate={setActiveSection} />
+        ) : activeSection === 'settings' ? (
           <SettingsDashboard onNavigate={setActiveSection} />
         ) : activeSection === 'templates' ? (
           <TemplatesDashboard />
