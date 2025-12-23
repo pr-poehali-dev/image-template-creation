@@ -303,7 +303,7 @@ export default function TemplatesDashboard() {
                     <td className="px-4 py-3 text-sm text-gray-900">{template.fields?.length || 0}</td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
-                        {(template.pdfFile || template.pdfPreviewUrl) && (
+                        {template.pdfBase64 && (
                           <>
                             <button 
                               onClick={() => handleEditTemplate(template)}
