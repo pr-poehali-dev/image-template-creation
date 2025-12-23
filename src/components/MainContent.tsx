@@ -25,6 +25,9 @@ interface MainContentProps {
   setIsVehicleModalOpen: (open: boolean) => void;
   setIsCustomerModalOpen: (open: boolean) => void;
   setIsOrderModalOpen: (open: boolean) => void;
+  setIsReferenceOpen: (open: boolean) => void;
+  setIsDocumentsOpen: (open: boolean) => void;
+  setIsSettingsOpen: (open: boolean) => void;
 }
 
 const MainContent = ({
@@ -35,8 +38,32 @@ const MainContent = ({
   setIsDriverModalOpen,
   setIsVehicleModalOpen,
   setIsCustomerModalOpen,
-  setIsOrderModalOpen
+  setIsOrderModalOpen,
+  setIsReferenceOpen,
+  setIsDocumentsOpen,
+  setIsSettingsOpen
 }: MainContentProps) => {
+  const handleNavigate = (section: string) => {
+    const referenceItems = ['orders', 'drivers', 'vehicles', 'customers'];
+    const documentsItems = ['contract-application', 'ttn', 'upd'];
+    const settingsItems = ['templates'];
+    
+    if (referenceItems.includes(section)) {
+      setIsReferenceOpen(true);
+      setIsDocumentsOpen(false);
+      setIsSettingsOpen(false);
+    } else if (documentsItems.includes(section)) {
+      setIsDocumentsOpen(true);
+      setIsReferenceOpen(false);
+      setIsSettingsOpen(false);
+    } else if (settingsItems.includes(section)) {
+      setIsSettingsOpen(true);
+      setIsReferenceOpen(false);
+      setIsDocumentsOpen(false);
+    }
+    
+    setActiveSection(section);
+  };
   return (
     <main className="flex-1 overflow-auto flex flex-col bg-white w-full">
       <header className="bg-white border-b border-gray-200 px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex items-center justify-between">
@@ -69,7 +96,7 @@ const MainContent = ({
       </header>
       <div className="flex-1 bg-white">
         {activeSection === 'dashboard' ? (
-          <MainDashboard onNavigate={setActiveSection} />
+          <MainDashboard onNavigate={handleNavigate} />
         ) : activeSection === 'reference' ? (
           <ReferenceDashboard onNavigate={setActiveSection} />
         ) : activeSection === 'documents' ? (

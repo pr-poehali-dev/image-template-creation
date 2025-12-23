@@ -91,6 +91,9 @@ const Index = () => {
         setIsVehicleModalOpen={setIsVehicleModalOpen}
         setIsCustomerModalOpen={setIsCustomerModalOpen}
         setIsOrderModalOpen={setIsOrderModalOpen}
+        setIsReferenceOpen={setIsReferenceOpen}
+        setIsDocumentsOpen={setIsDocumentsOpen}
+        setIsSettingsOpen={setIsSettingsOpen}
       />
 
       <Modals
