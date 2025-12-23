@@ -465,7 +465,8 @@ def handle_templates(method: str, event: Dict[str, Any], conn, cursor) -> Dict[s
                 Bucket='files',
                 Key=file_key,
                 Body=pdf_data,
-                ContentType='application/pdf'
+                ContentType='application/pdf',
+                ACL='public-read'
             )
             
             pdf_url = f"https://cdn.poehali.dev/projects/{os.environ['AWS_ACCESS_KEY_ID']}/bucket/{file_key}"
