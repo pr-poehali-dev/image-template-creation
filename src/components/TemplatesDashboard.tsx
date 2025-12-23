@@ -300,7 +300,7 @@ export default function TemplatesDashboard() {
                       </span>
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-900">{template.createdAt}</td>
-                    <td className="px-4 py-3 text-sm text-gray-900">{template.fields.length}</td>
+                    <td className="px-4 py-3 text-sm text-gray-900">{template.fields?.length || 0}</td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
                         {(template.pdfFile || template.pdfPreviewUrl) && (
