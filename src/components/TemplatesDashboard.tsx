@@ -131,7 +131,7 @@ export default function TemplatesDashboard() {
   const handleDeleteTemplate = async (id: string) => {
     if (confirm('Удалить этот шаблон?')) {
       try {
-        const response = await fetch(`${API_URL}?id=${id}`, { method: 'DELETE' });
+        const response = await fetch(`${API_URL}&id=${id}`, { method: 'DELETE' });
         if (response.ok) {
           await loadTemplates();
         } else {
