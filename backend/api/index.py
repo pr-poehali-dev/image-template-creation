@@ -21,19 +21,23 @@ def serialize_dates(obj):
         return obj.isoformat()
     return obj
 
-def snake_to_camel(snake_str):
-    components = snake_str.split('_')
-    return components[0] + ''.join(x.title() for x in components[1:])
-
 def dict_to_json(data):
+    if isinstance(data, dict):
+        return {k: serialize_dates(v) for k, v in data.items()}
+    elif isinstance(data, list):
+        return [dict_to_json(item) for item in data]
+    return serialize_dates(data)
+
+def dict_to_camel(data):
     if isinstance(data, dict):
         result = {}
         for k, v in data.items():
-            camel_key = snake_to_camel(k)
+            components = k.split('_')
+            camel_key = components[0] + ''.join(x.title() for x in components[1:])
             result[camel_key] = serialize_dates(v)
         return result
     elif isinstance(data, list):
-        return [dict_to_json(item) for item in data]
+        return [dict_to_camel(item) for item in data]
     return serialize_dates(data)
 
 def dadata_request(url: str, query: str) -> Dict[str, Any]:
@@ -562,7 +566,7 @@ def handle_templates(method: str, event: Dict[str, Any], conn, cursor) -> Dict[s
             ORDER BY name
         ''')
         templates = cursor.fetchall()
-        result = [dict_to_json(dict(t)) for t in templates]
+        result = [dict_to_camel(dict(t)) for t in templates]
         
         return {
             'statusCode': 200,
@@ -600,7 +604,7 @@ def handle_templates(method: str, event: Dict[str, Any], conn, cursor) -> Dict[s
         return {
             'statusCode': 201,
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-            'body': json.dumps({'template': dict_to_json(dict(template))}),
+            'body': json.dumps({'template': dict_to_camel(dict(template))}),
             'isBase64Encoded': False
         }
     
@@ -669,7 +673,7 @@ def handle_templates(method: str, event: Dict[str, Any], conn, cursor) -> Dict[s
         return {
             'statusCode': 200,
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-            'body': json.dumps({'template': dict_to_json(dict(template))}),
+            'body': json.dumps({'template': dict_to_camel(dict(template))}),
             'isBase64Encoded': False
         }
     
