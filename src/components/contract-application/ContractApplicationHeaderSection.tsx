@@ -1,3 +1,5 @@
+import RulesInput from '@/components/RulesInput';
+
 interface ContractApplicationHeaderSectionProps {
   formData: {
     number: string;
@@ -46,17 +48,14 @@ const ContractApplicationHeaderSection = ({
             className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-900"
           />
         </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-900 mb-2">
-            Дата заявки <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="date"
-            value={formData.date}
-            onChange={(e) => setFormData({...formData, date: e.target.value})}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-          />
-        </div>
+        <RulesInput
+          type="date"
+          value={formData.date}
+          onChange={(value) => setFormData({...formData, date: value})}
+          label="Дата заявки"
+          required
+          maxDate="none"
+        />
       </div>
 
       <div className="relative">

@@ -1,4 +1,5 @@
 import Icon from '@/components/ui/icon';
+import RulesInput from '@/components/RulesInput';
 
 interface ContractApplicationLocationSectionProps {
   formData: {
@@ -25,17 +26,14 @@ const ContractApplicationLocationSection = ({
         </h4>
         
         <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-900 mb-2">
-              Дата погрузки <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="date"
-              value={formData.loadingDate}
-              onChange={(e) => setFormData({...formData, loadingDate: e.target.value})}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-            />
-          </div>
+          <RulesInput
+            type="date"
+            value={formData.loadingDate}
+            onChange={(value) => setFormData({...formData, loadingDate: value})}
+            label="Дата погрузки"
+            required
+            maxDate="none"
+          />
           <div>
             <label className="block text-sm font-medium text-gray-900 mb-2">
               Контактное лицо
@@ -71,17 +69,14 @@ const ContractApplicationLocationSection = ({
         </h4>
         
         <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-900 mb-2">
-              Дата разгрузки <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="date"
-              value={formData.unloadingDate}
-              onChange={(e) => setFormData({...formData, unloadingDate: e.target.value})}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-            />
-          </div>
+          <RulesInput
+            type="date"
+            value={formData.unloadingDate}
+            onChange={(value) => setFormData({...formData, unloadingDate: value})}
+            label="Дата разгрузки"
+            required
+            maxDate="none"
+          />
           <div>
             <label className="block text-sm font-medium text-gray-900 mb-2">
               Контактное лицо
