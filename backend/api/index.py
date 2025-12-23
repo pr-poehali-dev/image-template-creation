@@ -682,6 +682,43 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     if resource == 'dadata':
         return handle_dadata(method, event)
     
+    if resource == 'pdf-recognize':
+        if method != 'POST':
+            return {
+                'statusCode': 405,
+                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                'body': json.dumps({'error': 'Method not allowed'}),
+                'isBase64Encoded': False
+            }
+        
+        default_fields = {
+            'order_number': 'Номер заказа',
+            'order_date': 'Дата заказа',
+            'customer_name': 'Заказчик',
+            'customer_inn': 'ИНН заказчика',
+            'carrier_name': 'Перевозчик',
+            'carrier_inn': 'ИНН перевозчика',
+            'cargo_name': 'Наименование груза',
+            'cargo_weight': 'Вес груза (кг)',
+            'cargo_volume': 'Объем груза (м³)',
+            'loading_address': 'Адрес погрузки',
+            'loading_date': 'Дата погрузки',
+            'unloading_address': 'Адрес разгрузки',
+            'unloading_date': 'Дата разгрузки',
+            'driver_name': 'ФИО водителя',
+            'vehicle_number': 'Гос. номер ТС',
+            'trailer_number': 'Гос. номер прицепа',
+            'amount': 'Стоимость перевозки',
+            'payment_terms': 'Условия оплаты'
+        }
+        
+        return {
+            'statusCode': 200,
+            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'success': True, 'data': default_fields}),
+            'isBase64Encoded': False
+        }
+    
     conn = get_db_connection()
     cursor = conn.cursor(cursor_factory=RealDictCursor)
     
