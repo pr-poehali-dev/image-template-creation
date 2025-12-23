@@ -4,12 +4,12 @@ import MainContent from '@/components/MainContent';
 import Modals from '@/components/Modals';
 
 const menuItems = [
-  { id: 'orders', label: 'Заказы', icon: 'ClipboardList' },
   { 
     id: 'reference', 
-    label: 'Справочник', 
+    label: 'Справочники', 
     icon: 'Book',
     submenu: [
+      { id: 'orders', label: 'Заказы', icon: 'ClipboardList' },
       { id: 'drivers', label: 'Водители', icon: 'Users' },
       { id: 'vehicles', label: 'Автомобили', icon: 'Truck' },
       { id: 'customers', label: 'Контрагенты', icon: 'Contact' },

@@ -7,6 +7,15 @@ interface ReferenceDashboardProps {
 const ReferenceDashboard = ({ onNavigate }: ReferenceDashboardProps) => {
   const referenceCards = [
     {
+      id: 'orders',
+      title: 'Заказы',
+      description: 'Управление заказами',
+      icon: 'ClipboardList',
+      color: 'bg-orange-50',
+      iconColor: 'text-orange-600',
+      hoverColor: 'hover:bg-orange-100'
+    },
+    {
       id: 'drivers',
       title: 'Водители',
       description: 'Управление водителями',
