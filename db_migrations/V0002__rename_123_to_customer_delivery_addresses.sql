@@ -1,1 +1,0 @@
-ALTER TABLE "123" RENAME TO customer_delivery_addresses;
