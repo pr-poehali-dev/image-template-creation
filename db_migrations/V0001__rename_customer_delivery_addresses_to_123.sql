@@ -1,0 +1,1 @@
+ALTER TABLE customer_delivery_addresses RENAME TO "123";
