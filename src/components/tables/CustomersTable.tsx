@@ -64,7 +64,7 @@ const CustomersTable = ({ refreshCustomers, setEditingCustomer, setIsCustomerMod
     if (customer.is_seller) roles.push('Продавец');
     if (customer.is_buyer) roles.push('Покупатель');
     if (customer.is_carrier) roles.push('Перевозчик');
-    return roles.join(', ') || '-';
+    return roles;
   };
 
   const filteredCustomers = customers.filter(c => 
@@ -120,9 +120,17 @@ const CustomersTable = ({ refreshCustomers, setEditingCustomer, setIsCustomerMod
                       <td className="px-4 py-3 text-sm text-gray-900">{customer.inn || '-'}</td>
                       <td className="px-4 py-3 text-sm text-gray-900">{customer.ogrn || '-'}</td>
                       <td className="px-4 py-3">
-                        <span className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
-                          {getRoles(customer)}
-                        </span>
+                        <div className="flex flex-col gap-1">
+                          {getRoles(customer).length > 0 ? (
+                            getRoles(customer).map((role, index) => (
+                              <span key={index} className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700 w-fit">
+                                {role}
+                              </span>
+                            ))
+                          ) : (
+                            <span className="text-sm text-gray-500">-</span>
+                          )}
+                        </div>
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
