@@ -566,7 +566,7 @@ def handle_templates(method: str, event: Dict[str, Any], conn, cursor) -> Dict[s
     elif method == 'POST':
         body = json.loads(event.get('body', '{}'))
         
-        pdf_base64 = body.get('pdfBase64') or body.get('pdf_base64', '')
+        pdf_base64 = body.get('pdfBase64', '')
         if not pdf_base64.startswith('data:'):
             if pdf_base64:
                 pdf_base64 = f"data:application/pdf;base64,{pdf_base64}"
@@ -610,7 +610,7 @@ def handle_templates(method: str, event: Dict[str, Any], conn, cursor) -> Dict[s
                 'isBase64Encoded': False
             }
         
-        pdf_base64 = body.get('pdf_base64')
+        pdf_base64 = body.get('pdfBase64')
         if pdf_base64 and not pdf_base64.startswith('data:'):
             pdf_base64 = f"data:application/pdf;base64,{pdf_base64}"
         
