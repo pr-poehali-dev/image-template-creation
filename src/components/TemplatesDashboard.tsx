@@ -17,6 +17,7 @@ export interface ReportTemplate {
   createdAt: string;
   fields: TemplateField[];
   pdfBase64?: string;
+  pdf_base64?: string;
   pdfFile?: File;
   templateType: 'pdf';
   pdfMappings?: FieldMapping[];
@@ -149,7 +150,8 @@ export default function TemplatesDashboard() {
   };
 
   const handlePrintTemplate = (template: ReportTemplate) => {
-    if (template.pdfBase64) {
+    const pdfUrl = template.pdfBase64 || template.pdf_base64;
+    if (pdfUrl) {
       const printWindow = window.open('', '_blank');
       if (printWindow) {
         printWindow.document.write(`
@@ -162,7 +164,7 @@ export default function TemplatesDashboard() {
               </style>
             </head>
             <body>
-              <embed src="${template.pdfBase64}" type="application/pdf" />
+              <embed src="${pdfUrl}" type="application/pdf" />
             </body>
           </html>
         `);
@@ -175,9 +177,10 @@ export default function TemplatesDashboard() {
   };
 
   const handleDownloadTemplate = (template: ReportTemplate) => {
-    if (template.pdfBase64) {
+    const pdfUrl = template.pdfBase64 || template.pdf_base64;
+    if (pdfUrl) {
       const a = document.createElement('a');
-      a.href = template.pdfBase64;
+      a.href = pdfUrl;
       a.download = `${template.name}.pdf`;
       document.body.appendChild(a);
       a.click();
@@ -188,7 +191,8 @@ export default function TemplatesDashboard() {
   };
 
   const handleEditTemplate = (template: ReportTemplate) => {
-    if (!template.pdfBase64) {
+    const pdfUrl = template.pdfBase64 || template.pdf_base64;
+    if (!pdfUrl) {
       alert('PDF файл недоступен');
       return;
     }
@@ -196,7 +200,7 @@ export default function TemplatesDashboard() {
       id: template.id,
       name: template.name,
       description: template.description,
-      pdfUrl: template.pdfBase64,
+      pdfUrl: pdfUrl,
       mappings: template.pdfMappings || []
     });
   };
@@ -303,7 +307,7 @@ export default function TemplatesDashboard() {
                     <td className="px-4 py-3 text-sm text-gray-900">{template.fields?.length || 0}</td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
-                        {template.pdfBase64 && (
+                        {(template.pdfBase64 || template.pdf_base64) && (
                           <>
                             <button 
                               onClick={() => handleEditTemplate(template)}
